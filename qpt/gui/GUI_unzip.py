@@ -2,8 +2,8 @@ import sys
 
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
+from qpt.kernel.tools.qpt_model import GModule
 from qt_ui.unzip import Ui_unzip_file_dialog
-from qpt.kernel.tools.model_tools import GModule
 
 __all__ = ["GUIUnzip"]
 

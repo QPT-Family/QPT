@@ -3,39 +3,8 @@ from PyQt5 import QtCore
 from PyQt5.QtCore import pyqtSignal
 
 from qpt.kernel.tools.log_tools import Logging
-from qpt.kernel.tools.venv_tools import CondaVenv
 
 TERMINAL_NAME = "cmd.exe"
-
-
-class QTCondaVenv(CondaVenv):
-    """
-    QT版Conda环境管理类
-    传入可发送指令的method:shell_opt，命令则会以shell_opt(shell)进行执行
-    """
-
-    def __init__(self, shell_opt):
-        super(QTCondaVenv, self).__init__()
-        self.cmd = shell_opt
-
-        # 控制命令成功/失败后的决策，每次设置仅生效一次
-        self.opt_yes = None
-        self.opt_no = None
-
-    def _shell(self, shell):
-        self.cmd(shell, self.opt_yes, self.opt_no)
-
-        self.opt_yes = None
-        self.opt_no = None
-
-    def set_opt(self, yes_opt=None, no_opt=None):
-        """
-        设置应该一次性的命令成功/失败的决策函数
-        :param yes_opt: 运行成功则执行yes_opt()
-        :param no_opt: 运行失败则执行no_opt()
-        """
-        self.opt_yes = yes_opt
-        self.opt_no = no_opt
 
 
 class Terminal(PyQt5.QtCore.QThread):
@@ -71,8 +40,6 @@ class Terminal(PyQt5.QtCore.QThread):
     def set_act_opt(self, done_opt=None, no_opt=None):
         """
         设置send_shell中opt操作
-        :return:
-        :rtype:
         """
         if self.done_opt is not None:
             self.shell_done_signal.disconnect(self.done_opt)

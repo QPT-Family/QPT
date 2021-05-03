@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>start_dialog</class>
+ <widget class="QDialog" name="start_dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>650</width>
+    <height>350</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>500</width>
+    <height>1</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>700</width>
+    <height>400</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>GDM用户使用须知</string>
+  </property>
+  <widget class="QDialogButtonBox" name="buttonBox">
+   <property name="geometry">
+    <rect>
+     <x>260</x>
+     <y>291</y>
+     <width>361</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="standardButtons">
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="start_readme">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>20</y>
+     <width>631</width>
+     <height>321</height>
+    </rect>
+   </property>
+   <property name="html">
+    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'SimSun'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'等线'; font-size:10pt; color:#00aa00;&quot;&gt;-----欢迎使用国产开源GDM深度学习Modules管理器-----&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'等线'; font-size:10pt;&quot;&gt;GDM(GT DeepLearning Manager)作为一款免费开源且面向大众的AI能力体验框架，为了更好的开源环境，平台不限制任何形式贡献ヾﾉ≧∀≦)o&lt;/span&gt;&lt;span style=&quot; font-family:'等线'; font-size:10pt; color:#00aa00;&quot;&gt;(贡献方法在左上角-&amp;gt;关于启动器)。&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'等线'; font-size:10pt;&quot;&gt;但在开放的同时，小伙伴也要留心安全问题！虽GDM启动器在程序右侧增加了终止和人工干预的入口，&lt;/span&gt;&lt;span style=&quot; font-family:'等线'; font-size:10pt; color:#000000;&quot;&gt;但仍请各位父老乡亲在&lt;/span&gt;&lt;span style=&quot; font-family:'等线'; font-size:10pt; color:#ff0000;&quot;&gt;使用Module时务必检查Module来源、作者、代码是否合法&lt;/span&gt;&lt;span style=&quot; font-family:'等线'; font-size:10pt;&quot;&gt;，需额外警惕恶意的Module，以免造成损失。&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'等线'; font-size:10pt;&quot;&gt;GDM会将已通过无恶意代码认证后的Module上传至群文件，欢迎使用认证Module！&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'等线'; font-size:10pt; color:#55aaff;&quot;&gt;-----启动器官方讨论群-----&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'等线'; font-size:10pt;&quot;&gt;QQ群-月初阁：1128826410 (若满员请打开下方AI Studio主页获取最新群号)&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'等线'; font-size:10pt;&quot;&gt;AI Studio主页：&lt;/span&gt;&lt;a href=&quot;z&quot;&gt;&lt;span style=&quot; font-family:'等线'; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;暂无&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'等线'; font-size:10pt;&quot;&gt;-------------------------------------------------------------------&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </widget>
+  <zorder>start_readme</zorder>
+  <zorder>buttonBox</zorder>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>start_dialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>start_dialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

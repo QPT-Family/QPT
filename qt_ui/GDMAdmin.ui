@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>360</width>
+    <height>187</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>GDM管理员界面</string>
+  </property>
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QMenuBar" name="Main_menubar"/>
+  <widget class="QStatusBar" name="Main_statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

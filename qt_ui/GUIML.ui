@@ -1,0 +1,708 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Launcher</class>
+ <widget class="QMainWindow" name="Launcher">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>900</width>
+    <height>540</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>900</width>
+    <height>550</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>GDM程序启动器V0.1.0 Beta</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="statusTip">
+    <string>宣传文本</string>
+   </property>
+   <widget class="QGroupBox" name="groupBox_4">
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>10</y>
+      <width>441</width>
+      <height>441</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>运行状态</string>
+    </property>
+    <widget class="QTextEdit" name="shell_window_text">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>421</width>
+       <height>381</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>8</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="statusTip">
+      <string>此处将展示运行状态</string>
+     </property>
+     <property name="whatsThis">
+      <string/>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Box</enum>
+     </property>
+     <property name="html">
+      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'微软雅黑'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'等线'; font-size:9pt;&quot;&gt;由于Module和启动器分离，若在使用过程中出现问题，可以先通过一下方案定位问题：&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'等线'; font-size:9pt;&quot;&gt;目光移动到左上角ヾﾉ≧∀≦)o! 点击环境设置-&amp;gt;运行检测-&amp;gt;启动器运行检测/Module示例数据检测&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'等线'; font-size:9pt;&quot;&gt;若检测均能通过，说明Demo数据可以成功运行，请检查数据和配置本身是否存在问题。&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'等线'; font-size:9pt;&quot;&gt;当然，也可以在左侧'Module说明'中找到相关交流群(可能)信息。&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'等线'; font-size:9pt; color:#ff0000;&quot;&gt;(Module中可能包含第三方库，请勿使用中文文件名、路径，这将可能导致程序崩溃！)&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'等线'; font-size:9pt; color:#55aaff;&quot;&gt;-----启动器官方讨论群-----&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'等线'; font-size:9pt;&quot;&gt;QQ群-月初阁：1128826410 (若满员请打开下方AI Studio主页获取最新群号)&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'等线'; font-size:9pt;&quot;&gt;AI Studio主页：&lt;/span&gt;&lt;a href=&quot;z&quot;&gt;&lt;span style=&quot; font-family:'等线'; font-size:9pt; text-decoration: underline; color:#0000ff;&quot;&gt;暂无&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'等线'; font-size:9pt; color:#ffaa00;&quot;&gt;-----正在连接控制台-----&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'等线'; font-size:9pt; color:#ffaa00;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>410</y>
+       <width>61</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Shell命令</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="shell_send_button">
+     <property name="geometry">
+      <rect>
+       <x>380</x>
+       <y>410</y>
+       <width>51</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>发送</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="shell_text">
+     <property name="geometry">
+      <rect>
+       <x>70</x>
+       <y>410</y>
+       <width>301</width>
+       <height>21</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_2">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>270</y>
+      <width>401</width>
+      <height>221</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>环境相关</string>
+    </property>
+    <widget class="QProgressBar" name="progressBar">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>170</y>
+       <width>301</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="value">
+      <number>24</number>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>170</y>
+       <width>101</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>资源准备进度</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_4">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>80</y>
+       <width>81</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Ext环境状态</string>
+     </property>
+    </widget>
+    <widget class="QMdiArea" name="ext_env_mdiArea">
+     <property name="geometry">
+      <rect>
+       <x>370</x>
+       <y>80</y>
+       <width>21</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="background">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>255</red>
+        <green>85</green>
+        <blue>0</blue>
+       </color>
+      </brush>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_10">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>50</y>
+       <width>81</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Base环境状态</string>
+     </property>
+    </widget>
+    <widget class="QMdiArea" name="base_env_mdiArea">
+     <property name="geometry">
+      <rect>
+       <x>370</x>
+       <y>50</y>
+       <width>21</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="background">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>255</red>
+        <green>85</green>
+        <blue>0</blue>
+       </color>
+      </brush>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_14">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>20</y>
+       <width>81</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>内存/显存等级</string>
+     </property>
+    </widget>
+    <widget class="QMdiArea" name="memory_mdiArea">
+     <property name="geometry">
+      <rect>
+       <x>370</x>
+       <y>20</y>
+       <width>21</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="accessibleName">
+      <string/>
+     </property>
+     <property name="background">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>255</red>
+        <green>85</green>
+        <blue>0</blue>
+       </color>
+      </brush>
+     </property>
+    </widget>
+    <widget class="QMdiArea" name="mdiArea_mem_3">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>140</y>
+       <width>20</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="background">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>170</red>
+        <green>255</green>
+        <blue>0</blue>
+       </color>
+      </brush>
+     </property>
+    </widget>
+    <widget class="QMdiArea" name="mdiArea_mem_4">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>140</y>
+       <width>21</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="background">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>255</red>
+        <green>170</green>
+        <blue>0</blue>
+       </color>
+      </brush>
+     </property>
+    </widget>
+    <widget class="QMdiArea" name="mdiArea_mem_5">
+     <property name="geometry">
+      <rect>
+       <x>370</x>
+       <y>140</y>
+       <width>21</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="background">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>255</red>
+        <green>85</green>
+        <blue>0</blue>
+       </color>
+      </brush>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_20">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>140</y>
+       <width>31</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>正常</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_21">
+     <property name="geometry">
+      <rect>
+       <x>340</x>
+       <y>140</y>
+       <width>31</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>异常</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_22">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>140</y>
+       <width>31</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>警告</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="memory_label">
+     <property name="geometry">
+      <rect>
+       <x>300</x>
+       <y>20</y>
+       <width>54</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>未检测</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="base_env_label">
+     <property name="geometry">
+      <rect>
+       <x>300</x>
+       <y>50</y>
+       <width>54</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>未检测</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ext_env_label">
+     <property name="geometry">
+      <rect>
+       <x>300</x>
+       <y>80</y>
+       <width>54</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>未检测</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="select_device_comboBox">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>40</y>
+       <width>171</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>仅CPU模式运行</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QLabel" name="label_11">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>190</y>
+       <width>41</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>状态：</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_15">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>196</y>
+       <width>271</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>正在准备</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_16">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>81</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>运行硬件环境：</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="select_env_comboBox">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>100</y>
+       <width>171</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>-&gt;点击此处新建一个环境&lt;-</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QLabel" name="label_19">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>80</y>
+       <width>141</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>解释器(软件)环境：</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_23">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>110</y>
+       <width>81</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>预计运行速度</string>
+     </property>
+    </widget>
+    <widget class="QMdiArea" name="rate_mdiArea">
+     <property name="geometry">
+      <rect>
+       <x>370</x>
+       <y>110</y>
+       <width>21</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="accessibleName">
+      <string/>
+     </property>
+     <property name="background">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>255</red>
+        <green>85</green>
+        <blue>0</blue>
+       </color>
+      </brush>
+     </property>
+    </widget>
+    <widget class="QLabel" name="rate_label">
+     <property name="geometry">
+      <rect>
+       <x>300</x>
+       <y>110</y>
+       <width>61</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>未检测</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="Launcher_button">
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>460</y>
+      <width>251</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>启动</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="shell_clear_button">
+    <property name="geometry">
+     <rect>
+      <x>700</x>
+      <y>460</y>
+      <width>81</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>清空输出</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="shell_reset_button">
+    <property name="geometry">
+     <rect>
+      <x>790</x>
+      <y>460</y>
+      <width>81</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>重启终端</string>
+    </property>
+   </widget>
+   <widget class="QTabWidget" name="module_widget">
+    <property name="geometry">
+     <rect>
+      <x>16</x>
+      <y>9</y>
+      <width>411</width>
+      <height>251</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <property name="movable">
+     <bool>false</bool>
+    </property>
+    <widget class="QWidget" name="module_tab1">
+     <attribute name="title">
+      <string>Module配置</string>
+     </attribute>
+     <widget class="QPushButton" name="module_flag">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>190</y>
+        <width>75</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="sizeIncrement">
+       <size>
+        <width>0</width>
+        <height>8</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>占位</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="module_tab2">
+     <attribute name="title">
+      <string>关于作者</string>
+     </attribute>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>900</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>环境配置</string>
+    </property>
+    <addaction name="actionl_admin"/>
+    <addaction name="actionrun_check"/>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>关于启动器</string>
+    </property>
+    <addaction name="actionAI_Studio"/>
+    <addaction name="actionGithub"/>
+    <addaction name="actionMake_GDModule"/>
+    <addaction name="separator"/>
+    <addaction name="actionJoin_us"/>
+    <addaction name="actionQQ"/>
+   </widget>
+   <addaction name="menu"/>
+   <addaction name="menu_2"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionl_admin">
+   <property name="text">
+    <string>GDM管理员界面</string>
+   </property>
+   <property name="statusTip">
+    <string>进入GDM最高权限的管理员界面，在这里可以更好操控虚拟环境以及其它设置。</string>
+   </property>
+  </action>
+  <action name="actionSelect_venv">
+   <property name="text">
+    <string>选择GDM环境</string>
+   </property>
+  </action>
+  <action name="actionGithub">
+   <property name="text">
+    <string>Github主页</string>
+   </property>
+  </action>
+  <action name="actionMake_GDModule">
+   <property name="text">
+    <string>GDModule制作指南</string>
+   </property>
+  </action>
+  <action name="actionJoin_us">
+   <property name="text">
+    <string>关于启动器</string>
+   </property>
+  </action>
+  <action name="actionAI_Studio">
+   <property name="text">
+    <string>AI Studio主页</string>
+   </property>
+  </action>
+  <action name="actionQQ">
+   <property name="text">
+    <string>加入QQ群一起讨论</string>
+   </property>
+  </action>
+  <action name="actionrun_check">
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>运行检测(&amp;Ctrl+A)</string>
+   </property>
+   <property name="statusTip">
+    <string>若当前Module运行出现问题可以尝试使用该选项判断</string>
+   </property>
+  </action>
+ </widget>
+ <tabstops>
+  <tabstop>Launcher_button</tabstop>
+  <tabstop>shell_window_text</tabstop>
+  <tabstop>shell_text</tabstop>
+  <tabstop>shell_clear_button</tabstop>
+  <tabstop>shell_send_button</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

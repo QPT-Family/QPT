@@ -1,9 +1,27 @@
 import subprocess
+import ctypes
+import os
+import sys
 
 import psutil
 import pynvml
 
 from qpt.kernel.tools.log_tools import Logging
+
+
+def add_ua():
+    """
+    获取UA权限
+    """
+    ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
+
+
+def set_qpt_env_var(path):
+    out = os.system(f'setx "QPT_BASE" {path} /m')
+    if out == 0:
+        return True
+    else:
+        return False
 
 
 class SubCMD:

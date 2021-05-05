@@ -5,6 +5,7 @@ import sys
 
 import psutil
 import pynvml
+import wget
 
 from qpt.kernel.tools.log_tools import Logging
 
@@ -22,6 +23,14 @@ def set_qpt_env_var(path):
         return True
     else:
         return False
+
+
+def download(url, path, file_name):
+    if not os.path.exists(path):
+        os.mkdir(path)
+    file_path = os.path.join(path, file_name)
+    if not os.path.exists(file_path):
+        wget.download(url, out=file_path)
 
 
 class SubCMD:

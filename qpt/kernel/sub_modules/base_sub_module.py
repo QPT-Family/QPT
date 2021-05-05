@@ -1,5 +1,6 @@
 import os
 import collections
+import pickle
 
 from qpt.kernel.tools.sys_tools import download
 
@@ -51,15 +52,21 @@ class SubModuleOpt:
 
 
 class SubModule:
-    def __init__(self):
+    def __init__(self, name):
+        self.name = name
+
+        # 占位OP
         self.pack_ops = collections.OrderedDict()
         self.apply_ops = collections.OrderedDict()
 
-    def add_pack_opt(self, opt: SubModuleOpt):
-        self._set_op(self.pack_ops, opt)
+        # 占位out_dir，将会保存序列化文件到该目录
+        self.out_dir = None
 
-    def add_apply_opt(self, opt: SubModuleOpt):
-        self._set_op(self.apply_ops, opt)
+    def add_pack_opt(self, opt: SubModuleOpt):
+        self._add_op(self.pack_ops, opt)
+
+    def add_unpack_opt(self, opt: SubModuleOpt):
+        self._add_op(self.apply_ops, opt)
 
     def pack(self):
         """
@@ -67,7 +74,7 @@ class SubModule:
         """
         pass
 
-    def apply(self):
+    def unpack(self):
         """
         用户使用该Module时，需要完成的操作
         """
@@ -77,8 +84,15 @@ class SubModule:
         pass
 
     # ToDo:做序列化来保存
-    @staticmethod
-    def _set_op(op_dict: collections.OrderedDict, opt: SubModuleOpt, pick=False):
+    def _add_op(self, op_dict: collections.OrderedDict, opt: SubModuleOpt, serialize=False):
         name = opt.name
         act = opt.act
         op_dict[name] = act
+        if serialize:
+            serialize_path = os.path.join(self.out_dir, "opt", self.name)
+            serialize_file_path = serialize_path + name + ".op"
+
+            os.makedirs(serialize_path, exist_ok=True)
+
+            with open(serialize_file_path, "w") as file:
+                pickle.dump(act, file)

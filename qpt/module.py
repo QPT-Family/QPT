@@ -6,9 +6,11 @@ class CreateModule:
     def __init__(self,
                  py_file_path,
                  workdir,
+                 save_dir,
                  version="1.0",
                  requirements_file_path="Auto",
                  none_gui: bool = False):
+        self.save_dir = save_dir
         pass
 
     def add_workdir(self, path):
@@ -18,6 +20,7 @@ class CreateModule:
         pass
 
     def add_sub_module(self, sub_module: BaseSubModule):
+        # ToDO 对每个module设置save_dir
         pass
 
     def print_details(self):

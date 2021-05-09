@@ -18,6 +18,7 @@ def add_ua():
 
 
 def set_qpt_env_var(path):
+    # ToDO:可考虑用Win32代替
     out = os.system(f'setx "QPT_BASE" {path} /m')
     if out == 0:
         return True

@@ -3,6 +3,7 @@ import collections
 import pickle
 
 from qpt.kernel.tools.sys_tools import download
+from qpt.kernel.tools.log_tools import Logging
 
 GLOBAL_OPT_ID = 0
 
@@ -56,43 +57,51 @@ class SubModule:
         self.name = name
 
         # 占位OP
-        self.pack_ops = collections.OrderedDict()
-        self.apply_ops = collections.OrderedDict()
+        self.pack_ops = list()
 
         # 占位out_dir，将会保存序列化文件到该目录
         self.out_dir = None
 
     def add_pack_opt(self, opt: SubModuleOpt):
-        self._add_op(self.pack_ops, opt)
+        self._add_op(opt)
+        self.pack_ops.append(opt)
 
     def add_unpack_opt(self, opt: SubModuleOpt):
-        self._add_op(self.apply_ops, opt)
+        self._add_op(opt, serialize=True)
 
     def pack(self):
         """
         在撰写该Module时，开发侧需要的操作
         """
-        pass
+        for op in self.pack_ops:
+            Logging.debug(f"正在加载{self.name}-{op.name}OP")
+            op()
 
     def unpack(self):
         """
         用户使用该Module时，需要完成的操作
         """
-        pass
+        ops = os.listdir(os.path.join(self.out_dir, "opt", self.name))
+        for op_name in ops:
+            op_name = str(op_name)
+            if os.path.splitext(op_name)[-1] == ".op":
+                with open(os.path.join(self.out_dir, "opt", self.name, op_name), "r", encoding="utf-8") as file:
+                    op = pickle.load(file)
+                    Logging.debug(f"正在加载{self.name}-{op.name}OP")
+                    op()
 
     def print_details(self):
         pass
 
     # ToDo:做序列化来保存
-    def _add_op(self, op_dict: collections.OrderedDict, opt: SubModuleOpt, serialize=False):
+    def _add_op(self, opt: SubModuleOpt, serialize=False):
         name = opt.name
         act = opt.act
-        op_dict[name] = act
         if serialize:
             serialize_path = os.path.join(self.out_dir, "opt", self.name)
             serialize_file_path = serialize_path + name + ".op"
 
             os.makedirs(serialize_path, exist_ok=True)
 
-            with open(serialize_file_path, "w") as file:
+            with open(serialize_file_path, "w", encoding="utf-8") as file:
                 pickle.dump(act, file)

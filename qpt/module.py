@@ -1,5 +1,5 @@
 import click
-from qpt.kernel.sub_modules.base_sub_module import BaseSubModule
+from qpt.kernel.sub_modules.sub_module import BaseSubModule
 
 
 class CreateModule:

@@ -13,13 +13,8 @@ class SubModuleOpt:
     自定义子模块操作，用于子模块封装时和封装后的操作流程设置，支持shell操作和Python原生语言操作
     """
 
-    def __init__(self, opt_name=None):
-        if opt_name is None:
-            global GLOBAL_OPT_ID
-            opt_name = str(GLOBAL_OPT_ID)
-            GLOBAL_OPT_ID += 1
-
-        self.name = opt_name
+    def __init__(self):
+        self.name = self.__class__.__name__
 
         # 环境变量
         self._user_qpt_base_path = "./"
@@ -57,25 +52,33 @@ class SubModule:
         self.name = name
 
         # 占位OP
-        self.pack_ops = list()
+        self.pack_opts = list()
+        self.unpack_details = list()
 
         # 占位out_dir，将会保存序列化文件到该目录
         self.out_dir = None
 
-    def add_pack_opt(self, opt: SubModuleOpt):
+    def add_pack_opt(self, opt):
+        assert type(opt).__name__ == 'classobj', "add_pack_opt需要传入未实例化的SubModuleOpt Class\nExample:\n" \
+                                                 "add_pack_opt(XXXSubModule)\n" \
+                                                 "# add_pack_opt(XXXSubModule())错误示范"
         self._add_op(opt)
-        self.pack_ops.append(opt)
+        self.pack_opts.append(opt)
 
-    def add_unpack_opt(self, opt: SubModuleOpt):
+    def add_unpack_opt(self, opt):
+        assert type(opt).__name__ == 'classobj', "add_unpack_opt需要传入未实例化的SubModuleOpt Class\nExample:\n" \
+                                                 "add_unpack_opt(XXXSubModule)\n" \
+                                                 "# add_unpack_opt(XXXSubModule())是错误示范"
+        self.unpack_details.append(f"{opt.name}")
         self._add_op(opt, serialize=True)
 
     def pack(self):
         """
         在撰写该Module时，开发侧需要的操作
         """
-        for op in self.pack_ops:
-            Logging.debug(f"正在加载{self.name}-{op.name}OP")
-            op()
+        for opt in self.pack_opts:
+            Logging.debug(f"正在加载{self.name}-{opt.name}OP")
+            opt()
 
     def unpack(self):
         """
@@ -86,17 +89,18 @@ class SubModule:
             op_name = str(op_name)
             if os.path.splitext(op_name)[-1] == ".op":
                 with open(os.path.join(self.out_dir, "opt", self.name, op_name), "r", encoding="utf-8") as file:
-                    op = pickle.load(file)
-                    Logging.debug(f"正在加载{self.name}-{op.name}OP")
-                    op()
+                    opt_class = pickle.load(file)
+                    opt = opt_class()
+                    Logging.debug(f"正在加载{self.name}-{opt.name}OP")
+                    opt()
 
     def print_details(self):
         pass
 
     # ToDo:做序列化来保存
-    def _add_op(self, opt: SubModuleOpt, serialize=False):
+    def _add_op(self, opt_class, serialize=False):
+        opt = opt_class()
         name = opt.name
-        act = opt.act
         if serialize:
             serialize_path = os.path.join(self.out_dir, "opt", self.name)
             serialize_file_path = serialize_path + name + ".op"
@@ -104,4 +108,4 @@ class SubModule:
             os.makedirs(serialize_path, exist_ok=True)
 
             with open(serialize_file_path, "w", encoding="utf-8") as file:
-                pickle.dump(act, file)
+                pickle.dump(opt_class, file)

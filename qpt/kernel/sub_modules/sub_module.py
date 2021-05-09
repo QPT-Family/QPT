@@ -38,6 +38,7 @@ class SubModuleOpt:
                     import os
                     os.mkdir(os.path.join(self.get_user_qpt_base_path(), "abc"))
         """
+        pass
 
     def get_user_qpt_base_path(self):
         return self._user_qpt_base_path
@@ -53,24 +54,21 @@ class SubModule:
 
         # 占位OP
         self.pack_opts = list()
-        self.unpack_details = list()
+        self.details = {"Pack": [], "Unpack": []}
 
         # 占位out_dir，将会保存序列化文件到该目录
         self.out_dir = None
 
-    def add_pack_opt(self, opt):
-        assert type(opt).__name__ == 'classobj', "add_pack_opt需要传入未实例化的SubModuleOpt Class\nExample:\n" \
-                                                 "add_pack_opt(XXXSubModule)\n" \
-                                                 "# add_pack_opt(XXXSubModule())错误示范"
-        self._add_op(opt)
+    def set_out_dir(self, path):
+        self.out_dir = path
+
+    def add_pack_opt(self, opt: SubModuleOpt):
+        self.details["Pack"].append(opt.__class__.__name__)
         self.pack_opts.append(opt)
 
-    def add_unpack_opt(self, opt):
-        assert type(opt).__name__ == 'classobj', "add_unpack_opt需要传入未实例化的SubModuleOpt Class\nExample:\n" \
-                                                 "add_unpack_opt(XXXSubModule)\n" \
-                                                 "# add_unpack_opt(XXXSubModule())是错误示范"
-        self.unpack_details.append(f"{opt.name}")
-        self._add_op(opt, serialize=True)
+    def add_unpack_opt(self, opt: SubModuleOpt):
+        self.details["Unpack"].append(opt.__class__.__name__)
+        self._serialize_op(opt)
 
     def pack(self):
         """
@@ -88,24 +86,18 @@ class SubModule:
         for op_name in ops:
             op_name = str(op_name)
             if os.path.splitext(op_name)[-1] == ".op":
-                with open(os.path.join(self.out_dir, "opt", self.name, op_name), "r", encoding="utf-8") as file:
-                    opt_class = pickle.load(file)
-                    opt = opt_class()
+                with open(os.path.join(self.out_dir, "opt", self.name, op_name), "rb") as file:
+                    opt = pickle.load(file)
                     Logging.debug(f"正在加载{self.name}-{opt.name}OP")
                     opt()
 
-    def print_details(self):
-        pass
-
     # ToDo:做序列化来保存
-    def _add_op(self, opt_class, serialize=False):
-        opt = opt_class()
-        name = opt.name
-        if serialize:
-            serialize_path = os.path.join(self.out_dir, "opt", self.name)
-            serialize_file_path = serialize_path + name + ".op"
+    def _serialize_op(self, opt):
+        name = opt.__class__.__name__
+        serialize_path = os.path.join(self.out_dir, "opt", self.name)
+        serialize_file_path = serialize_path + name + ".op"
 
-            os.makedirs(serialize_path, exist_ok=True)
+        os.makedirs(serialize_path, exist_ok=True)
 
-            with open(serialize_file_path, "w", encoding="utf-8") as file:
-                pickle.dump(opt_class, file)
+        with open(serialize_file_path, "wb") as file:
+            pickle.dump(opt, file)

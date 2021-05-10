@@ -2,7 +2,7 @@ import os
 import shutil
 from typing import List
 
-from qpt.kernel.sub_modules.sub_module import SubModule
+from qpt.kernel.sub_modules.base import SubModule
 from qpt.kernel.sub_modules.python_env import Python38
 
 
@@ -110,6 +110,7 @@ class RunExecutableModule:
         for sub_name in sub_name_list:
             sub_module = SubModule(sub_name)
             sub_module.set_out_dir(self.base_dir)
+            # ToDo 设置终端
             sub_module.unpack()
 
     def unzip_resources(self):

@@ -1,4 +1,4 @@
-from qpt.kernel.sub_modules.sub_module import SubModule, SubModuleOpt
+from qpt.kernel.sub_modules.base import SubModule, SubModuleOpt
 from qpt.kernel.tools.qpt_venv import VirtualEnv
 
 virtualenv = VirtualEnv()

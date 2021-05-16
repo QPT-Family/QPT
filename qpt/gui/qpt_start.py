@@ -1,15 +1,12 @@
 import sys
 import os
-import ctypes
 
-from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox, QFileDialog
+from PyQt5.QtWidgets import QApplication, QWidget, QFileDialog
 
-from qpt.qt_ui.welcome import Ui_welcome
+from qpt.kernel.qt_ui.welcome import Ui_welcome
 from qpt.gui.qpt_about import MiniAbout
-from qpt.gui.qpt_msg import check_path_with_msg, write_path_with_msg
-from qpt.kernel.tools.qpt_venv import VirtualEnv
+from qpt.gui.qpt_msg import write_path_with_msg
 from qpt.kernel.tools.sys_tools import add_ua, set_qpt_env_var
-from qpt.kernel.tools.log_tools import Logging
 
 
 # ToDo: QPT入口

@@ -1,5 +1,5 @@
 import click
-from qpt.module import RunModule
+from qpt.executable import RunModule
 
 
 @click.command()

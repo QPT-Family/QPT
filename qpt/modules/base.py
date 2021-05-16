@@ -17,7 +17,7 @@ class SubModuleOpt:
         self.name = self.__class__.__name__
 
         # 环境变量
-        self._user_qpt_base_path = "./"
+        self._user_qpt_base_path = "/"
         self.terminal = None
 
     def act(self) -> None:

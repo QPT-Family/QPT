@@ -2,7 +2,7 @@ import sys
 
 from PyQt5.QtWidgets import QApplication, QWidget
 
-from qpt.qt_ui.mini_about import Ui_mini_about
+from qpt.kernel.qt_ui.mini_about import Ui_mini_about
 
 
 class MiniAbout(QWidget, Ui_mini_about):

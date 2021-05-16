@@ -2,8 +2,8 @@ import os
 import shutil
 from typing import List
 
-from qpt.kernel.sub_modules.base import SubModule
-from qpt.kernel.sub_modules.python_env import Python38
+from qpt.modules.base import SubModule
+from qpt.modules.python_env import Python38
 from qpt.kernel.tools.qpt_qt import QTerminal, MessageBoxTerminalCallback
 
 
@@ -12,6 +12,7 @@ class CreateExecutableModule:
                  main_py_path,
                  workdir,
                  save_dir,
+                 interpreter_module=Python38(),
                  sub_modules: List[SubModule] = None,
                  module_name="未命名模型",
                  version="未知版本号",
@@ -36,6 +37,9 @@ class CreateExecutableModule:
         self.config_file_path = os.path.join(self.save_dir, "configs", "configs.gt")
         self.dependent_file_path = os.path.join(self.save_dir, "configs", "dependent.gt")
 
+        # 初始化终端
+        self.terminal = QTerminal()
+
     # ToDO 增加对子工作目录支持
     # def add_sub_workdir(self, path):
     #     pass
@@ -45,8 +49,12 @@ class CreateExecutableModule:
         为Module添加子模块
         """
         # 需对每个module设置save_dir和终端
-        # ToDO 增加终端
         sub_module.set_out_dir(self.save_dir)
+        sub_module.set_terminal_func(
+            self.terminal.shell_func(
+                callback=MessageBoxTerminalCallback()
+            )
+        )
         self.sub_module.append(sub_module)
 
     def print_details(self):
@@ -104,6 +112,7 @@ class RunExecutableModule:
         self.solve_sub_module()
 
     def solve_qpt_env(self):
+
         pass
 
     def solve_python_env(self):

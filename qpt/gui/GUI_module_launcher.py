@@ -4,7 +4,7 @@ import PyQt5
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 
-from qpt.qt_ui import GUIML
+from qpt.kernel.qt_ui import GUIML
 from qpt.kernel.tools.log_tools import Logging
 from qpt.kernel.tools.qpt_qt import QTCondaVenv, QTerminal
 from qpt.kernel.tools.sys_tools import SysInfo

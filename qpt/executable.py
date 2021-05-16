@@ -15,7 +15,7 @@ class CreateExecutableModule:
                  main_py_path,
                  workdir,
                  save_dir,
-                 interpreter_module=Python38(),
+                 interpreter_module: SubModule = Python38(),
                  sub_modules: List[SubModule] = None,
                  module_name="未命名模型",
                  version="未知版本号",
@@ -25,7 +25,7 @@ class CreateExecutableModule:
         self.main_py_path = os.path.abspath(main_py_path).strip(os.path.abspath(workdir))
         self.work_dir = workdir
         self.save_dir = save_dir
-        self.sub_module = sub_modules if sub_modules is not None else list()
+        self.sub_module = [interpreter_module] + sub_modules if sub_modules is not None else [interpreter_module]
         self.configs = dict()
         self.configs["main_py_path"] = self.main_py_path
         self.configs["none_gui"] = none_gui

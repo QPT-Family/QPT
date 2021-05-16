@@ -9,11 +9,6 @@ from qpt.gui.qpt_msg import write_path_with_msg
 from qpt.kernel.tools.sys_tools import add_ua, set_qpt_env_var
 
 
-# ToDo: QPT入口
-class QPTStart:
-    pass
-
-
 # ToDo: 首次使用
 class Welcome(QWidget, Ui_welcome):
     def __init__(self):
@@ -73,8 +68,8 @@ class Welcome(QWidget, Ui_welcome):
     def select_dir_event(self):
         mode = self.tab_mode.currentIndex()
         if mode == 0:
-            out = QFileDialog.getSaveFileName(self, "选择文件夹", "/QPT_HOME")
-            path = out[0]
+            out = QFileDialog.getExistingDirectory(self, "选择文件夹")
+            path = os.path.join(out, "QPT_HOME")
             self.path_auto = path
         else:
             out = QFileDialog.getOpenFileName(self, "选择QPT.exe文件", "./", filter="QPT EXE(QPT.exe)")
@@ -90,7 +85,6 @@ class Welcome(QWidget, Ui_welcome):
         else:
             self.button_choose_folder.setText("选择QPT程序")
             self.text_input_path.setText(self.path_select)
-
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

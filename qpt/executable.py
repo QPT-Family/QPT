@@ -1,10 +1,13 @@
 import os
+import sys
 import shutil
 from typing import List
 
 from qpt.modules.base import SubModule
 from qpt.modules.python_env import Python38
 from qpt.kernel.tools.qpt_qt import QTerminal, MessageBoxTerminalCallback
+from qpt.gui.qpt_start import Welcome
+from qpt.gui.qpt_run_gui import run_gui
 
 
 class CreateExecutableModule:
@@ -112,8 +115,9 @@ class RunExecutableModule:
         self.solve_sub_module()
 
     def solve_qpt_env(self):
-
-        pass
+        # ToDO 增加NoneGUI模式
+        if self.configs["none_gui"] is False:
+            run_gui(Welcome)
 
     def solve_python_env(self):
         pass
@@ -134,6 +138,7 @@ class RunExecutableModule:
             sub_module.unpack()
 
     def unzip_resources(self):
+        # ToDO 增加单文件执行模式，优先级暂时靠后
         pass
 
     def solve_workdir(self):

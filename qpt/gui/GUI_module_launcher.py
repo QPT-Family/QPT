@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 
 from qpt.qt_ui import GUIML
 from qpt.kernel.tools.log_tools import Logging
-from qpt.kernel.tools.qpt_qt import QTCondaVenv, Terminal
+from qpt.kernel.tools.qpt_qt import QTCondaVenv, QTerminal
 from qpt.kernel.tools.sys_tools import SysInfo
 
 """
@@ -23,7 +23,7 @@ class GUIModuleLauncher(GUIML.Ui_Launcher):
     def __init__(self, q_windows):
         self.q_windows = q_windows
         # 终端对象
-        self.main_terminal = Terminal()
+        self.main_terminal = QTerminal()
         self.main_terminal.start()
 
         # 初始化GUI界面

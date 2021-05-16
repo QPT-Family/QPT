@@ -4,6 +4,7 @@ from typing import List
 
 from qpt.kernel.sub_modules.base import SubModule
 from qpt.kernel.sub_modules.python_env import Python38
+from qpt.kernel.tools.qpt_qt import QTerminal, MessageBoxTerminalCallback
 
 
 class CreateExecutableModule:
@@ -96,21 +97,31 @@ class RunExecutableModule:
         with open(self.config_file_path, "r", encoding="utf-8") as config_file:
             self.configs = eval(config_file.read())
 
+        # 初始化终端
+        self.terminal = QTerminal()
+
         # prepare
         self.solve_sub_module()
 
     def solve_qpt_env(self):
-        pass
+
 
     def solve_python_env(self):
         pass
 
     def solve_sub_module(self):
+        """
+        执行子模块
+        """
         sub_name_list = self.configs["sub_module"]
         for sub_name in sub_name_list:
             sub_module = SubModule(sub_name)
             sub_module.set_out_dir(self.base_dir)
-            # ToDo 设置终端
+            sub_module.set_terminal_func(
+                self.terminal.shell_func(
+                    callback=MessageBoxTerminalCallback()
+                )
+            )
             sub_module.unpack()
 
     def unzip_resources(self):

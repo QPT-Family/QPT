@@ -39,10 +39,7 @@ class SubCMD:
     在Python中调用Windows终端
     """
 
-    def __init__(self, debug=False):
-        # 控制执行状态参数
-        self.debug = debug
-        # cmd主体部分
+    def __init__(self):
         self.sub_cmd = subprocess.Popen("cmd.exe",
                                         stdout=subprocess.PIPE,
                                         stderr=subprocess.STDOUT,

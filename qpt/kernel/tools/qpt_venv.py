@@ -18,10 +18,14 @@ class QPTEnv:
     def __init__(self):
         # 环境变量占位
         self.environ_vars_check = dict()
+        self.qpt_base_path = None
+        self.python_path = None
+        self.env_base_path = None
 
         # 检查环境变量是否正确设置
         self.check_environ_var()
 
+    def set_environ_var(self, qpt_base_path: str = None):
         # 环境变量 ToDO:增加CUDA目录
         self.qpt_base_path = os.environ["QPT_BASE"]
         self.python_path = os.path.join(os.environ["QPT_BASE"], "/interpreter")
@@ -64,6 +68,7 @@ class VirtualEnv:
     """
     Python虚拟环境控制组件
     """
+
     # ToDO 需要增加Auto模式
     def __init__(self, qpt_env: QPTEnv = QPTEnv()):
         # 虚拟环境列表占位

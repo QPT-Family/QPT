@@ -18,7 +18,7 @@ class SubModuleOpt:
 
         # 环境变量
         self._user_qpt_base_path = "./"
-        self.shell = None
+        self.terminal = None
 
     def act(self) -> None:
         """
@@ -44,7 +44,7 @@ class SubModuleOpt:
         return self._user_qpt_base_path
 
     def terminal(self, shell):
-        self.shell(shell)
+        self.terminal(shell)
         pass
 
 
@@ -58,6 +58,12 @@ class SubModule:
 
         # 占位out_dir，将会保存序列化文件到该目录
         self.out_dir = None
+
+        # 占位terminal
+        self.terminal = None
+
+    def set_terminal_func(self, terminal_func):
+        self.terminal = terminal_func
 
     def set_out_dir(self, path):
         self.out_dir = path

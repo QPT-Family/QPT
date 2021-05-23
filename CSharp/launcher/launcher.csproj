@@ -3,6 +3,11 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <StartupObject>QPTLauncher.Program</StartupObject>
+    <SignAssembly>false</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile>GT_KEY.pfx</AssemblyOriginatorKeyFile>
+    <Authors>GT</Authors>
   </PropertyGroup>
 
 </Project>

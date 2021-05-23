@@ -52,6 +52,7 @@ class Welcome(QWidget, Ui_welcome):
         if act:
             add_ua()
             set_qpt_env_var(base_path)
+            # ToDO 复制启动器至该目录，并修改注册表注册QPT文件
 
     def select_base_env_act(self):
         """
@@ -85,6 +86,7 @@ class Welcome(QWidget, Ui_welcome):
         else:
             self.button_choose_folder.setText("选择QPT程序")
             self.text_input_path.setText(self.path_select)
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

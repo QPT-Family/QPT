@@ -3,7 +3,7 @@ import sys
 from PyQt5.QtWidgets import QApplication, QWidget
 
 
-# ToDo: 第二次使用时/发生异常
+# 貌似不需要了
 class MiniChooseEnv(QWidget):
     def __init__(self):
         super().__init__()

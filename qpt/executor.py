@@ -98,9 +98,9 @@ class CreateExecutableModule:
 
 
 class RunExecutableModule:
-    def __init__(self, file_path):
+    def __init__(self, qpt_file_path):
         # 初始化Module信息
-        self.base_dir = os.path.split(file_path)[0]
+        self.base_dir = os.path.split(qpt_file_path)[0]
         self.config_path = os.path.join(self.base_dir, "configs")
         self.config_file_path = os.path.join(self.base_dir, "configs", "configs.gt")
         self.dependent_file_path = os.path.join(self.base_dir, "configs", "dependent.gt")

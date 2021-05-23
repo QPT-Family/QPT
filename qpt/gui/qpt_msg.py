@@ -32,3 +32,6 @@ def write_path_with_msg(window, path):
             return True
         else:
             return False
+    else:
+        os.mkdir(path)
+        return True

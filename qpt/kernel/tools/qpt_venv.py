@@ -66,7 +66,7 @@ class Interpreter:
 
 class VirtualEnv:
     """
-    Python虚拟环境控制组件
+    Python虚拟环境控制组件 - 貌似不需要了
     """
 
     # ToDO 需要增加Auto模式

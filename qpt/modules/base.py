@@ -54,9 +54,11 @@ class SubModule:
 
         # 占位OP
         self.pack_opts = list()
+        self.unpack_opts = list()
+        self.ready_unpack_opt_count = 0
         self.details = {"Pack": [], "Unpack": []}
 
-        # 占位out_dir，将会保存序列化文件到该目录
+        # 占位out_dir，将会保存序列化文件到该目录，pack时需要被set
         self.out_dir = None
 
         # 占位terminal
@@ -74,34 +76,41 @@ class SubModule:
 
     def add_unpack_opt(self, opt: SubModuleOpt):
         self.details["Unpack"].append(opt.__class__.__name__)
-        self._serialize_op(opt)
+        self.unpack_opts.append(opt)
 
     def pack(self):
         """
         在撰写该Module时，开发侧需要的操作
         """
+        assert self.out_dir, "SubModule的out_dir未设置！"
         for opt in self.pack_opts:
             Logging.debug(f"正在加载{self.name}-{opt.name}OP")
-            opt()
+            opt.act()
+
+        for opt in self.unpack_opts:
+            Logging.debug(f"正在封装{self.name}-{opt.name}OP")
+            self._serialize_op(opt)
 
     def unpack(self):
         """
         用户使用该Module时，需要完成的操作
         """
         ops = os.listdir(os.path.join(self.out_dir, "opt", self.name))
+        ops.sort(key=lambda x: int(x[:3]))
         for op_name in ops:
             op_name = str(op_name)
             if os.path.splitext(op_name)[-1] == ".op":
                 with open(os.path.join(self.out_dir, "opt", self.name, op_name), "rb") as file:
                     opt = pickle.load(file)
                     Logging.debug(f"正在加载{self.name}-{opt.name}OP")
-                    opt()
+                    opt.act()
 
     # ToDo:做序列化来保存
     def _serialize_op(self, opt):
         name = opt.__class__.__name__
+        self.ready_unpack_opt_count += 1
         serialize_path = os.path.join(self.out_dir, "opt", self.name)
-        serialize_file_path = serialize_path + name + ".op"
+        serialize_file_path = os.path.join(serialize_path, f"{self.ready_unpack_opt_count:03d}-{name}.op")
 
         os.makedirs(serialize_path, exist_ok=True)
 

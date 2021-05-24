@@ -24,15 +24,17 @@ namespace QPTLauncher
                 p.StartInfo.Arguments =
                     @"python -c '''
 import os
-sys.path.append('"+ @"QPT的Python包目录')
+sys.path.append('"+ Path.Combine(launcherPath, @"Python\Lib\site-packages") +@"')
 
 import qpt
-qpt.run.run_module('"+ Module目录 + @"')
+qpt.run.run_module('" + launcherPath + @"')
 '''";
             }
             // ToDO qpt启动方式
             else
             {
+                // ToDO抓环境变量然后启动解释器
+                p.StartInfo.FileName = Path.Combine(launcherPath, @"Python\python.exe");
                 p.StartInfo.Arguments = @"D:\Python_Projects\QPT\qpt\gui\qpt_start.py " + args[0];
             }
 

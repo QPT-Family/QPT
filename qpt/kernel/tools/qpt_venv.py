@@ -1,7 +1,6 @@
 import os
 import shutil
 
-import virtualenv
 from pip import main as pip_main
 
 from qpt.kernel.tools.log_tools import Logging

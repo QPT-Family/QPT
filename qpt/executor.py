@@ -6,6 +6,7 @@ from typing import List
 from qpt.modules.base import SubModule
 from qpt.modules.python_env import Python38
 from qpt.kernel.tools.qpt_qt import QTerminal, MessageBoxTerminalCallback
+from qpt.kernel.tools.log_tools import Logging
 from qpt.gui.qpt_start import Welcome
 from qpt.gui.qpt_run_gui import run_gui
 
@@ -22,7 +23,7 @@ class CreateExecutableModule:
                  author="未知作者",
                  none_gui: bool = False):
         # 初始化成员变量
-        self.main_py_path = os.path.abspath(main_py_path).strip(os.path.abspath(workdir))
+        self.main_py_path = os.path.abspath(main_py_path).replace(os.path.abspath(workdir) + "\\", "./")
         self.work_dir = workdir
         self.save_dir = save_dir
         self.sub_module = [interpreter_module] + sub_modules if sub_modules is not None else [interpreter_module]
@@ -65,36 +66,35 @@ class CreateExecutableModule:
             print(module.__class__.__name__, module.details)
 
     def make(self):
-        # 子模块添加默认支持
-        if len(self.sub_module) == 0:
-            self.add_sub_module(Python38())
-
         # 打印sub module信息
         self.print_details()
 
         # 创建基本环境目录
         if os.path.exists(self.save_dir):
-            key = input(f"{os.path.abspath(self.save_dir)}已存在，是否清空该目录(Y/N):")
-            if key.lower() == "y":
-                shutil.rmtree(self.save_dir)
-                os.mkdir(self.save_dir)
-        else:
-            os.mkdir(self.save_dir)
+            Logging.warning(f"{os.path.abspath(self.save_dir)}已存在，已清空该目录")
+        shutil.rmtree(self.save_dir)
+        os.mkdir(self.save_dir)
 
         # 复制资源文件
-        assert not os.path.exists(self.work_dir), f"{os.path.abspath(self.work_dir)}不存在，请检查该路径是否正确"
-        shutil.copytree(self.work_dir, self.resources_path, dirs_exist_ok=True)
+        assert os.path.exists(self.work_dir), f"{os.path.abspath(self.work_dir)}不存在，请检查该路径是否正确"
+        shutil.copytree(self.work_dir, self.resources_path)
 
         # 解析子模块
         for sub in self.sub_module:
+            # ToDO设置序列化路径
+            sub.out_dir = self.save_dir
             sub.pack()
             self.configs["sub_module"].append(sub.name)
 
         # 创建配置文件
-        with open(self.config_path, "w", encoding="utf-8") as config_file:
+        os.makedirs(self.config_path, exist_ok=True)
+        with open(self.config_file_path, "w", encoding="utf-8") as config_file:
             config_file.write(str(self.configs))
 
         # ToDO 复制启动器文件
+
+        # 结束
+        Logging.info(f"制作完毕，保存位置为：{os.path.abspath(self.save_dir)}")
 
 
 class RunExecutableModule:

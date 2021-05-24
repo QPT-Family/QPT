@@ -6,16 +6,17 @@ virtualenv = VirtualEnv()
 
 class CreatePythonEnv(SubModuleOpt):
     def act(self) -> None:
-        pass
+        print("创建了个Python环境")
 
 
 class Python38(SubModule):
     def __init__(self):
-        super().__init__("Python3.8Env")
-        pass
+        super().__init__(name="Python3.8Env")
+        self.add_pack_opt(CreatePythonEnv())
+        self.add_unpack_opt(CreatePythonEnv())
 
 
 class Python39(SubModule):
     def __init__(self):
-        super().__init__("Python3.9Env")
+        super().__init__(name="Python3.9Env")
         pass

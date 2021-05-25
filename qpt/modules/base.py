@@ -17,8 +17,9 @@ class SubModuleOpt:
         self.name = self.__class__.__name__
 
         # 环境变量
-        self._user_qpt_base_path = "/"
-        self.terminal = None
+        self._interpreter_path = "./"
+        self._save_path = "./"
+        self._terminal = None
 
     def act(self) -> None:
         """
@@ -40,12 +41,21 @@ class SubModuleOpt:
         """
         pass
 
-    def get_user_qpt_base_path(self):
-        return self._user_qpt_base_path
+    @property
+    def interpreter_path(self):
+        return self._interpreter_path
+
+    @property
+    def save_path(self):
+        return self._save_path
+
+    def prepare(self, interpreter_path=None, save_path=None, terminal=None):
+        self._interpreter_path = interpreter_path
+        self._save_path = save_path
+        self._terminal = terminal
 
     def terminal(self, shell):
-        self.terminal(shell)
-        pass
+        self._terminal(shell)
 
 
 class SubModule:
@@ -59,16 +69,14 @@ class SubModule:
         self.details = {"Pack": [], "Unpack": []}
 
         # 占位out_dir，将会保存序列化文件到该目录，pack时需要被set
-        self.out_dir = None
+        self._save_path = None
+        self._interpreter_path = None
+        self._terminal = None
 
-        # 占位terminal
-        self.terminal = None
-
-    def set_terminal_func(self, terminal_func):
-        self.terminal = terminal_func
-
-    def set_out_dir(self, path):
-        self.out_dir = path
+    def prepare(self, interpreter_path=None, save_path=None, terminal=None):
+        self._interpreter_path = interpreter_path
+        self._save_path = save_path
+        self._terminal = terminal
 
     def add_pack_opt(self, opt: SubModuleOpt):
         self.details["Pack"].append(opt.__class__.__name__)
@@ -82,9 +90,10 @@ class SubModule:
         """
         在撰写该Module时，开发侧需要的操作
         """
-        assert self.out_dir, "SubModule的out_dir未设置！"
+        assert self._save_path, "SubModule的out_dir未设置！"
         for opt in self.pack_opts:
             Logging.debug(f"正在加载{self.name}-{opt.name}OP")
+            opt.prepare(self._interpreter_path, self._save_path, self._terminal)
             opt.act()
 
         for opt in self.unpack_opts:
@@ -95,13 +104,14 @@ class SubModule:
         """
         用户使用该Module时，需要完成的操作
         """
-        ops = os.listdir(os.path.join(self.out_dir, "opt", self.name))
+        ops = os.listdir(os.path.join(self._save_path, "opt", self.name))
         ops.sort(key=lambda x: int(x[:3]))
         for op_name in ops:
             op_name = str(op_name)
             if os.path.splitext(op_name)[-1] == ".op":
-                with open(os.path.join(self.out_dir, "opt", self.name, op_name), "rb") as file:
+                with open(os.path.join(self._save_path, "opt", self.name, op_name), "rb") as file:
                     opt = pickle.load(file)
+                    opt.prepare(self._interpreter_path, self._save_path, self._terminal)
                     Logging.debug(f"正在加载{self.name}-{opt.name}OP")
                     opt.act()
 
@@ -109,7 +119,7 @@ class SubModule:
     def _serialize_op(self, opt):
         name = opt.__class__.__name__
         self.ready_unpack_opt_count += 1
-        serialize_path = os.path.join(self.out_dir, "opt", self.name)
+        serialize_path = os.path.join(self._save_path, "opt", self.name)
         serialize_file_path = os.path.join(serialize_path, f"{self.ready_unpack_opt_count:03d}-{name}.op")
 
         os.makedirs(serialize_path, exist_ok=True)

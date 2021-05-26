@@ -129,3 +129,48 @@ class PaddlePaddle(CustomPackage):
             # super(PaddlePaddle, self).__init__("paddlepaddle-gpu",
             #                                    version=version,
             #                                    deploy_mode=deploy_mode)
+
+
+class PaddleHub(CustomPackage):
+    def __init__(self,
+                 version: str = None,
+                 deploy_mode=LOCAL_DEPLOY_MODE):
+        super().__init__("paddlehub",
+                         version=version,
+                         deploy_mode=deploy_mode)
+
+
+class PaddleDetection(CustomPackage):
+    def __init__(self,
+                 version: str = None,
+                 deploy_mode=LOCAL_DEPLOY_MODE):
+        super().__init__("paddledetection",
+                         version=version,
+                         deploy_mode=deploy_mode)
+
+
+class PaddleSeg(CustomPackage):
+    def __init__(self,
+                 version: str = None,
+                 deploy_mode=LOCAL_DEPLOY_MODE):
+        super().__init__("paddleseg",
+                         version=version,
+                         deploy_mode=deploy_mode)
+
+
+class PaddleX(CustomPackage):
+    def __init__(self,
+                 version: str = None,
+                 deploy_mode=LOCAL_DEPLOY_MODE):
+        super().__init__("paddlex",
+                         version=version,
+                         deploy_mode=deploy_mode)
+
+
+class PaddleGAN(CustomPackage):
+    def __init__(self,
+                 version: str = None,
+                 deploy_mode=LOCAL_DEPLOY_MODE):
+        super().__init__("paddlegan",
+                         version=version,
+                         deploy_mode=deploy_mode)

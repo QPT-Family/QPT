@@ -62,7 +62,9 @@ class SubModuleOpt:
 
 
 class SubModule:
-    def __init__(self, name):
+    def __init__(self, name=None):
+        if name is None:
+            name = self.__class__.__name__
         self.name = name
 
         # 占位OP

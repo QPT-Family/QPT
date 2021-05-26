@@ -24,7 +24,7 @@ RESOURCES_URLS = {"Python3.8Env": "https://bj.bcebos.com/v1/ai-studio-online/000
                                   "osition=attachment%3B%20filename%3DPython%233.8%23.zip"}
 
 
-class PackPythonEnv(SubModuleOpt):
+class PackPythonEnvOpt(SubModuleOpt):
     def __init__(self, url: str = None, mode=PYTHON_ENV_MODE_SPEED_FIRST):
         super().__init__()
         self.url = url
@@ -46,7 +46,7 @@ class PackPythonEnv(SubModuleOpt):
             pass
 
 
-class UnPackPythonEnv(SubModuleOpt):
+class UnPackPythonEnvOpt(SubModuleOpt):
     def __init__(self, url: str = None, mode=PYTHON_ENV_MODE_SPEED_FIRST):
         super().__init__()
         self.url = url
@@ -81,12 +81,11 @@ class UnPackPythonEnv(SubModuleOpt):
 class BasePythonEnv(SubModule):
     def __init__(self, name, url, mode):
         super().__init__(name)
-        self.add_pack_opt(PackPythonEnv(url=url, mode=mode))
-        self.add_unpack_opt(UnPackPythonEnv(url=url, mode=mode))
+        self.add_pack_opt(PackPythonEnvOpt(url=url, mode=mode))
+        self.add_unpack_opt(UnPackPythonEnvOpt(url=url, mode=mode))
 
 
 class Python38(BasePythonEnv):
     def __init__(self, mode=PYTHON_ENV_MODE_SPEED_FIRST):
         url = RESOURCES_URLS["Python3.8Env"]
-        super().__init__(name=self.__class__.__name__, url=url, mode=mode)
-
+        super().__init__(name=None, url=url, mode=mode)

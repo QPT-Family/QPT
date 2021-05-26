@@ -11,4 +11,5 @@ class Example(QWidget):
 
 app = QApplication(sys.argv)
 ex = Example()
+ex.close()
 sys.exit(app.exec_())

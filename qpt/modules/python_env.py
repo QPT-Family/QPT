@@ -1,18 +1,18 @@
 import os
 import sys
 import zipfile
-from tempfile import TemporaryDirectory
 
 from qpt.modules.base import SubModule, SubModuleOpt
 from qpt.kernel.tools.log_tools import Logging
-from qpt.kernel.tools.sys_tools import download
+from qpt.kernel.tools.sys_tools import download, get_qpt_tmp_path
 
 """
 Python镜像打包指南
 1. 下载嵌入式版本Python
 2. 在Python文档或ext文件夹下获取get-pip.py
 3. 安装pip
-4. 使用LZMA-64-64 zip的格式上传至文件床，必要时设置密码
+4. 安装基础包
+5. 使用LZMA-64-64 zip的格式上传至文件床，必要时设置密码
 """
 
 PYTHON_ENV_MODE_SPEED_FIRST = "预先解压好Python环境，占用部分硬盘资源但能减少用户使用时速度损失"
@@ -32,13 +32,13 @@ class PackPythonEnvOpt(SubModuleOpt):
 
     def act(self) -> None:
         if self.mode == PYTHON_ENV_MODE_SPEED_FIRST:
-            with TemporaryDirectory() as dir_name:
-                Logging.info(f"正在下载Python解释器原文件至{dir_name}")
-                download(self.url, dir_name, "Python.zip")
-                zip_path = os.path.join(dir_name, "Python.zip")
-                # 解压至输出文件夹
-                with zipfile.ZipFile(zip_path) as zip_obj:
-                    zip_obj.extractall(os.path.join(self.module_path, "Python"), pwd="gt_qpt".encode("utf-8"))
+            dir_name = get_qpt_tmp_path(os.path.join("Python", "".join(list(filter(str.isdigit, self.url)))[-10:]))
+            Logging.info(f"正在下载Python解释器原文件至{dir_name}")
+            download(self.url, dir_name, "Python.zip")
+            zip_path = os.path.join(dir_name, "Python.zip")
+            # 解压至输出文件夹
+            with zipfile.ZipFile(zip_path) as zip_obj:
+                zip_obj.extractall(os.path.join(self.module_path, "Python"), pwd="gt_qpt".encode("utf-8"))
         elif self.mode == PYTHON_ENV_MODE_PACKAGE_VOLUME_FIRST:
             Logging.info(f"正在下载Python解释器原文件")
             download(self.url, self.module_path, "Python.zip")
@@ -61,13 +61,13 @@ class UnPackPythonEnvOpt(SubModuleOpt):
             with zipfile.ZipFile(zip_path) as zip_obj:
                 zip_obj.extractall(os.path.join(self.module_path, "Python"), pwd="gt_qpt".encode("utf-8"))
         elif self.mode == PYTHON_ENV_MODE_ONLINE_INSTALLATION:
-            with TemporaryDirectory() as dir_name:
-                Logging.debug(f"正在下载Python解释器原文件至{dir_name}")
-                download(self.url, dir_name, "Python.zip")
-                zip_path = os.path.join(dir_name, "Python.zip")
-                # 解压至输出文件夹
-                with zipfile.ZipFile(zip_path) as zip_obj:
-                    zip_obj.extractall(os.path.join(self.module_path, "Python"), pwd="gt_qpt".encode("utf-8"))
+            dir_name = get_qpt_tmp_path(os.path.join("Python", "".join(list(filter(str.isdigit, self.url)))[-10:]))
+            Logging.debug(f"正在下载Python解释器原文件至{dir_name}")
+            download(self.url, dir_name, "Python.zip")
+            zip_path = os.path.join(dir_name, "Python.zip")
+            # 解压至输出文件夹
+            with zipfile.ZipFile(zip_path) as zip_obj:
+                zip_obj.extractall(os.path.join(self.module_path, "Python"), pwd="gt_qpt".encode("utf-8"))
 
         # 添加Python以及Python/lib/python/site_packages_path下的包到环境变量/工作目录
         python_path = self.interpreter_path

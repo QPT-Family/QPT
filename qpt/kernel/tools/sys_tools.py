@@ -1,7 +1,9 @@
+import shutil
 import subprocess
 import ctypes
 import os
 import sys
+import tempfile
 
 import psutil
 import pynvml
@@ -26,12 +28,20 @@ def set_qpt_env_var(path):
         return False
 
 
-def download(url, path, file_name):
+def download(url, path, file_name, clean=False):
     if not os.path.exists(path):
-        os.mkdir(path)
+        os.makedirs(path)
     file_path = os.path.join(path, file_name)
-    if not os.path.exists(file_path):
+    if not os.path.exists(file_path) or clean:
         wget.download(url, out=file_path)
+
+
+def get_qpt_tmp_path(dir_name, clean=False):
+    base_path = tempfile.gettempdir()
+    dir_path = os.path.join(base_path, "QPT_Cache", dir_name)
+    if os.path.exists(dir_path) and clean:
+        shutil.rmtree(dir_path)
+    return dir_path
 
 
 class SubCMD:

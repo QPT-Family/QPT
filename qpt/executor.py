@@ -70,6 +70,7 @@ class CreateExecutableModule:
         Logging.info("----------该模型中所使用的OP----------")
         for module in self.sub_module:
             Logging.info(module.__class__.__name__ + f"\t{module.details}")
+        Logging.info("------------------------------------")
 
     def make(self):
         # 打印sub module信息

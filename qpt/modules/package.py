@@ -6,7 +6,6 @@
 import os
 import sys
 import zipfile
-from tempfile import TemporaryDirectory
 
 from qpt.modules.base import SubModule, SubModuleOpt
 from qpt.kernel.tools.log_tools import Logging
@@ -111,7 +110,7 @@ class CustomPackage(SubModule):
                                                     opts=opts))
 
 
-class PaddlePaddle(CustomPackage):
+class PaddlePaddlePackage(CustomPackage):
     def __init__(self,
                  version: str = None,
                  include_cuda=False,
@@ -131,7 +130,7 @@ class PaddlePaddle(CustomPackage):
             #                                    deploy_mode=deploy_mode)
 
 
-class PaddleHub(CustomPackage):
+class PaddleHubPackage(CustomPackage):
     def __init__(self,
                  version: str = None,
                  deploy_mode=LOCAL_DEPLOY_MODE):
@@ -140,7 +139,7 @@ class PaddleHub(CustomPackage):
                          deploy_mode=deploy_mode)
 
 
-class PaddleDetection(CustomPackage):
+class PaddleDetectionPackage(CustomPackage):
     def __init__(self,
                  version: str = None,
                  deploy_mode=LOCAL_DEPLOY_MODE):
@@ -149,7 +148,7 @@ class PaddleDetection(CustomPackage):
                          deploy_mode=deploy_mode)
 
 
-class PaddleSeg(CustomPackage):
+class PaddleSegPackage(CustomPackage):
     def __init__(self,
                  version: str = None,
                  deploy_mode=LOCAL_DEPLOY_MODE):
@@ -158,7 +157,7 @@ class PaddleSeg(CustomPackage):
                          deploy_mode=deploy_mode)
 
 
-class PaddleX(CustomPackage):
+class PaddleXPackage(CustomPackage):
     def __init__(self,
                  version: str = None,
                  deploy_mode=LOCAL_DEPLOY_MODE):
@@ -167,7 +166,7 @@ class PaddleX(CustomPackage):
                          deploy_mode=deploy_mode)
 
 
-class PaddleGAN(CustomPackage):
+class PaddleGANPackage(CustomPackage):
     def __init__(self,
                  version: str = None,
                  deploy_mode=LOCAL_DEPLOY_MODE):

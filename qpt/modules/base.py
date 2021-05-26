@@ -17,8 +17,11 @@ class SubModuleOpt:
         self.name = self.__class__.__name__
 
         # 环境变量
+        # 解释器所在路径占位
         self._interpreter_path = "./"
-        self._save_path = "./"
+        # 创建Module时的保存目录/执行Module时的Module目录
+        self._module_path = "./"
+        # 终端占位
         self._terminal = None
 
     def act(self) -> None:
@@ -35,9 +38,9 @@ class SubModuleOpt:
                     # 例如在终端中查看当前目录（Windows为dir命令）
                     self.terminal("dir")
 
-                    # 例如在qpt环境主目录中新建abc目录
+                    # 例如在用户使用时为其Module所在的目录中新建abc目录
                     import os
-                    os.mkdir(os.path.join(self.get_user_qpt_base_path(), "abc"))
+                    os.mkdir(os.path.join(self.module_path, "abc"))
         """
         pass
 
@@ -46,12 +49,12 @@ class SubModuleOpt:
         return self._interpreter_path
 
     @property
-    def save_path(self):
-        return self._save_path
+    def module_path(self):
+        return self._module_path
 
     def prepare(self, interpreter_path=None, save_path=None, terminal=None):
         self._interpreter_path = interpreter_path
-        self._save_path = save_path
+        self._module_path = save_path
         self._terminal = terminal
 
     def terminal(self, shell):
@@ -69,13 +72,13 @@ class SubModule:
         self.details = {"Pack": [], "Unpack": []}
 
         # 占位out_dir，将会保存序列化文件到该目录，pack时需要被set
-        self._save_path = None
+        self._module_path = None
         self._interpreter_path = None
         self._terminal = None
 
-    def prepare(self, interpreter_path=None, save_path=None, terminal=None):
+    def prepare(self, interpreter_path=None, module_path=None, terminal=None):
         self._interpreter_path = interpreter_path
-        self._save_path = save_path
+        self._module_path = module_path
         self._terminal = terminal
 
     def add_pack_opt(self, opt: SubModuleOpt):
@@ -90,10 +93,10 @@ class SubModule:
         """
         在撰写该Module时，开发侧需要的操作
         """
-        assert self._save_path, "SubModule的out_dir未设置！"
+        assert self._module_path, "SubModule的out_dir未设置！"
         for opt in self.pack_opts:
             Logging.debug(f"正在加载{self.name}-{opt.name}OP")
-            opt.prepare(self._interpreter_path, self._save_path, self._terminal)
+            opt.prepare(self._interpreter_path, self._module_path, self._terminal)
             opt.act()
 
         for opt in self.unpack_opts:
@@ -104,14 +107,14 @@ class SubModule:
         """
         用户使用该Module时，需要完成的操作
         """
-        ops = os.listdir(os.path.join(self._save_path, "opt", self.name))
+        ops = os.listdir(os.path.join(self._module_path, "opt", self.name))
         ops.sort(key=lambda x: int(x[:3]))
         for op_name in ops:
             op_name = str(op_name)
             if os.path.splitext(op_name)[-1] == ".op":
-                with open(os.path.join(self._save_path, "opt", self.name, op_name), "rb") as file:
+                with open(os.path.join(self._module_path, "opt", self.name, op_name), "rb") as file:
                     opt = pickle.load(file)
-                    opt.prepare(self._interpreter_path, self._save_path, self._terminal)
+                    opt.prepare(self._interpreter_path, self._module_path, self._terminal)
                     Logging.debug(f"正在加载{self.name}-{opt.name}OP")
                     opt.act()
 
@@ -119,7 +122,7 @@ class SubModule:
     def _serialize_op(self, opt):
         name = opt.__class__.__name__
         self.ready_unpack_opt_count += 1
-        serialize_path = os.path.join(self._save_path, "opt", self.name)
+        serialize_path = os.path.join(self._module_path, "opt", self.name)
         serialize_file_path = os.path.join(serialize_path, f"{self.ready_unpack_opt_count:03d}-{name}.op")
 
         os.makedirs(serialize_path, exist_ok=True)

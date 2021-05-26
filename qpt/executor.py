@@ -16,19 +16,24 @@ from qpt.gui.qpt_run_gui import run_gui
 class CreateExecutableModule:
     def __init__(self,
                  launcher_py_path,
-                 workdir,
-                 save_dir,
+                 work_dir,
+                 save_path,
                  interpreter_module: SubModule = Python38(),
                  sub_modules: List[SubModule] = None,
                  module_name="未命名模型",
                  version="未知版本号",
                  author="未知作者",
                  none_gui: bool = False):
-        # 初始化成员变量
-        self.launcher_py_path = os.path.abspath(launcher_py_path).replace(os.path.abspath(workdir) + "\\", "./")
-        self.work_dir = workdir
-        self.save_path = save_dir
+        # 初始化路径成员变量
+        self.launcher_py_path = os.path.abspath(launcher_py_path).replace(os.path.abspath(work_dir) + "\\", "./")
+        self.work_dir = work_dir
+        self.module_path = save_path
+        self.interpreter_path = os.path.join(self.module_path, "Python")
+
+        # 获取SubModule列表
         self.sub_module = [interpreter_module] + sub_modules if sub_modules is not None else [interpreter_module]
+
+        # 新建配置信息
         self.configs = dict()
         self.configs["launcher_py_path"] = self.launcher_py_path
         self.configs["none_gui"] = none_gui
@@ -38,10 +43,10 @@ class CreateExecutableModule:
         self.configs["sub_module"] = list()
 
         # 额外的成员变量
-        self.resources_path = os.path.join(self.save_path, "resources")
-        self.config_path = os.path.join(self.save_path, "configs")
-        self.config_file_path = os.path.join(self.save_path, "configs", "configs.gt")
-        self.dependent_file_path = os.path.join(self.save_path, "configs", "dependent.gt")
+        self.resources_path = os.path.join(self.module_path, "resources")
+        self.config_path = os.path.join(self.module_path, "configs")
+        self.config_file_path = os.path.join(self.module_path, "configs", "configs.gt")
+        self.dependent_file_path = os.path.join(self.module_path, "configs", "dependent.gt")
 
         # 初始化终端
         self.terminal = QTerminal()
@@ -56,7 +61,7 @@ class CreateExecutableModule:
         """
         # 需对每个module设置save_dir和终端
         sub_module.prepare(interpreter_path=None,
-                           save_path=self.save_path,
+                           module_path=self.module_path,
                            terminal=self.terminal.shell_func(callback=MessageBoxTerminalCallback()))
 
         self.sub_module.append(sub_module)
@@ -71,10 +76,10 @@ class CreateExecutableModule:
         self.print_details()
 
         # 创建基本环境目录
-        if os.path.exists(self.save_path):
-            Logging.warning(f"{os.path.abspath(self.save_path)}已存在，已清空该目录")
-            shutil.rmtree(self.save_path)
-        os.mkdir(self.save_path)
+        if os.path.exists(self.module_path):
+            Logging.warning(f"{os.path.abspath(self.module_path)}已存在，已清空该目录")
+            shutil.rmtree(self.module_path)
+        os.mkdir(self.module_path)
 
         # 复制资源文件
         assert os.path.exists(self.work_dir), f"{os.path.abspath(self.work_dir)}不存在，请检查该路径是否正确"
@@ -83,7 +88,10 @@ class CreateExecutableModule:
         # 解析子模块
         for sub in self.sub_module:
             # ToDO设置序列化路径
-            sub._save_path = self.save_path
+            sub._module_path = self.module_path
+            sub.prepare(interpreter_path=self.interpreter_path,
+                        module_path=self.module_path,
+                        terminal=self.terminal.shell_func(callback=MessageBoxTerminalCallback()))
             sub.pack()
             self.configs["sub_module"].append(sub.name)
 
@@ -95,7 +103,7 @@ class CreateExecutableModule:
         # ToDO 复制启动器文件
 
         # 结束
-        Logging.info(f"制作完毕，保存位置为：{os.path.abspath(self.save_path)}")
+        Logging.info(f"制作完毕，保存位置为：{os.path.abspath(self.module_path)}")
 
 
 class RunExecutableModule:
@@ -105,7 +113,7 @@ class RunExecutableModule:
         self.config_path = os.path.join(self.base_dir, "configs")
         self.config_file_path = os.path.join(self.base_dir, "configs", "configs.gt")
         self.dependent_file_path = os.path.join(self.base_dir, "configs", "dependent.gt")
-        self.workdir = os.path.join(self.base_dir, "resources")
+        self.work_dir = os.path.join(self.base_dir, "resources")
         self.interpreter_path = os.path.join(self.base_dir, "Python")
 
         with open(self.config_file_path, "r", encoding="utf-8") as config_file:
@@ -131,7 +139,7 @@ class RunExecutableModule:
         for sub_name in sub_name_list:
             sub_module = SubModule(sub_name)
             sub_module.prepare(interpreter_path=self.interpreter_path,
-                               save_path=self.base_dir,
+                               module_path=self.base_dir,
                                terminal=self.terminal.shell_func(callback=MessageBoxTerminalCallback()))
             sub_module.unpack()
 
@@ -139,15 +147,15 @@ class RunExecutableModule:
         # ToDO 增加单文件执行模式，优先级暂时靠后
         pass
 
-    def solve_workdir(self):
-        os.chdir(self.workdir)
-        sys.path.append(self.workdir)
+    def solve_work_dir(self):
+        os.chdir(self.work_dir)
+        sys.path.append(self.work_dir)
 
     def run(self):
         # prepare
         self.solve_sub_module()
         # 设置工作目录
-        self.solve_workdir()
+        self.solve_work_dir()
         # 执行主程序
         main_lib_path = self.configs["launcher_py_path"].replace(".py", "")
         assert "." not in main_lib_path[1:], "封装Module时需要避免路径中带有'.'字符，该字符将影响执行程序"
@@ -157,4 +165,5 @@ class RunExecutableModule:
             replace("\\", "."). \
             replace("/", ".")
         # 需提醒用户避免使用if __name__ == '__main__':
+        # ToDO 必要时自动替换对应字段，并生成类似混淆名称的函数，在程序末尾执行run
         lib = importlib.import_module(main_lib_path)

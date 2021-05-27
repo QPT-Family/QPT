@@ -173,3 +173,4 @@ class RunExecutableModule:
         # 需提醒用户避免使用if __name__ == '__main__':
         # ToDO 必要时自动替换对应字段，并生成类似混淆名称的函数，在程序末尾执行run
         lib = importlib.import_module(main_lib_path)
+        input("QPT执行完毕，请按任意键退出")

@@ -118,9 +118,3 @@ class PipTools:
                 package, version = line.strip("\n").split("==")
                 requirements[package] = version
         return requirements
-
-
-if __name__ == '__main__':
-    a = PipTools()
-    b = a.analyze_dependence("/Users/zhanghongji/PycharmProjects/QPT")
-    print(b)

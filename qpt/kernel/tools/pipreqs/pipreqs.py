@@ -38,16 +38,12 @@ from contextlib import contextmanager
 import os
 import sys
 import re
-import logging
 import codecs
 import ast
 import traceback
-from docopt import docopt
 import requests
 from yarg import json2package
 from yarg.exceptions import HTTPError
-
-from pipreqs import __version__
 
 REGEXP = [
     re.compile(r'^import (.+)$'),
@@ -131,10 +127,10 @@ def get_all_imports(
             except Exception as exc:
                 if ignore_errors:
                     traceback.print_exc(exc)
-                    logging.warn("Failed on file: %s" % file_name)
+                    print("Failed on file: %s" % file_name)
                     continue
                 else:
-                    logging.error("Failed on file: %s" % file_name)
+                    print("Failed on file: %s" % file_name)
                     raise exc
 
     # Clean up imports
@@ -148,7 +144,6 @@ def get_all_imports(
         imports.add(cleaned_name)
 
     packages = imports - (set(candidates) & imports)
-    logging.debug('Found packages: {0}'.format(packages))
 
     with open(join("stdlib"), "r") as f:
         data = {x.strip() for x in f}
@@ -163,7 +158,7 @@ def filter_line(l):
 
 def generate_requirements_file(path, imports):
     with _open(path, "w") as out_file:
-        logging.debug('Writing {num} requirements: {imports} to {file}'.format(
+        print('Writing {num} requirements: {imports} to {file}'.format(
             num=len(imports),
             file=path,
             imports=", ".join([x['name'] for x in imports])
@@ -195,8 +190,6 @@ def get_imports_info(
                 raise HTTPError(status_code=response.status_code,
                                 reason=response.reason)
         except HTTPError:
-            logging.debug(
-                'Package %s does not exist or network problems', item)
             continue
         result.append({'name': item, 'version': data.latest_release_id})
     return result
@@ -307,7 +300,7 @@ def parse_requirements(file_):
     try:
         f = open_func(file_, "r")
     except OSError:
-        logging.error("Failed on file: {}".format(file_))
+        print("Failed on file: {}".format(file_))
         raise
     else:
         try:
@@ -360,7 +353,7 @@ def diff(file_, imports):
     """Display the difference between modules in a file and imported modules."""  # NOQA
     modules_not_imported = compare_modules(file_, imports)
 
-    logging.info(
+    print(
         "The following modules are in {} but do not seem to be imported: "
         "{}".format(file_, ", ".join(x for x in modules_not_imported)))
 
@@ -374,7 +367,7 @@ def clean(file_, imports):
     try:
         f = open_func(file_, "r+")
     except OSError:
-        logging.error("Failed on file: {}".format(file_))
+        print("Failed on file: {}".format(file_))
         raise
     else:
         try:
@@ -389,88 +382,28 @@ def clean(file_, imports):
         finally:
             f.close()
 
-    logging.info("Successfully cleaned up requirements in " + file_)
+    print("Successfully cleaned up requirements in " + file_)
 
 
-def init(args):
-    encoding = args.get('--encoding')
-    extra_ignore_dirs = args.get('--ignore')
-    follow_links = not args.get('--no-follow-links')
-    input_path = args['<path>']
-    if input_path is None:
-        input_path = os.path.abspath(os.curdir)
+def make_requirements(path):
+    encoding = "utf-8"
 
-    if extra_ignore_dirs:
-        extra_ignore_dirs = extra_ignore_dirs.split(',')
-
-    candidates = get_all_imports(input_path,
+    candidates = get_all_imports(path,
                                  encoding=encoding,
-                                 extra_ignore_dirs=extra_ignore_dirs,
-                                 follow_links=follow_links)
+                                 extra_ignore_dirs=None,
+                                 follow_links=True)
     candidates = get_pkg_names(candidates)
-    logging.debug("Found imports: " + ", ".join(candidates))
-    pypi_server = "https://pypi.python.org/pypi/"
-    proxy = None
-    if args["--pypi-server"]:
-        pypi_server = args["--pypi-server"]
+    pypi_server = "https://pypi.tuna.tsinghua.edu.cn/simple"
 
-    if args["--proxy"]:
-        proxy = {'http': args["--proxy"], 'https': args["--proxy"]}
+    local = get_import_local(candidates, encoding=encoding)
+    # Get packages that were not found locally
+    difference = [x for x in candidates
+                  if x.lower() not in [z['name'].lower() for z in local]]
+    imports = local + get_imports_info(difference,
+                                       proxy=None,
+                                       pypi_server=pypi_server)
+    abs_path = os.path.abspath(path)
+    # assert len(imports) > 0, f"未查找到{abs_path}目录下有Python相关的第三方依赖库"
 
-    if args["--use-local"]:
-        logging.debug(
-            "Getting package information ONLY from local installation.")
-        imports = get_import_local(candidates, encoding=encoding)
-    else:
-        logging.debug("Getting packages information from Local/PyPI")
-        local = get_import_local(candidates, encoding=encoding)
-        # Get packages that were not found locally
-        difference = [x for x in candidates
-                      if x.lower() not in [z['name'].lower() for z in local]]
-        imports = local + get_imports_info(difference,
-                                           proxy=proxy,
-                                           pypi_server=pypi_server)
-
-    path = (args["--savepath"] if args["--savepath"] else
-            os.path.join(input_path, "requirements.txt"))
-
-    if args["--diff"]:
-        diff(args["--diff"], imports)
-        return
-
-    if args["--clean"]:
-        clean(args["--clean"], imports)
-        return
-
-    if (not args["--print"]
-            and not args["--savepath"]
-            and not args["--force"]
-            and os.path.exists(path)):
-        logging.warning("Requirements.txt already exists, "
-                        "use --force to overwrite it")
-        return
-
-    if args.get('--no-pin'):
-        imports = [{'name': item["name"], 'version': ''} for item in imports]
-
-    if args["--print"]:
-        output_requirements(imports)
-        logging.info("Successfully output requirements")
-    else:
-        generate_requirements_file(path, imports)
-        logging.info("Successfully saved requirements file in " + path)
-
-
-def main():  # pragma: no cover
-    args = docopt(__doc__, version=__version__)
-    log_level = logging.DEBUG if args['--debug'] else logging.INFO
-    logging.basicConfig(level=log_level, format='%(levelname)s: %(message)s')
-
-    try:
-        init(args)
-    except KeyboardInterrupt:
-        sys.exit(0)
-
-
-if __name__ == '__main__':
-    main()  # pragma: no cover
+    out = dict([(item["name"], item["version"]) for item in imports])
+    return out

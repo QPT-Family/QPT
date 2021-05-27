@@ -39,6 +39,6 @@ def get_qpt_tmp_path(dir_name, clean=False):
     dir_path = os.path.join(base_path, "QPT_Cache", dir_name)
     if os.path.exists(dir_path) and clean:
         shutil.rmtree(dir_path)
+    else:
+        os.makedirs(dir_path, exist_ok=True)
     return dir_path
-
-

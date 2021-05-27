@@ -7,6 +7,7 @@ import sys
 from pip import main as pip_main
 
 from qpt.kernel.tools.log_op import Logging
+from qpt.kernel.tools.pipreqs.pipreqs import make_requirements
 
 
 class PipTools:
@@ -79,24 +80,47 @@ class PipTools:
                                find_links=whl_dir,
                                opts=i_opts)
 
-    def analyze_dependence(self):
+    def analyze_dependence(self, analyze_path, save_file_path=None):
+        if save_file_path is None:
+            save_file_path = os.path.join(analyze_path, "依赖列表.txt")
         ori_stdout = sys.stdout
-        with open("./test.txt", "w") as f:
-            sys.stdout = f
+
+        with open(save_file_path, "w") as stout_cache:
+            # 获取pip给出的依赖列表
+            sys.stdout = stout_cache
             self.pip_shell("freeze")
-        sys.stdout = ori_stdout
+            sys.stdout = ori_stdout
+            requirements_dict_search = make_requirements(analyze_path)
 
+        # 搜索py文件中import的依赖项
+        requirements_dict_pip = dict()
+        with open(save_file_path, "r") as req_file:
+            data = req_file.readlines()
+            for line in data:
+                package, version = line.strip("\n").split("==")
+                requirements_dict_pip[package] = version
 
-# shell = ["download", "pillow", "-i", "https://pypi.tuna.tsinghua.edu.cn/simple", "-d", "./test"]
-# pip_main(shell)
+        # 以pip为基准匹配版本号
+        requirements = "".join(
+            [package + "==" + requirements_dict_pip[package] + "\n" for package in requirements_dict_search
+             if package in requirements_dict_pip])
+
+        with open(save_file_path, "w") as req_file:
+            req_file.write(requirements)
+
+        # 供用户检查/修改
+        input(f"依赖分析完毕!\n已在\033[32m{os.path.abspath(save_file_path)}\033[0m 中创建了依赖列表\n请检查依赖是否正确后在此处按下回车键继续...")
+
+        requirements = dict()
+        with open(save_file_path, "r") as req_file:
+            data = req_file.readlines()
+            for line in data:
+                package, version = line.strip("\n").split("==")
+                requirements[package] = version
+        return requirements
+
 
 if __name__ == '__main__':
     a = PipTools()
-    ori_stdout = sys.stdout
-    with open("./test.txt", "w") as f:
-        sys.stdout = f
-        a.pip_shell("freeze")
-    sys.stdout = ori_stdout
-
-    pass
-    # a.install_local_package("pillow", whl_dir="./test")
+    b = a.analyze_dependence("/Users/zhanghongji/PycharmProjects/QPT")
+    print(b)

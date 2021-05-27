@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QFileDialog
 from qpt.kernel.qt_ui.welcome import Ui_welcome
 from qpt.gui.qpt_about import MiniAbout
 from qpt.gui.qpt_msg import write_path_with_msg
-from qpt.kernel.tools.sys_tools import add_ua, set_qpt_env_var
+from qpt.kernel.tools.os_op import add_ua, set_qpt_env_var
 
 
 # ToDo: 首次使用

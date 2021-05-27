@@ -1,6 +1,5 @@
 from qpt.executor import RunExecutableModule
 
-ROOT_PATH = r"./"
 if __name__ == '__main__':
-    module = RunExecutableModule(ROOT_PATH + "out")
+    module = RunExecutableModule("./out")
     module.run()

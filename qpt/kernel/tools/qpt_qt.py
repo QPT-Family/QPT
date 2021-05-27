@@ -2,7 +2,7 @@ import PyQt5
 from PyQt5 import QtCore
 from PyQt5.QtCore import pyqtSignal
 
-from qpt.kernel.tools.log_tools import Logging
+from qpt.kernel.tools.log_op import Logging
 
 TERMINAL_NAME = "cmd.exe"
 

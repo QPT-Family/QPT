@@ -7,14 +7,21 @@ import os
 import sys
 import zipfile
 
-from qpt.modules.base import SubModule, SubModuleOpt
-from qpt.kernel.tools.log_tools import Logging
-from qpt.kernel.tools.interpreter_tools import PipTools
+from qpt.modules.base import SubModule, SubModuleOpt, HIGH_LEVEL_REDUCE, GENERAL_LEVEL_REDUCE
+from qpt.kernel.tools.log_op import Logging
+from qpt.kernel.tools.interpreter import PipTools
 
 pip = PipTools()
 
-LOCAL_DEPLOY_MODE = "为用户准备Whl包，使用时会自动安装，可能会有兼容性问题"
+LOCAL_DOWNLOAD_DEPLOY_MODE = "为用户准备Whl包，首次启动时会自动安装，可能会有兼容性问题"
+LOCAL_INSTALL_DEPLOY_MODE = "[不推荐]预编译第三方库，首次启动无需安装但将额外消耗硬盘空间，可能会有兼容性问题"
 ONLINE_DEPLOY_MODE = "在线安装Python第三方库"
+DEFAULT_DEPLOY_MODE = LOCAL_DOWNLOAD_DEPLOY_MODE
+
+
+def set_default_deploy_mode(mode):
+    global DEFAULT_DEPLOY_MODE
+    DEFAULT_DEPLOY_MODE = mode
 
 
 class DownloadWhlOpt(SubModuleOpt):
@@ -75,24 +82,24 @@ class OnlineInstallWhlOpt(SubModuleOpt):
         self.version = version
 
     def act(self) -> None:
-        pip.pip_shell(self.package,
-                      act="install",
-                      version=self.version,
-                      find_links=self.find_links,
-                      no_dependent=self.no_dependent,
-                      opts=self.opts)
+        pip.pip_package_shell(self.package,
+                              act="install",
+                              version=self.version,
+                              find_links=self.find_links,
+                              no_dependent=self.no_dependent,
+                              opts=self.opts)
 
 
 class CustomPackage(SubModule):
     def __init__(self,
                  package,
                  version: str = None,
-                 deploy_mode=LOCAL_DEPLOY_MODE,
+                 deploy_mode=DEFAULT_DEPLOY_MODE,
                  no_dependent=False,
                  find_links: str = None,
                  opts: str = None):
         super().__init__(name=None)
-        if deploy_mode == LOCAL_DEPLOY_MODE:
+        if deploy_mode == LOCAL_DOWNLOAD_DEPLOY_MODE:
             self.add_pack_opt(DownloadWhlOpt(package=package,
                                              version=version,
                                              no_dependent=no_dependent,
@@ -102,19 +109,68 @@ class CustomPackage(SubModule):
                                                    version=version,
                                                    no_dependent=no_dependent,
                                                    opts=opts))
-        else:
+        elif deploy_mode == ONLINE_DEPLOY_MODE:
             self.add_unpack_opt(OnlineInstallWhlOpt(package=package,
                                                     version=version,
                                                     no_dependent=no_dependent,
                                                     find_links=find_links,
                                                     opts=opts))
+        elif deploy_mode == LOCAL_INSTALL_DEPLOY_MODE:
+            self.add_pack_opt(OnlineInstallWhlOpt(package=package,
+                                                  version=version,
+                                                  no_dependent=no_dependent,
+                                                  find_links=find_links,
+                                                  opts=opts))
+
+
+class RequirementsPackage(SubModule):
+    def __init__(self,
+                 requirements_file_path="Auto",
+                 version: str = None,
+                 deploy_mode=DEFAULT_DEPLOY_MODE,
+                 no_dependent=False,
+                 find_links: str = None,
+                 opts: str = None):
+        super().__init__(name=None)
+        if deploy_mode == LOCAL_DOWNLOAD_DEPLOY_MODE:
+            self.add_pack_opt(DownloadWhlOpt(package=package,
+                                             version=version,
+                                             no_dependent=no_dependent,
+                                             find_links=find_links,
+                                             opts=opts))
+            self.add_unpack_opt(LocalInstallWhlOpt(package=package,
+                                                   version=version,
+                                                   no_dependent=no_dependent,
+                                                   opts=opts))
+        elif deploy_mode == ONLINE_DEPLOY_MODE:
+            self.add_unpack_opt(OnlineInstallWhlOpt(package=package,
+                                                    version=version,
+                                                    no_dependent=no_dependent,
+                                                    find_links=find_links,
+                                                    opts=opts))
+        elif deploy_mode == LOCAL_INSTALL_DEPLOY_MODE:
+            self.add_pack_opt(OnlineInstallWhlOpt(package=package,
+                                                  version=version,
+                                                  no_dependent=no_dependent,
+                                                  find_links=find_links,
+                                                  opts=opts))
+
+
+class QPTDependencyPackage(CustomPackage):
+    def __init__(self,
+                 qpt_version: str = None):
+        self.level = HIGH_LEVEL_REDUCE
+        super().__init__("paddlehub",
+                         version=version,
+                         deploy_mode=deploy_mode)
 
 
 class PaddlePaddlePackage(CustomPackage):
     def __init__(self,
                  version: str = None,
                  include_cuda=False,
-                 deploy_mode=LOCAL_DEPLOY_MODE):
+                 deploy_mode=DEFAULT_DEPLOY_MODE):
+        self.level = GENERAL_LEVEL_REDUCE
         if not include_cuda:
             super().__init__("paddlepaddle",
                              version=version,
@@ -133,7 +189,7 @@ class PaddlePaddlePackage(CustomPackage):
 class PaddleHubPackage(CustomPackage):
     def __init__(self,
                  version: str = None,
-                 deploy_mode=LOCAL_DEPLOY_MODE):
+                 deploy_mode=DEFAULT_DEPLOY_MODE):
         super().__init__("paddlehub",
                          version=version,
                          deploy_mode=deploy_mode)
@@ -142,7 +198,7 @@ class PaddleHubPackage(CustomPackage):
 class PaddleDetectionPackage(CustomPackage):
     def __init__(self,
                  version: str = None,
-                 deploy_mode=LOCAL_DEPLOY_MODE):
+                 deploy_mode=DEFAULT_DEPLOY_MODE):
         super().__init__("paddledetection",
                          version=version,
                          deploy_mode=deploy_mode)
@@ -151,7 +207,7 @@ class PaddleDetectionPackage(CustomPackage):
 class PaddleSegPackage(CustomPackage):
     def __init__(self,
                  version: str = None,
-                 deploy_mode=LOCAL_DEPLOY_MODE):
+                 deploy_mode=DEFAULT_DEPLOY_MODE):
         super().__init__("paddleseg",
                          version=version,
                          deploy_mode=deploy_mode)
@@ -160,7 +216,7 @@ class PaddleSegPackage(CustomPackage):
 class PaddleXPackage(CustomPackage):
     def __init__(self,
                  version: str = None,
-                 deploy_mode=LOCAL_DEPLOY_MODE):
+                 deploy_mode=DEFAULT_DEPLOY_MODE):
         super().__init__("paddlex",
                          version=version,
                          deploy_mode=deploy_mode)
@@ -169,7 +225,7 @@ class PaddleXPackage(CustomPackage):
 class PaddleGANPackage(CustomPackage):
     def __init__(self,
                  version: str = None,
-                 deploy_mode=LOCAL_DEPLOY_MODE):
+                 deploy_mode=DEFAULT_DEPLOY_MODE):
         super().__init__("paddlegan",
                          version=version,
                          deploy_mode=deploy_mode)

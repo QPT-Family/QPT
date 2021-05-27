@@ -7,8 +7,12 @@ from typing import List
 
 from qpt.modules.base import SubModule
 from qpt.modules.python_env import Python38
+
+# QT以及其他QPT依赖部分此处进行安装
+
+
 from qpt.kernel.tools.qpt_qt import QTerminal, MessageBoxTerminalCallback
-from qpt.kernel.tools.log_tools import Logging
+from qpt.kernel.tools.log_op import Logging
 from qpt.gui.qpt_start import Welcome
 from qpt.gui.qpt_run_gui import run_gui
 
@@ -31,7 +35,8 @@ class CreateExecutableModule:
         self.interpreter_path = os.path.join(self.module_path, "Python")
 
         # 获取SubModule列表
-        self.sub_module = [interpreter_module] + sub_modules if sub_modules is not None else [interpreter_module]
+        base_module = [interpreter_module]
+        self.sub_module = base_module + sub_modules if sub_modules is not None else base_module
 
         # 新建配置信息
         self.configs = dict()

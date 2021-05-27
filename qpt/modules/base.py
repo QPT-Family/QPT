@@ -2,10 +2,20 @@ import os
 import collections
 import pickle
 
-from qpt.kernel.tools.sys_tools import download
-from qpt.kernel.tools.log_tools import Logging
+from qpt.kernel.tools.os_op import download
+from qpt.kernel.tools.log_op import Logging
 
-GLOBAL_OPT_ID = 0
+# 定义优先级 优先级越高执行顺序越考前，一般设置为GENERAL_LEVEL
+TOP_LEVEL = 5.  # 底层高优先级
+TOP_LEVEL_REDUCE = 4.5  # 系统级高优先级
+HIGH_LEVEL = 4.  # 高优先级
+HIGH_LEVEL_REDUCE = 3.5  # 紧随高优先级
+GENERAL_LEVEL = 3.  # 普通优先级
+GENERAL_LEVEL_REDUCE = 2.5  # 紧随普通优先级
+LOW_LEVEL = 2.  # 低优先级
+LOW_LEVEL_REDUCE = 1.5  # 紧随低优先级
+BOTTOM_LEVEL = 1.  # 系统级低优先级
+BOTTOM_LEVEL_REDUCE = 0.5  # 底层低优先级
 
 
 class SubModuleOpt:
@@ -62,10 +72,11 @@ class SubModuleOpt:
 
 
 class SubModule:
-    def __init__(self, name=None):
+    def __init__(self, name=None, level: int = GENERAL_LEVEL):
         if name is None:
             name = self.__class__.__name__
         self.name = name
+        self.level = level
 
         # 占位OP
         self.pack_opts = list()

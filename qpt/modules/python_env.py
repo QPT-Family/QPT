@@ -2,17 +2,16 @@ import os
 import sys
 import zipfile
 
-from qpt.modules.base import SubModule, SubModuleOpt
-from qpt.kernel.tools.log_tools import Logging
-from qpt.kernel.tools.sys_tools import download, get_qpt_tmp_path
+from qpt.modules.base import SubModule, SubModuleOpt, TOP_LEVEL
+from qpt.kernel.tools.log_op import Logging
+from qpt.kernel.tools.os_op import download, get_qpt_tmp_path
 
 """
 Python镜像打包指南
 1. 下载嵌入式版本Python
 2. 在Python文档或ext文件夹下获取get-pip.py
 3. 安装pip
-4. 安装基础包
-5. 使用LZMA-64-64 zip的格式上传至文件床，必要时设置密码
+4. 使用LZMA-64-64 zip的格式上传至文件床，必要时设置密码
 """
 
 PYTHON_ENV_MODE_SPEED_FIRST = "预先解压好Python环境，占用部分硬盘资源但能减少用户使用时速度损失"
@@ -80,7 +79,7 @@ class UnPackPythonEnvOpt(SubModuleOpt):
 
 class BasePythonEnv(SubModule):
     def __init__(self, name, url, mode):
-        super().__init__(name)
+        super().__init__(name, level=TOP_LEVEL)
         self.add_pack_opt(PackPythonEnvOpt(url=url, mode=mode))
         self.add_unpack_opt(UnPackPythonEnvOpt(url=url, mode=mode))
 

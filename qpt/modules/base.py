@@ -132,8 +132,12 @@ class SubModule:
         assert self._module_path, "SubModule的out_dir未设置！"
         for opt in self.pack_opts:
             Logging.debug(f"正在加载{self.name}-{opt.name}OP")
-            opt.prepare(self._interpreter_path, self._module_path, self._terminal)
-            opt.run()
+            op_path = os.path.join(self._module_path, "opt", self.name, opt.name)
+            opt.prepare(interpreter_path=self._interpreter_path,
+                        module_path=self._module_path,
+                        terminal=self._terminal,
+                        work_dir=self._work_dir)
+            opt.run(op_path)
 
         for opt in self.unpack_opts:
             Logging.debug(f"正在封装{self.name}-{opt.name}OP")
@@ -151,9 +155,12 @@ class SubModule:
                 op_path = os.path.join(self._module_path, "opt", self.name, op_name)
                 with open(op_path, "rb") as file:
                     opt = pickle.load(file)
-                    opt.prepare(self._interpreter_path, self._module_path, self._terminal)
+                    opt.prepare(interpreter_path=self._interpreter_path,
+                                module_path=self._module_path,
+                                terminal=self._terminal,
+                                work_dir=self._work_dir)
                     Logging.debug(f"正在加载{self.name}-{opt.name}OP")
-                    opt.run()
+                    opt.run(op_path)
 
     # ToDo:做序列化来保存
     def _serialize_op(self, opt):

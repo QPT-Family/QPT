@@ -7,9 +7,7 @@ from typing import List
 
 from qpt.modules.base import SubModule
 from qpt.modules.python_env import Python38
-
-# QT以及其他QPT依赖部分此处进行安装
-
+from qpt.modules.package import AutoRequirementsPackage, QPTDependencyPackage, DEFAULT_DEPLOY_MODE
 
 from qpt.kernel.tools.qpt_qt import QTerminal, MessageBoxTerminalCallback
 from qpt.kernel.tools.log_op import Logging
@@ -22,8 +20,10 @@ class CreateExecutableModule:
                  launcher_py_path,
                  work_dir,
                  save_path,
-                 interpreter_module: SubModule = Python38(),
+                 auto_dependency=True,
+                 deploy_mode=DEFAULT_DEPLOY_MODE,
                  sub_modules: List[SubModule] = None,
+                 interpreter_module: SubModule = Python38(),
                  module_name="未命名模型",
                  version="未知版本号",
                  author="未知作者",
@@ -35,8 +35,13 @@ class CreateExecutableModule:
         self.interpreter_path = os.path.join(self.module_path, "Python")
 
         # 获取SubModule列表
-        base_module = [interpreter_module]
+        base_module = [interpreter_module, QPTDependencyPackage()]
         self.sub_module = base_module + sub_modules if sub_modules is not None else base_module
+        if auto_dependency:
+            auto_dependency_module = AutoRequirementsPackage(work_home=self.work_dir,
+                                                             module_list=self.sub_module,
+                                                             deploy_mode=deploy_mode)
+            self.sub_module.append(auto_dependency_module)
 
         # 新建配置信息
         self.configs = dict()

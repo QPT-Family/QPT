@@ -43,7 +43,14 @@ namespace QPTLauncher
             //    p.StartInfo.FileName = Path.Combine(launcherPath, @"Python/python.exe");
             //    p.StartInfo.Arguments = @"D:\Python_Projects\QPT\qpt\gui\qpt_start.py " + args[0];
             //}
-            p.StartInfo.FileName = Path.Combine(launcherPath, @"Python/python.exe");
+            string python_file_path = Path.Combine(launcherPath, @"Python/python.exe");
+            p.StartInfo.FileName = python_file_path;
+            if (!File.Exists(python_file_path))
+            {
+                Console.WriteLine("未找到Python解释器，程序运行失败" );
+                Console.ReadKey();
+            }
+
             p.StartInfo.Arguments = "-c " + "\"import qpt.run as run\n\"";
             p.StartInfo.UseShellExecute = true;
             //p.StartInfo.RedirectStandardOutput = true;

@@ -4,6 +4,7 @@ import ctypes
 import os
 import sys
 import tempfile
+import io
 
 import wget
 
@@ -42,3 +43,20 @@ def get_qpt_tmp_path(dir_name, clean=False):
     else:
         os.makedirs(dir_path, exist_ok=True)
     return dir_path
+
+
+class StdOutWrapper(io.TextIOWrapper):
+    def __init__(self, container: list = None, do_print=True):
+        super().__init__(io.BytesIO(), encoding="utf-8")
+        self.buff = ''
+        self.ori_stout = sys.stdout
+        self.container = container
+        self.do_print = do_print
+
+    def write(self, output_stream):
+        if self.do_print:
+            self.buff += output_stream
+        self.container.append(output_stream)
+
+    def flush(self):
+        self.buff = ''

@@ -1,2 +1,4 @@
 qpt
-PyQT
+PyQT5
+wget
+yarg

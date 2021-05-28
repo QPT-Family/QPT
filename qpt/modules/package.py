@@ -156,7 +156,7 @@ class AutoRequirementsPackage(RequirementsPackage):
         requirements = pip.analyze_dependence(work_home, return_path=False)
 
         # 对特殊包进行过滤和特殊化
-        for requirement in requirements:
+        for requirement in dict(requirements):
             if requirement in SPECIAL_MODULE:
                 special_module, parameter = SPECIAL_MODULE[requirement]
                 parameter["version"] = requirements[requirement]

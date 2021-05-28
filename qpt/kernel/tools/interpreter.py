@@ -6,7 +6,7 @@ import os
 import sys
 from pip import main as pip_main
 
-from qpt.kernel.tools.log_op import Logging
+from qpt.kernel.tools.os_op import StdOutWrapper
 from qpt.kernel.tools.pipreqs.pipreqs import make_requirements
 
 
@@ -43,7 +43,7 @@ class PipTools:
             shell += " -f" + find_links
 
         if opts:
-            shell += opts
+            shell += " " + opts
 
         self.pip_shell(shell)
 
@@ -83,13 +83,18 @@ class PipTools:
     def analyze_dependence(self, analyze_path, save_file_path=None, return_path=False):
         if save_file_path is None:
             save_file_path = os.path.join(analyze_path, "requirements_with_opt.txt")
-        ori_stdout = sys.stdout
 
-        with open(save_file_path, "w", encoding="utf-8") as stout_cache:
-            # 获取pip给出的依赖列表
-            sys.stdout = stout_cache
-            self.pip_shell("freeze")
-            sys.stdout = ori_stdout
+        # 获取pip给出的包信息
+        pip_freeze_out = list()
+        tmp_stout = StdOutWrapper(container=pip_freeze_out)
+        ori_stdout = sys.stdout
+        sys.stdout = tmp_stout
+        self.pip_shell("freeze")
+        tmp_stout.flush()
+        sys.stdout = ori_stdout
+
+        with open(save_file_path, "w", encoding="utf-8") as req_file:
+            req_file.writelines(pip_freeze_out)
 
         # 搜索py文件中import的依赖项
         requirements_dict_search = make_requirements(analyze_path)
@@ -107,8 +112,9 @@ class PipTools:
         # 供用户检查/修改
         input(f"依赖分析完毕!\n"
               f"已在\033[32m{os.path.abspath(save_file_path)}\033[0m 中创建了依赖列表\n"
-              f"请在检查/修改依赖后在此处按下回车键继续...\n"
-              f"Tips:查看文件后可能需要关闭查看该文件的文本查看器，这样可以有效避免文件被占用")
+              f"Tips:查看文件后可能需要关闭查看该文件的文本查看器，这样可以有效避免文件被占用\n"
+              f"---------------------------------------------------------------------\n"
+              f"请在检查/修改依赖后在此处按下回车键继续...\n")
 
         if return_path:
             return save_file_path

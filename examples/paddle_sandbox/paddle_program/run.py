@@ -15,4 +15,4 @@ for i in range(5):
         opt.clear_grad()
     print("Epoch:", i, "loss:", loss.numpy())
 
-print("测试成功！")
+input("测试成功！")

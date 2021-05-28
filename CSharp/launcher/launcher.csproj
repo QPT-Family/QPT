@@ -8,6 +8,11 @@
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile>GT_KEY.pfx</AssemblyOriginatorKeyFile>
     <Authors>GT</Authors>
+    <AssemblyName>QPT_launcher</AssemblyName>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <WarningLevel>1</WarningLevel>
   </PropertyGroup>
 
 </Project>

@@ -65,7 +65,8 @@ class CreateExecutableModule:
         为Module添加子模块
         """
         # 需对每个module设置save_dir和终端
-        sub_module.prepare(interpreter_path=None,
+        sub_module.prepare(work_dir=self.work_dir,
+                           interpreter_path=None,
                            module_path=self.module_path,
                            terminal=self.terminal.shell_func(callback=MessageBoxTerminalCallback()))
 
@@ -144,7 +145,8 @@ class RunExecutableModule:
         sub_name_list = self.configs["sub_module"]
         for sub_name in sub_name_list:
             sub_module = SubModule(sub_name)
-            sub_module.prepare(interpreter_path=self.interpreter_path,
+            sub_module.prepare(work_dir=self.work_dir,
+                               interpreter_path=self.interpreter_path,
                                module_path=self.base_dir,
                                terminal=self.terminal.shell_func(callback=MessageBoxTerminalCallback()))
             sub_module.unpack()

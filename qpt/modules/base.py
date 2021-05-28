@@ -23,16 +23,21 @@ class SubModuleOpt:
     自定义子模块操作，用于子模块封装时和封装后的操作流程设置，支持shell操作和Python原生语言操作
     """
 
-    def __init__(self):
+    def __init__(self, disposable=False):
         self.name = self.__class__.__name__
+
+        # 算子是否为一次性算子 - 通常用于安装第三方库等只需要进行一次就可以永久使用的情况
+        self.disposable = disposable
 
         # 环境变量
         # 解释器所在路径占位
         self._interpreter_path = "./"
-        # 创建Module时的保存目录/执行Module时的Module目录
+        # Module目录 - 创建Module时的保存目录/执行Module时的Module目录
         self._module_path = "./"
         # 终端占位
         self._terminal = None
+        # 工作目录占位 - 创建Module时的工作目录（待打包的目录）/执行Module时的resources目录
+        self._work_dir = "./"
 
     def act(self) -> None:
         """
@@ -54,6 +59,17 @@ class SubModuleOpt:
         """
         pass
 
+    def run(self, op_path):
+        if self.disposable:
+            os.path.exists(op_path + ".inactive")
+            Logging.debug(f"找到该OP状态文件{self.name}.inactive，故跳过该OP")
+        else:
+            self.act()
+            if self.disposable:
+                with open(op_path + ".inactive", "w", encoding="utf-8") as act_file:
+                    act_file.write("已使用过该OP")
+            Logging.debug("该OP加载完毕")
+
     @property
     def interpreter_path(self):
         return self._interpreter_path
@@ -62,9 +78,14 @@ class SubModuleOpt:
     def module_path(self):
         return self._module_path
 
-    def prepare(self, interpreter_path=None, save_path=None, terminal=None):
+    @property
+    def work_dir(self):
+        return self._work_dir
+
+    def prepare(self, work_dir=None, interpreter_path=None, module_path=None, terminal=None):
+        self._work_dir = work_dir
         self._interpreter_path = interpreter_path
-        self._module_path = save_path
+        self._module_path = module_path
         self._terminal = terminal
 
     def terminal(self, shell):
@@ -85,11 +106,13 @@ class SubModule:
         self.details = {"Pack": [], "Unpack": []}
 
         # 占位out_dir，将会保存序列化文件到该目录，pack时需要被set
-        self._module_path = None
-        self._interpreter_path = None
-        self._terminal = None
+        self._module_path = "./"
+        self._interpreter_path = "./"
+        self._terminal = "./"
+        self._work_dir = "./"
 
-    def prepare(self, interpreter_path=None, module_path=None, terminal=None):
+    def prepare(self, work_dir=None, interpreter_path=None, module_path=None, terminal=None):
+        self._work_dir = work_dir
         self._interpreter_path = interpreter_path
         self._module_path = module_path
         self._terminal = terminal
@@ -110,7 +133,7 @@ class SubModule:
         for opt in self.pack_opts:
             Logging.debug(f"正在加载{self.name}-{opt.name}OP")
             opt.prepare(self._interpreter_path, self._module_path, self._terminal)
-            opt.act()
+            opt.run()
 
         for opt in self.unpack_opts:
             Logging.debug(f"正在封装{self.name}-{opt.name}OP")
@@ -125,11 +148,12 @@ class SubModule:
         for op_name in ops:
             op_name = str(op_name)
             if os.path.splitext(op_name)[-1] == ".op":
-                with open(os.path.join(self._module_path, "opt", self.name, op_name), "rb") as file:
+                op_path = os.path.join(self._module_path, "opt", self.name, op_name)
+                with open(op_path, "rb") as file:
                     opt = pickle.load(file)
                     opt.prepare(self._interpreter_path, self._module_path, self._terminal)
                     Logging.debug(f"正在加载{self.name}-{opt.name}OP")
-                    opt.act()
+                    opt.run()
 
     # ToDo:做序列化来保存
     def _serialize_op(self, opt):

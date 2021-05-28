@@ -25,7 +25,7 @@ class PipTools:
         pip_main(shell.split(" "))
 
     def pip_package_shell(self,
-                          package: str,
+                          package: str = None,
                           version: str = None,
                           act="install",
                           no_dependent=False,
@@ -80,41 +80,66 @@ class PipTools:
                                find_links=whl_dir,
                                opts=i_opts)
 
-    def analyze_dependence(self, analyze_path, save_file_path=None):
+    def analyze_dependence(self, analyze_path, save_file_path=None, return_path=False):
         if save_file_path is None:
-            save_file_path = os.path.join(analyze_path, "依赖列表.txt")
+            save_file_path = os.path.join(analyze_path, "requirements_with_opt.txt")
         ori_stdout = sys.stdout
 
-        with open(save_file_path, "w") as stout_cache:
+        with open(save_file_path, "w", encoding="utf-8") as stout_cache:
             # 获取pip给出的依赖列表
             sys.stdout = stout_cache
             self.pip_shell("freeze")
             sys.stdout = ori_stdout
-            requirements_dict_search = make_requirements(analyze_path)
 
         # 搜索py文件中import的依赖项
-        requirements_dict_pip = dict()
-        with open(save_file_path, "r") as req_file:
-            data = req_file.readlines()
-            for line in data:
-                package, version = line.strip("\n").split("==")
-                requirements_dict_pip[package] = version
+        requirements_dict_search = make_requirements(analyze_path)
+        # 读取pip给出的依赖项
+        requirements_dict_pip = self.analyze_requirements_file(save_file_path)
 
         # 以pip为基准匹配版本号
         requirements = "".join(
             [package + "==" + requirements_dict_pip[package] + "\n" for package in requirements_dict_search
              if package in requirements_dict_pip])
 
-        with open(save_file_path, "w") as req_file:
+        with open(save_file_path, "w", encoding="utf-8") as req_file:
             req_file.write(requirements)
 
         # 供用户检查/修改
-        input(f"依赖分析完毕!\n已在\033[32m{os.path.abspath(save_file_path)}\033[0m 中创建了依赖列表\n请检查依赖是否正确后在此处按下回车键继续...")
+        input(f"依赖分析完毕!\n"
+              f"已在\033[32m{os.path.abspath(save_file_path)}\033[0m 中创建了依赖列表\n"
+              f"请在检查/修改依赖后在此处按下回车键继续...\n"
+              f"Tips:查看文件后可能需要关闭查看该文件的文本查看器，这样可以有效避免文件被占用")
 
+        if return_path:
+            return save_file_path
+        else:
+            return self.analyze_requirements_file(save_file_path)
+
+    @staticmethod
+    def analyze_requirements_file(file_path):
         requirements = dict()
-        with open(save_file_path, "r") as req_file:
-            data = req_file.readlines()
-            for line in data:
-                package, version = line.strip("\n").split("==")
-                requirements[package] = version
+        try:
+            with open(file_path, "r", encoding="utf-8") as req_file:
+                data = req_file.readlines()
+                for line in data:
+                    line = line.strip("\n")
+                    if "==" in line:
+                        package, version = line.split("==")
+                    else:
+                        package = line
+                        version = None
+                    requirements[package] = version
+        except Exception as e:
+            raise Exception(f"{file_path}文件解析失败，文件可能被其他程序占用或格式异常\n"
+                            f"报错信息如下：{e}")
         return requirements
+
+    @staticmethod
+    def save_requirements_file(requirements_dict, save_file_path):
+        with open(save_file_path, "w", encoding="utf-8") as file:
+            for requirement in requirements_dict:
+                if requirements_dict[requirement] is not None:
+                    line = f"{requirement}=={requirements_dict[requirement]}\n"
+                else:
+                    line = requirement + "\n"
+                file.write(line)

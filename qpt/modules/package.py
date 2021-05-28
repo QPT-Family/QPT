@@ -10,6 +10,7 @@ import zipfile
 from qpt.modules.base import SubModule, SubModuleOpt, HIGH_LEVEL_REDUCE, GENERAL_LEVEL_REDUCE
 from qpt.kernel.tools.log_op import Logging
 from qpt.kernel.tools.interpreter import PipTools
+from qpt.kernel.tools.os_op import get_qpt_tmp_path
 
 pip = PipTools()
 
@@ -53,7 +54,7 @@ class LocalInstallWhlOpt(SubModuleOpt):
                  version: str = None,
                  no_dependent=False,
                  opts: str = None):
-        super().__init__()
+        super().__init__(disposable=True)
         self.package = package
         self.no_dependent = no_dependent
         self.opts = opts
@@ -74,7 +75,7 @@ class OnlineInstallWhlOpt(SubModuleOpt):
                  no_dependent=False,
                  find_links: str = None,
                  opts: str = None):
-        super().__init__()
+        super().__init__(disposable=True)
         self.package = package
         self.no_dependent = no_dependent
         self.find_links = find_links
@@ -125,44 +126,49 @@ class CustomPackage(SubModule):
 
 class RequirementsPackage(SubModule):
     def __init__(self,
-                 requirements_file_path="Auto",
-                 version: str = None,
-                 deploy_mode=DEFAULT_DEPLOY_MODE,
-                 no_dependent=False,
-                 find_links: str = None,
-                 opts: str = None):
+                 requirements_file_path,
+                 deploy_mode=DEFAULT_DEPLOY_MODE):
         super().__init__(name=None)
+        requirements_file_path = "-r " + requirements_file_path
         if deploy_mode == LOCAL_DOWNLOAD_DEPLOY_MODE:
-            self.add_pack_opt(DownloadWhlOpt(package=package,
-                                             version=version,
-                                             no_dependent=no_dependent,
-                                             find_links=find_links,
-                                             opts=opts))
-            self.add_unpack_opt(LocalInstallWhlOpt(package=package,
-                                                   version=version,
-                                                   no_dependent=no_dependent,
-                                                   opts=opts))
+            self.add_pack_opt(DownloadWhlOpt(package=requirements_file_path,
+                                             no_dependent=False))
+            self.add_unpack_opt(LocalInstallWhlOpt(package=requirements_file_path,
+                                                   no_dependent=True))
         elif deploy_mode == ONLINE_DEPLOY_MODE:
-            self.add_unpack_opt(OnlineInstallWhlOpt(package=package,
-                                                    version=version,
-                                                    no_dependent=no_dependent,
-                                                    find_links=find_links,
-                                                    opts=opts))
+            self.add_unpack_opt(OnlineInstallWhlOpt(package=requirements_file_path,
+                                                    no_dependent=False))
         elif deploy_mode == LOCAL_INSTALL_DEPLOY_MODE:
-            self.add_pack_opt(OnlineInstallWhlOpt(package=package,
-                                                  version=version,
-                                                  no_dependent=no_dependent,
-                                                  find_links=find_links,
-                                                  opts=opts))
+            self.add_pack_opt(OnlineInstallWhlOpt(package=requirements_file_path,
+                                                  no_dependent=False))
 
 
-class QPTDependencyPackage(CustomPackage):
+class AutoRequirementsPackage(RequirementsPackage):
     def __init__(self,
-                 qpt_version: str = None):
-        self.level = HIGH_LEVEL_REDUCE
-        super().__init__("paddlehub",
-                         version=version,
+                 work_home,
+                 module_list: list,
+                 deploy_mode=DEFAULT_DEPLOY_MODE):
+        Logging.info(f"正在分析{os.path.abspath(work_home)}下的依赖情况...")
+        requirements = pip.analyze_dependence(work_home, return_path=False)
+        for requirement in requirements:
+            if requirement in SPECIAL_MODULE:
+                special_module, parameter = SPECIAL_MODULE[requirement]
+                module_list.append(special_module(**parameter))
+                requirements.pop(requirement)
+
+        requirements_path = os.path.join(get_qpt_tmp_path("cache"), "requirements_dev.txt")
+        pip.save_requirements_file(requirements, requirements_path)
+        super().__init__(requirements_file_path=requirements_path,
                          deploy_mode=deploy_mode)
+
+
+class QPTDependencyPackage(RequirementsPackage):
+    def __init__(self):
+        self.level = HIGH_LEVEL_REDUCE
+        # ToDO 修改qpt_dependency.txt文件
+        dependency_path = os.path.join(os.path.split(__file__)[0], "qpt_dependency.txt")
+        super().__init__(requirements_file_path=dependency_path,
+                         deploy_mode=LOCAL_INSTALL_DEPLOY_MODE)
 
 
 class PaddlePaddlePackage(CustomPackage):
@@ -229,3 +235,12 @@ class PaddleGANPackage(CustomPackage):
         super().__init__("paddlegan",
                          version=version,
                          deploy_mode=deploy_mode)
+
+
+# 自动推理依赖时需要特殊处理的Module配置列表 格式{包名: (Module, Module参数字典)}
+SPECIAL_MODULE = {"paddlepaddle": (PaddlePaddlePackage, {"version": None,
+                                                         "include_cuda": False,
+                                                         "deploy_mode": DEFAULT_DEPLOY_MODE}),
+                  "paddlepaddle-gpu": (PaddlePaddlePackage, {"version": None,
+                                                             "include_cuda": True,
+                                                             "deploy_mode": DEFAULT_DEPLOY_MODE})}

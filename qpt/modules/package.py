@@ -144,20 +144,31 @@ class RequirementsPackage(SubModule):
 
 
 class AutoRequirementsPackage(RequirementsPackage):
+    """
+    注意，这并不是个普通的Module
+    """
+
     def __init__(self,
                  work_home,
                  module_list: list,
                  deploy_mode=DEFAULT_DEPLOY_MODE):
         Logging.info(f"正在分析{os.path.abspath(work_home)}下的依赖情况...")
         requirements = pip.analyze_dependence(work_home, return_path=False)
+
+        # 对特殊包进行过滤和特殊化
         for requirement in requirements:
             if requirement in SPECIAL_MODULE:
                 special_module, parameter = SPECIAL_MODULE[requirement]
+                parameter["version"] = requirements[requirement]
+                parameter["deploy_mode"] = deploy_mode
                 module_list.append(special_module(**parameter))
                 requirements.pop(requirement)
 
+        # 保存依赖至
         requirements_path = os.path.join(get_qpt_tmp_path("cache"), "requirements_dev.txt")
         pip.save_requirements_file(requirements, requirements_path)
+
+        # 执行常规的安装
         super().__init__(requirements_file_path=requirements_path,
                          deploy_mode=deploy_mode)
 
@@ -238,6 +249,7 @@ class PaddleGANPackage(CustomPackage):
 
 
 # 自动推理依赖时需要特殊处理的Module配置列表 格式{包名: (Module, Module参数字典)}
+# version、deploy_mode 为必填字段
 SPECIAL_MODULE = {"paddlepaddle": (PaddlePaddlePackage, {"version": None,
                                                          "include_cuda": False,
                                                          "deploy_mode": DEFAULT_DEPLOY_MODE}),

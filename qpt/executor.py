@@ -5,9 +5,12 @@ import importlib
 
 from typing import List
 
+from qpt._compatibility import com_configs
+
 from qpt.modules.base import SubModule
-from qpt.modules.python_env import Python38
-from qpt.modules.package import AutoRequirementsPackage, QPTDependencyPackage, DEFAULT_DEPLOY_MODE
+from qpt.modules.python_env import BasePythonEnv, Python38
+from qpt.modules.package import AutoRequirementsPackage, QPTDependencyPackage, DEFAULT_DEPLOY_MODE, \
+    set_default_package_for_python_version
 
 from qpt.kernel.tools.qpt_qt import QTerminal, MessageBoxTerminalCallback
 from qpt.kernel.tools.log_op import Logging
@@ -23,7 +26,7 @@ class CreateExecutableModule:
                  auto_dependency=True,
                  deploy_mode=DEFAULT_DEPLOY_MODE,
                  sub_modules: List[SubModule] = None,
-                 interpreter_module: SubModule = Python38(),
+                 interpreter_module: BasePythonEnv = Python38(),
                  module_name="未命名模型",
                  version="未知版本号",
                  author="未知作者",
@@ -34,15 +37,6 @@ class CreateExecutableModule:
         self.module_path = save_path
         self.interpreter_path = os.path.join(self.module_path, "Python")
 
-        # 获取SubModule列表
-        base_module = [interpreter_module, QPTDependencyPackage()]
-        self.sub_module = base_module + sub_modules if sub_modules is not None else base_module
-        if auto_dependency:
-            auto_dependency_module = AutoRequirementsPackage(work_home=self.work_dir,
-                                                             module_list=self.sub_module,
-                                                             deploy_mode=deploy_mode)
-            self.sub_module.append(auto_dependency_module)
-
         # 新建配置信息
         self.configs = dict()
         self.configs["launcher_py_path"] = self.launcher_py_path
@@ -50,6 +44,7 @@ class CreateExecutableModule:
         self.configs["module_name"] = module_name
         self.configs["author"] = author
         self.configs["version"] = version
+        self.configs["lazy_module"] = list()
         self.configs["sub_module"] = list()
 
         # 额外的成员变量
@@ -57,6 +52,23 @@ class CreateExecutableModule:
         self.config_path = os.path.join(self.module_path, "configs")
         self.config_file_path = os.path.join(self.module_path, "configs", "configs.gt")
         self.dependent_file_path = os.path.join(self.module_path, "configs", "dependent.gt")
+        self.lib_package_path = os.path.join(self.interpreter_path,
+                                             com_configs["RELATIVE_INTERPRETER_SITE_PACKAGES_PATH"])
+
+        # 设置全局下载的Python包默认解释器版本号
+        set_default_package_for_python_version(interpreter_module.python_version)
+
+        # 获取SubModule列表
+        self.lazy_module = [interpreter_module, QPTDependencyPackage()]
+
+        if none_gui is False:
+            pass
+        self.sub_module = sub_modules if sub_modules is not None else list()
+        if auto_dependency:
+            auto_dependency_module = AutoRequirementsPackage(work_home=self.work_dir,
+                                                             module_list=self.sub_module,
+                                                             deploy_mode=deploy_mode)
+            self.sub_module.append(auto_dependency_module)
 
         # 初始化终端
         self.terminal = QTerminal()
@@ -69,19 +81,38 @@ class CreateExecutableModule:
         """
         为Module添加子模块
         """
-        # 需对每个module设置save_dir和终端
-        sub_module.prepare(work_dir=self.work_dir,
-                           interpreter_path=None,
-                           module_path=self.module_path,
-                           terminal=self.terminal.shell_func(callback=MessageBoxTerminalCallback()))
-
         self.sub_module.append(sub_module)
 
     def print_details(self):
-        Logging.info("----------该模型中所使用的OP----------")
+        Logging.info("----------QPT执行使用了以下OP----------")
+        for module in self.lazy_module:
+            Logging.info(module.__class__.__name__ + f"\t{module.details}")
+        Logging.info("----------程序执行使用了以下OP----------")
         for module in self.sub_module:
             Logging.info(module.__class__.__name__ + f"\t{module.details}")
         Logging.info("------------------------------------")
+
+    def _solve_module(self, lazy=False):
+        if lazy:
+            modules = self.lazy_module
+        else:
+            modules = self.sub_module
+        for sub in modules:
+            # ToDO设置序列化路径
+            sub._module_path = self.module_path
+            # 需对每个module设置save_dir和终端
+            sub.prepare(work_dir=self.work_dir,
+                        interpreter_path=os.path.join(self.module_path, "Python"),
+                        module_path=self.module_path,
+                        terminal=self.terminal.shell_func(callback=MessageBoxTerminalCallback()))
+            sub.pack()
+
+            # 保护用户侧接触不到的模块不被泄漏模块名
+            if len(sub.unpack_opts) != 0:
+                if lazy:
+                    self.configs["lazy_module"].append(sub.name)
+                else:
+                    self.configs["sub_module"].append(sub.name)
 
     def make(self):
         # 打印sub module信息
@@ -93,19 +124,13 @@ class CreateExecutableModule:
             shutil.rmtree(self.module_path)
         os.mkdir(self.module_path)
 
+        # 解析子模块
+        self._solve_module(lazy=True)
+        self._solve_module()
+
         # 复制资源文件
         assert os.path.exists(self.work_dir), f"{os.path.abspath(self.work_dir)}不存在，请检查该路径是否正确"
         shutil.copytree(self.work_dir, self.resources_path)
-
-        # 解析子模块
-        for sub in self.sub_module:
-            # ToDO设置序列化路径
-            sub._module_path = self.module_path
-            sub.prepare(interpreter_path=self.interpreter_path,
-                        module_path=self.module_path,
-                        terminal=self.terminal.shell_func(callback=MessageBoxTerminalCallback()))
-            sub.pack()
-            self.configs["sub_module"].append(sub.name)
 
         # 创建配置文件
         os.makedirs(self.config_path, exist_ok=True)
@@ -143,11 +168,10 @@ class RunExecutableModule:
         # ToDO 解决集市部分包管理问题
         pass
 
-    def solve_sub_module(self):
+    def solve_sub_module(self, sub_name_list):
         """
         执行子模块
         """
-        sub_name_list = self.configs["sub_module"]
         for sub_name in sub_name_list:
             sub_module = SubModule(sub_name)
             sub_module.prepare(work_dir=self.work_dir,
@@ -165,8 +189,11 @@ class RunExecutableModule:
         sys.path.append(self.work_dir)
 
     def run(self):
-        # prepare
-        self.solve_sub_module()
+        # prepare qpt lazy module - GUI组件需要在此之后才能进行
+        self.solve_sub_module(self.configs["lazy_module"])
+
+        # prepare module
+        self.solve_sub_module(self.configs["sub_module"])
         # 设置工作目录
         self.solve_work_dir()
         # 执行主程序

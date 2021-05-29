@@ -5,6 +5,7 @@ import zipfile
 from qpt.modules.base import SubModule, SubModuleOpt, TOP_LEVEL
 from qpt.kernel.tools.log_op import Logging
 from qpt.kernel.tools.os_op import download, get_qpt_tmp_path
+from qpt._compatibility import com_configs
 
 """
 Python镜像打包指南
@@ -70,7 +71,7 @@ class UnPackPythonEnvOpt(SubModuleOpt):
 
         # 添加Python以及Python/lib/python/site_packages_path下的包到环境变量/工作目录
         python_path = self.interpreter_path
-        site_packages_path = os.path.join(self.interpreter_path, "lib/site-packages")
+        site_packages_path = os.path.join(self.interpreter_path, com_configs["RELATIVE_INTERPRETER_SITE_PACKAGES_PATH"])
         script_path = os.path.join(self.interpreter_path, "Scripts")
         sys.path.append(python_path)
         sys.path.append(site_packages_path)
@@ -82,9 +83,11 @@ class BasePythonEnv(SubModule):
         super().__init__(name, level=TOP_LEVEL)
         self.add_pack_opt(PackPythonEnvOpt(url=url, mode=mode))
         self.add_unpack_opt(UnPackPythonEnvOpt(url=url, mode=mode))
+        self.python_version = "非标准的PythonSubModule，需指定版本号"
 
 
 class Python38(BasePythonEnv):
     def __init__(self, mode=PYTHON_ENV_MODE_SPEED_FIRST):
         url = RESOURCES_URLS["Python3.8Env"]
         super().__init__(name=None, url=url, mode=mode)
+        self.python_version = "3.8"

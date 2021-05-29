@@ -41,9 +41,6 @@ import re
 import codecs
 import ast
 import traceback
-import requests
-from yarg import json2package
-from yarg.exceptions import HTTPError
 
 REGEXP = [
     re.compile(r'^import (.+)$'),
@@ -173,28 +170,6 @@ def output_requirements(imports):
     generate_requirements_file('-', imports)
 
 
-def get_imports_info(
-        imports, pypi_server="https://pypi.python.org/pypi/", proxy=None):
-    result = []
-
-    for item in imports:
-        try:
-            response = requests.get(
-                "{0}{1}/json".format(pypi_server, item), proxies=proxy)
-            if response.status_code == 200:
-                if hasattr(response.content, 'decode'):
-                    data = json2package(response.content.decode())
-                else:
-                    data = json2package(response.content)
-            elif response.status_code >= 300:
-                raise HTTPError(status_code=response.status_code,
-                                reason=response.reason)
-        except HTTPError:
-            continue
-        result.append({'name': item, 'version': data.latest_release_id})
-    return result
-
-
 def get_locally_installed_packages(encoding=None):
     packages = {}
     ignore = ["tests", "_tests", "egg", "EGG", "info"]
@@ -225,12 +200,14 @@ def get_locally_installed_packages(encoding=None):
     return packages
 
 
-def get_import_local(imports, encoding=None):
+def get_import_local(imports):
     local = get_locally_installed_packages()
     result = []
     for item in imports:
         if item.lower() in local:
             result.append(local[item.lower()])
+        elif item in local:
+            result.append(local[item])
 
     # removing duplicates of package/version
     result_unique = [
@@ -393,17 +370,9 @@ def make_requirements(path):
                                  extra_ignore_dirs=None,
                                  follow_links=True)
     candidates = get_pkg_names(candidates)
-    pypi_server = "https://pypi.tuna.tsinghua.edu.cn/simple"
 
-    local = get_import_local(candidates, encoding=encoding)
+    local = get_import_local(candidates)
     # Get packages that were not found locally
-    difference = [x for x in candidates
-                  if x.lower() not in [z['name'].lower() for z in local]]
-    imports = local + get_imports_info(difference,
-                                       proxy=None,
-                                       pypi_server=pypi_server)
-    abs_path = os.path.abspath(path)
-    # assert len(imports) > 0, f"未查找到{abs_path}目录下有Python相关的第三方依赖库"
 
-    out = dict([(item["name"], item["version"]) for item in imports])
+    out = dict([(item["name"].replace("_", "-"), item["version"]) for item in local])
     return out

@@ -1,4 +1,0 @@
-qpt
-PyQT5
-wget
-yarg

@@ -60,15 +60,10 @@ class SubModuleOpt:
         pass
 
     def run(self, op_path):
-        if self.disposable:
-            os.path.exists(op_path + ".inactive")
+        if self.disposable and os.path.exists(op_path + ".inactive"):
             Logging.debug(f"找到该OP状态文件{self.name}.inactive，故跳过该OP")
         else:
             self.act()
-            if self.disposable:
-                with open(op_path + ".inactive", "w", encoding="utf-8") as act_file:
-                    act_file.write("已使用过该OP")
-            Logging.debug("该OP加载完毕")
 
     @property
     def interpreter_path(self):
@@ -131,7 +126,7 @@ class SubModule:
         """
         assert self._module_path, "SubModule的out_dir未设置！"
         for opt in self.pack_opts:
-            Logging.debug(f"正在加载{self.name}-{opt.name}OP")
+            Logging.info(f"正在加载{self.name}-{opt.name}OP")
             op_path = os.path.join(self._module_path, "opt", self.name, opt.name)
             opt.prepare(interpreter_path=self._interpreter_path,
                         module_path=self._module_path,
@@ -140,7 +135,7 @@ class SubModule:
             opt.run(op_path)
 
         for opt in self.unpack_opts:
-            Logging.debug(f"正在封装{self.name}-{opt.name}OP")
+            Logging.info(f"正在封装{self.name}-{opt.name}OP")
             self._serialize_op(opt)
 
     def unpack(self):

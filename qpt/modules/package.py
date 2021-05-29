@@ -5,24 +5,54 @@
 
 import os
 import sys
-import zipfile
 
-from qpt.modules.base import SubModule, SubModuleOpt, HIGH_LEVEL_REDUCE, GENERAL_LEVEL_REDUCE
+from qpt.modules.base import SubModule, SubModuleOpt, HIGH_LEVEL, TOP_LEVEL_REDUCE, GENERAL_LEVEL_REDUCE
 from qpt.kernel.tools.log_op import Logging
 from qpt.kernel.tools.interpreter import PipTools
 from qpt.kernel.tools.os_op import get_qpt_tmp_path
+from qpt._compatibility import com_configs
 
 pip = PipTools()
 
+
+def set_pip_tools(lib_package_path=None,
+                  source: str = "https://pypi.tuna.tsinghua.edu.cn/simple"):
+    """
+    设置全局pip工具组件
+    :param lib_package_path: pip所在位置
+    :param source: 镜像源地址
+    """
+    global pip
+    pip = PipTools(lib_packages_path=lib_package_path, source=source)
+
+
+# 第三方库部署方式
 LOCAL_DOWNLOAD_DEPLOY_MODE = "为用户准备Whl包，首次启动时会自动安装，可能会有兼容性问题"
 LOCAL_INSTALL_DEPLOY_MODE = "[不推荐]预编译第三方库，首次启动无需安装但将额外消耗硬盘空间，可能会有兼容性问题"
 ONLINE_DEPLOY_MODE = "在线安装Python第三方库"
 DEFAULT_DEPLOY_MODE = LOCAL_DOWNLOAD_DEPLOY_MODE
 
+# 第三方库下载版本
+PACKAGE_FOR_PYTHON38_VERSION = "3.8"
+DEFAULT_PACKAGE_FOR_PYTHON_VERSION = PACKAGE_FOR_PYTHON38_VERSION
+
 
 def set_default_deploy_mode(mode):
+    """
+    设置全局部署方式
+    :param mode: 部署方式
+    """
     global DEFAULT_DEPLOY_MODE
     DEFAULT_DEPLOY_MODE = mode
+
+
+def set_default_package_for_python_version(version):
+    """
+    设置全局下载的Python包默认解释器版本号
+    :param version: Python版本号
+    """
+    global DEFAULT_PACKAGE_FOR_PYTHON_VERSION
+    DEFAULT_PACKAGE_FOR_PYTHON_VERSION = version
 
 
 class DownloadWhlOpt(SubModuleOpt):
@@ -31,6 +61,7 @@ class DownloadWhlOpt(SubModuleOpt):
                  version: str = None,
                  no_dependent=False,
                  find_links: str = None,
+                 python_version=DEFAULT_PACKAGE_FOR_PYTHON_VERSION,
                  opts: str = None):
         super().__init__()
         self.package = package
@@ -38,6 +69,7 @@ class DownloadWhlOpt(SubModuleOpt):
         self.find_links = find_links
         self.opts = opts
         self.version = version
+        self.python_version = python_version
 
     def act(self) -> None:
         pip.download_package(self.package,
@@ -45,6 +77,7 @@ class DownloadWhlOpt(SubModuleOpt):
                              save_path=os.path.join(self.module_path, "opt/packages"),
                              no_dependent=self.no_dependent,
                              find_links=self.find_links,
+                             python_version=self.python_version,
                              opts=self.opts)
 
 
@@ -72,17 +105,31 @@ class OnlineInstallWhlOpt(SubModuleOpt):
     def __init__(self,
                  package: str,
                  version: str = None,
+                 to_module_env_path=True,
+                 to_python_env_version=DEFAULT_PACKAGE_FOR_PYTHON_VERSION,
                  no_dependent=False,
                  find_links: str = None,
                  opts: str = None):
         super().__init__(disposable=True)
         self.package = package
+        self.to_module_env = to_module_env_path
         self.no_dependent = no_dependent
         self.find_links = find_links
         self.opts = opts
         self.version = version
+        if to_python_env_version:
+            assert to_module_env_path, "安装在当前环境则不需要设置Python版本号参数to_python_env_version。" \
+                                       "若需要安装其它位置，请设置to_module_env_path参数使包安装在其它位置。"
+            self.to_python_env_version = DEFAULT_PACKAGE_FOR_PYTHON_VERSION
 
     def act(self) -> None:
+        if self.to_module_env:
+            if not self.opts:
+                self.opts = ""
+            self.opts += "--target " + os.path.join(self.interpreter_path,
+                                                    com_configs["RELATIVE_INTERPRETER_SITE_PACKAGES_PATH"])
+            if self.to_python_env_version:
+                self.opts += f" --python-version {self.to_python_env_version} --only-binary :all:"
         pip.pip_package_shell(self.package,
                               act="install",
                               version=self.version,
@@ -140,7 +187,8 @@ class RequirementsPackage(SubModule):
                                                     no_dependent=False))
         elif deploy_mode == LOCAL_INSTALL_DEPLOY_MODE:
             self.add_pack_opt(OnlineInstallWhlOpt(package=requirements_file_path,
-                                                  no_dependent=False))
+                                                  no_dependent=False,
+                                                  to_module_env_path=True))
 
 
 class AutoRequirementsPackage(RequirementsPackage):
@@ -173,13 +221,22 @@ class AutoRequirementsPackage(RequirementsPackage):
                          deploy_mode=deploy_mode)
 
 
-class QPTDependencyPackage(RequirementsPackage):
+class QPTDependencyPackage(SubModule):
     def __init__(self):
-        self.level = HIGH_LEVEL_REDUCE
+        self.level = TOP_LEVEL_REDUCE
+        super().__init__(name=None)
         # ToDO 修改qpt_dependency.txt文件
-        dependency_path = os.path.join(os.path.split(__file__)[0], "qpt_dependency.txt")
-        super().__init__(requirements_file_path=dependency_path,
-                         deploy_mode=LOCAL_INSTALL_DEPLOY_MODE)
+        kernel_dependency_path = os.path.join(os.path.split(__file__)[0], "qpt_kernel_dependency.txt")
+        lazy_dependency_path = os.path.join(os.path.split(__file__)[0], "qpt_lazy_dependency.txt")
+        kernel = "-r " + kernel_dependency_path
+        lazy = "-r " + lazy_dependency_path
+        self.add_pack_opt(OnlineInstallWhlOpt(package=kernel,
+                                              no_dependent=False,
+                                              to_module_env_path=True))
+        self.add_pack_opt(DownloadWhlOpt(package=lazy,
+                                         no_dependent=False))
+        self.add_unpack_opt(LocalInstallWhlOpt(package=lazy,
+                                               no_dependent=False))
 
 
 class PaddlePaddlePackage(CustomPackage):

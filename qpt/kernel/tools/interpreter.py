@@ -4,10 +4,10 @@
 # Please indicate the source for reprinting.
 import os
 import sys
-from pip import main as pip_main
 
-from qpt.kernel.tools.os_op import StdOutWrapper
-from qpt.kernel.tools.pipreqs.pipreqs import make_requirements
+from qpt.kernel.tools.os_op import StdOutWrapper, dynamic_load_package
+
+SPECIAL_PACKAGES = {"pyqt5-sip": "PyQt5"}
 
 
 class PipTools:
@@ -15,14 +15,20 @@ class PipTools:
     Python解释器管理器
     """
 
-    def __init__(self, source: str = "https://pypi.tuna.tsinghua.edu.cn/simple"):
+    def __init__(self,
+                 source: str = "https://pypi.tuna.tsinghua.edu.cn/simple",
+                 lib_packages_path=None):
+        if lib_packages_path:
+            pip_main = dynamic_load_package(packages_name="pip", lib_packages_path=lib_packages_path).main
+        else:
+            from pip import main as pip_main
+        self.pip_main = pip_main
         self.source = source
         # ToDo 增加环境管理部分 - 可考虑生成软链
         pass
 
-    @staticmethod
-    def pip_shell(shell):
-        pip_main(shell.split(" "))
+    def pip_shell(self, shell):
+        self.pip_main(shell.split(" "))
 
     def pip_package_shell(self,
                           package: str = None,
@@ -53,10 +59,16 @@ class PipTools:
                          version: str = None,
                          no_dependent=False,
                          find_links: str = None,
+                         python_version: str = None,
                          opts: str = None):
         d_opts = "-d " + save_path
+        if python_version:
+            d_opts += " --python-version " + python_version
+
         if opts:
             d_opts += " " + opts
+
+        d_opts += " --only-binary=:all:"
         self.pip_package_shell(package=package,
                                version=version,
                                act="download",
@@ -81,6 +93,8 @@ class PipTools:
                                opts=i_opts)
 
     def analyze_dependence(self, analyze_path, save_file_path=None, return_path=False):
+        from qpt.kernel.tools.pipreqs.pipreqs import make_requirements
+
         if save_file_path is None:
             save_file_path = os.path.join(analyze_path, "requirements_with_opt.txt")
 
@@ -102,12 +116,24 @@ class PipTools:
         requirements_dict_pip = self.analyze_requirements_file(save_file_path)
 
         # 以pip为基准匹配版本号
-        requirements = "".join(
-            [package + "==" + requirements_dict_pip[package] + "\n" for package in requirements_dict_search
-             if package in requirements_dict_pip])
+        requirements = {"existent": "", "non-existent": ""}
+        for package in requirements_dict_pip:
+            if package in requirements_dict_search:
+                requirements["existent"] += package + "==" + requirements_dict_pip[package] + "\n"
+            elif package.lower() in requirements_dict_search:
+                requirements["existent"] += package + "==" + requirements_dict_pip[package.lower()] + "\n"
+            else:
+                requirements["non-existent"] += "# " + package + "\n"
 
         with open(save_file_path, "w", encoding="utf-8") as req_file:
-            req_file.write(requirements)
+            req_file.write("# 以下是QPT自动推导出的包列表 - 此处可无视主包中的依赖包，只关心主要包情况即可\n"
+                           "# 例如paddlepaddle依赖Pillow，即使Pillow在下方被注释，但在封装时依旧会被打包\n"
+                           "# ---------------------------------------------------------------------\n"
+                           "# QPT源码:        https://github.com/GT-ZhangAcer/QPT\n"
+                           "# ---------------------------------------------------------------------\n"
+                           "# \n")
+            req_file.write(requirements["existent"])
+            req_file.write(requirements["non-existent"])
 
         # 供用户检查/修改
         input(f"依赖分析完毕!\n"

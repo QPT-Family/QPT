@@ -1,4 +1,5 @@
 import paddle
+from PyQt5 import QtCore
 
 layer = paddle.nn.Linear(in_features=1, out_features=1)
 

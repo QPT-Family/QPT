@@ -1,14 +1,27 @@
 import shutil
-import subprocess
 import ctypes
 import os
 import sys
 import tempfile
 import io
+from importlib import util
 
 import wget
 
 from qpt.kernel.tools.log_op import Logging
+
+
+def dynamic_load_package(packages_name, lib_packages_path):
+    """
+    动态加载Python包
+    :param packages_name: 包名
+    :param lib_packages_path: site-packages路径/包所在的目录
+    :return: Python包
+    """
+    module_spec = util.find_spec("pip", lib_packages_path)
+    module = util.module_from_spec(module_spec)
+    module_spec.loader.exec_module(module)
+    return module
 
 
 def add_ua():

@@ -15,34 +15,6 @@ namespace QPTLauncher
             string launcherPath = Environment.CurrentDirectory;
             Console.WriteLine("当前目录为：" + launcherPath);
 
-            // [1kb QPT支持] ToDO 增加QPT_HOME检测
-
-            //// 常规启动方式
-            //if (args.Length == 0)
-            //{
-            //    //p.StartInfo.FileName = Path.Combine(launcherPath, @"Python/python.exe");
-            //    p.StartInfo.FileName = "python";
-            //    Console.WriteLine("Python解释器路径：" + Path.Combine(launcherPath, @"Python\python.exe"));
-            //    p.StartInfo.Arguments =
-            //        @"-c '''
-            //    import os
-            //    sys.path.append('" + Path.Combine(launcherPath, @"Python\Lib\site-packages") + @"')
-
-            //    from qpt.executor import RunExecutableModule
-
-            //    module = RunExecutableModule(" + launcherPath + @")
-            //    module.run()
-            //    '''";
-            //
-            //    p.StartInfo.Arguments = " -c print(1)";
-            //}
-            // ToDO qpt启动方式
-            //else
-            //{
-            //     ToDO抓环境变量然后启动解释器
-            //    p.StartInfo.FileName = Path.Combine(launcherPath, @"Python/python.exe");
-            //    p.StartInfo.Arguments = @"D:\Python_Projects\QPT\qpt\gui\qpt_start.py " + args[0];
-            //}
             string python_file_path = Path.Combine(launcherPath, @"Python/python.exe");
             p.StartInfo.FileName = python_file_path;
             if (!File.Exists(python_file_path))
@@ -52,7 +24,8 @@ namespace QPTLauncher
             }
 
             p.StartInfo.Arguments = "-c " + "\"import qpt.run as run\n\"";
-            p.StartInfo.UseShellExecute = true;
+            // p.StartInfo.Arguments = "-m pip list";
+            p.StartInfo.UseShellExecute = false;
             //p.StartInfo.RedirectStandardOutput = true;
             //p.StartInfo.RedirectStandardInput = true;
             //p.StartInfo.RedirectStandardError = true;

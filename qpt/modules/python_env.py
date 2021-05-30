@@ -3,6 +3,7 @@ import sys
 import zipfile
 
 from qpt.modules.base import SubModule, SubModuleOpt, TOP_LEVEL
+from qpt.modules.package import set_default_package_for_python_version
 from qpt.kernel.tools.log_op import Logging
 from qpt.kernel.tools.os_op import download, get_qpt_tmp_path
 from qpt._compatibility import com_configs
@@ -19,9 +20,17 @@ PYTHON_ENV_MODE_SPEED_FIRST = "预先解压好Python环境，占用部分硬盘�
 PYTHON_ENV_MODE_PACKAGE_VOLUME_FIRST = "封装后保留压缩的Python环境以减少硬盘资源占用"
 PYTHON_ENV_MODE_ONLINE_INSTALLATION = "不封装Python环境，用户使用时在线进行下载并部署"
 
-RESOURCES_URLS = {"Python3.8Env": "https://bj.bcebos.com/v1/ai-studio-online/000b6ef8041b4e8f9a081"
-                                  "369c1cad85938689722428b451c850c19133f293347?responseContentDisp"
-                                  "osition=attachment%3B%20filename%3DPython%233.8%23.zip"}
+RESOURCES_URLS = {"Python3.7Env-E": "https://bj.bcebos.com/v1/ai-studio-online/d2f7d32b62764ff88db21a5268335c3719"
+                                    "aae6edd36445d0bb1aa846f2c035c3?responseContentDisposition=attachment%3B%20"
+                                    "filename%3DPython%233.7.9%23.zip",
+                  "Python3.8Env": "https://bj.bcebos.com/v1/ai-studio-online/412288a0a9414898a3dd84da65a2e5007"
+                                  "f3b38bf30444268b5946ee096741f02?responseContentDisposition=attachment%3B%20"
+                                  "filename%3DPython%233.8.10%23.zip",
+                  "Python3.9Env": "https://bj.bcebos.com/v1/ai-studio-online/ddf55cf667f141fc98c0e10d836677545"
+                                  "9a778565feb4ad9ba8e2019721d62ce?responseContentDisposition=attachment%3B%20"
+                                  "filename%3DPython%233.9.5%23.zip"}
+
+DEFAULT_PYTHON_IMAGE_VERSION = "3.8"
 
 
 class PackPythonEnvOpt(SubModuleOpt):
@@ -84,6 +93,30 @@ class BasePythonEnv(SubModule):
         self.add_pack_opt(PackPythonEnvOpt(url=url, mode=mode))
         self.add_unpack_opt(UnPackPythonEnvOpt(url=url, mode=mode))
         self.python_version = "非标准的PythonSubModule，需指定版本号"
+
+
+class AutoPythonEnv(BasePythonEnv):
+    def __init__(self, mode=PYTHON_ENV_MODE_SPEED_FIRST):
+        import platform
+        version = platform.python_version()
+        Logging.info(f"当前解释器版本为{version}，正在向QPT查询是否存在合适的Python镜像...")
+        # 截断版本号，只保留两位
+        version = "".join([v if version_index == 1 else v + "."
+                           for version_index, v in enumerate(version.split(".")[:2])])
+        resources_name = f"Python{version}Env"
+        if resources_name in RESOURCES_URLS:
+            Logging.info(f"已在QPT中找到{resources_name}镜像")
+        else:
+            Logging.warning(f"未在QPT中找到{resources_name}镜像，QPT目前提供的Python镜像版本有限，"
+                            f"请尽可能使用Python3.8/Python3.9等主流Python版本进行打包。"
+                            f"已强制设置目标版本号为{DEFAULT_PYTHON_IMAGE_VERSION}，可能存在以下兼容性问题：\n"
+                            f"1. Pip只接受具备对应版本的Whl依赖安装包。"
+                            f"2. 如*.gz的非二进制依赖安装包等均可能无法直接通过当前环境下的Pip自动下载，可能需要手动下载对应包并放置于"
+                            f"“输出目录/opt/packages”目录下")
+            set_default_package_for_python_version(DEFAULT_PYTHON_IMAGE_VERSION)
+        url = RESOURCES_URLS[resources_name]
+        super().__init__(name=None, url=url, mode=mode)
+        self.python_version = version
 
 
 class Python38(BasePythonEnv):

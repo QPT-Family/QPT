@@ -369,10 +369,32 @@ def make_requirements(path):
                                  encoding=encoding,
                                  extra_ignore_dirs=None,
                                  follow_links=True)
+
+    # dependents_candidates = dict()
+    # models = list()
+    # for candidate_id, candidate in enumerate(candidates):
+    #     exec(f"import {candidate} as dependent_module\n"
+    #          f"models.append(dependent_module)", {"models": models})
+    #     dependent_file_path = models[candidate_id].__file__
+    #     dependent_path = os.path.split(dependent_file_path)[0]
+    #     dependent_candidates = get_all_imports(dependent_path,
+    #                                            encoding=encoding,
+    #                                            extra_ignore_dirs=None,
+    #                                            follow_links=True)
+    #     if candidate in dependent_candidates:
+    #         dependent_candidates.remove(candidate)
+    #     dependent_candidates = get_pkg_names(dependent_candidates)
+    #     dependent_packages_name = get_import_local(dependent_candidates)
+    #     dependent_packages_name = dict([(item["name"].replace("_", "-"), item["version"])
+    #                                     for item in dependent_packages_name])
+    #     dependents_candidates[candidate] = dependent_packages_name
+
     candidates = get_pkg_names(candidates)
 
     local = get_import_local(candidates)
     # Get packages that were not found locally
 
-    out = dict([(item["name"].replace("_", "-"), item["version"]) for item in local])
-    return out
+    local_package = dict([(item["name"].replace("_", "-"), item["version"]) for item in local])
+    return local_package
+
+

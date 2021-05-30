@@ -6,8 +6,6 @@ import tempfile
 import io
 from importlib import util
 
-import wget
-
 from qpt.kernel.tools.log_op import Logging
 
 
@@ -41,11 +39,19 @@ def set_qpt_env_var(path):
 
 
 def download(url, path, file_name, clean=False):
+    import wget
     if not os.path.exists(path):
         os.makedirs(path)
     file_path = os.path.join(path, file_name)
     if not os.path.exists(file_path) or clean:
-        wget.download(url, out=file_path)
+        try:
+            wget.download(url, out=file_path)
+        except Exception as e:
+            Logging.error(f"无法下载文件，请检查网络是否可以连接以下链接\n"
+                          f"{url}\n"
+                          f"若该文件由QPT提供，请升级QPT版本，若版本升级后仍未解决可在以下地址提交issue反馈该情况\n"
+                          f"https://github.com/GT-ZhangAcer/QPT/issues")
+            raise Exception("文件下载失败，报错如下：" + str(e))
 
 
 def get_qpt_tmp_path(dir_name, clean=False):

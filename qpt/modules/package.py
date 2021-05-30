@@ -28,13 +28,13 @@ def set_pip_tools(lib_package_path=None,
 
 # 第三方库部署方式
 LOCAL_DOWNLOAD_DEPLOY_MODE = "为用户准备Whl包，首次启动时会自动安装，可能会有兼容性问题"
-LOCAL_INSTALL_DEPLOY_MODE = "[不推荐]预编译第三方库，首次启动无需安装但将额外消耗硬盘空间，可能会有兼容性问题"
+LOCAL_INSTALL_DEPLOY_MODE = "[不推荐]预编译第三方库，首次启动无需安装但将额外消耗硬盘空间，可能会有兼容性问题并且只支持二进制包"
 ONLINE_DEPLOY_MODE = "在线安装Python第三方库"
 DEFAULT_DEPLOY_MODE = LOCAL_DOWNLOAD_DEPLOY_MODE
 
 # 第三方库下载版本
 PACKAGE_FOR_PYTHON38_VERSION = "3.8"
-DEFAULT_PACKAGE_FOR_PYTHON_VERSION = PACKAGE_FOR_PYTHON38_VERSION
+DEFAULT_PACKAGE_FOR_PYTHON_VERSION = None  # None表示不设置
 
 
 def set_default_deploy_mode(mode):
@@ -94,6 +94,7 @@ class LocalInstallWhlOpt(SubModuleOpt):
         self.version = version
 
     def act(self) -> None:
+        # ToDO 需考虑文件不被序列化的情况
         pip.install_local_package(self.package,
                                   version=self.version,
                                   whl_dir=os.path.join(self.module_path, "opt/packages"),
@@ -117,6 +118,7 @@ class OnlineInstallWhlOpt(SubModuleOpt):
         self.find_links = find_links
         self.opts = opts
         self.version = version
+        self.to_python_env_version = to_python_env_version
         if to_python_env_version:
             assert to_module_env_path, "安装在当前环境则不需要设置Python版本号参数to_python_env_version。" \
                                        "若需要安装其它位置，请设置to_module_env_path参数使包安装在其它位置。"

@@ -23,7 +23,11 @@ namespace QPTLauncher
                 Console.ReadKey();
             }
 
-            p.StartInfo.Arguments = "-c " + "\"import qpt.run as run\n\"";
+            p.StartInfo.Arguments = "-c " + "\"import sys\n" +
+                "sys.path.append('./Python')\n" +
+                "sys.path.append('./Python/Lib/site-packages')\n" +
+                "sys.path.append('./Python/Scripts')\n" +
+                "import qpt.run as run\n\"";
             // p.StartInfo.Arguments = "-m pip list";
             p.StartInfo.UseShellExecute = false;
             //p.StartInfo.RedirectStandardOutput = true;

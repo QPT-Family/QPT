@@ -7,8 +7,6 @@ import sys
 
 from qpt.kernel.tools.os_op import StdOutWrapper, dynamic_load_package
 
-SPECIAL_PACKAGES = {"pyqt5-sip": "PyQt5"}
-
 
 class PipTools:
     """
@@ -28,6 +26,7 @@ class PipTools:
         pass
 
     def pip_shell(self, shell):
+        shell += " --isolated --disable-pip-version-check"
         self.pip_main(shell.split(" "))
 
     def pip_package_shell(self,
@@ -64,11 +63,13 @@ class PipTools:
         d_opts = "-d " + save_path
         if python_version:
             d_opts += " --python-version " + python_version
+            d_opts += " --only-binary :all:"
 
         if opts:
             d_opts += " " + opts
 
-        d_opts += " --only-binary=:all:"
+        # pip download xxx -d ./test
+        # pip install xxx -f ./test --no-deps
         self.pip_package_shell(package=package,
                                version=version,
                                act="download",

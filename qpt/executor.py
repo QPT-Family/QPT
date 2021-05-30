@@ -8,14 +8,11 @@ from typing import List
 from qpt._compatibility import com_configs
 
 from qpt.modules.base import SubModule
-from qpt.modules.python_env import BasePythonEnv, Python38
+from qpt.modules.python_env import BasePythonEnv, AutoPythonEnv
 from qpt.modules.package import AutoRequirementsPackage, QPTDependencyPackage, DEFAULT_DEPLOY_MODE, \
     set_default_package_for_python_version
 
-from qpt.kernel.tools.qpt_qt import QTerminal, MessageBoxTerminalCallback
 from qpt.kernel.tools.log_op import Logging
-from qpt.gui.qpt_start import Welcome
-from qpt.gui.qpt_run_gui import run_gui
 
 
 class CreateExecutableModule:
@@ -26,7 +23,7 @@ class CreateExecutableModule:
                  auto_dependency=True,
                  deploy_mode=DEFAULT_DEPLOY_MODE,
                  sub_modules: List[SubModule] = None,
-                 interpreter_module: BasePythonEnv = Python38(),
+                 interpreter_module: BasePythonEnv = AutoPythonEnv(),
                  module_name="未命名模型",
                  version="未知版本号",
                  author="未知作者",
@@ -55,8 +52,8 @@ class CreateExecutableModule:
         self.lib_package_path = os.path.join(self.interpreter_path,
                                              com_configs["RELATIVE_INTERPRETER_SITE_PACKAGES_PATH"])
 
-        # 设置全局下载的Python包默认解释器版本号
-        set_default_package_for_python_version(interpreter_module.python_version)
+        # 设置全局下载的Python包默认解释器版本号 - 更换兼容性方案
+        # set_default_package_for_python_version(interpreter_module.python_version)
 
         # 获取SubModule列表
         self.lazy_module = [interpreter_module, QPTDependencyPackage()]
@@ -70,8 +67,8 @@ class CreateExecutableModule:
                                                              deploy_mode=deploy_mode)
             self.sub_module.append(auto_dependency_module)
 
-        # 初始化终端
-        self.terminal = QTerminal()
+        # 初始化终端 - 占位 待lazy_module执行完毕后生成终端（依赖Qt lazy module）
+        self.terminal = None
 
     # ToDO 增加对子工作目录支持
     # def add_sub_workdir(self, path):
@@ -95,8 +92,12 @@ class CreateExecutableModule:
     def _solve_module(self, lazy=False):
         if lazy:
             modules = self.lazy_module
+            terminal = None
         else:
+            from qpt.kernel.tools.qpt_qt import QTerminal, MessageBoxTerminalCallback
+            self.terminal = QTerminal()
             modules = self.sub_module
+            terminal = self.terminal.shell_func(callback=MessageBoxTerminalCallback())
         for sub in modules:
             # ToDO设置序列化路径
             sub._module_path = self.module_path
@@ -104,7 +105,7 @@ class CreateExecutableModule:
             sub.prepare(work_dir=self.work_dir,
                         interpreter_path=os.path.join(self.module_path, "Python"),
                         module_path=self.module_path,
-                        terminal=self.terminal.shell_func(callback=MessageBoxTerminalCallback()))
+                        terminal=terminal)
             sub.pack()
 
             # 保护用户侧接触不到的模块不被泄漏模块名
@@ -157,27 +158,36 @@ class RunExecutableModule:
             self.configs = eval(config_file.read())
 
         # 初始化终端
-        self.terminal = QTerminal()
+        self.terminal = None
+
+        # 获取Module
+        self.lazy_module = self.configs["lazy_module"]
+        self.sub_module = self.configs["sub_module"]
 
     def solve_qpt_env(self):
         # ToDO 增加NoneGUI模式
         if self.configs["none_gui"] is False:
-            run_gui(Welcome)
+            pass
 
     def solve_python_env(self):
         # ToDO 解决集市部分包管理问题
         pass
 
-    def solve_sub_module(self, sub_name_list):
-        """
-        执行子模块
-        """
-        for sub_name in sub_name_list:
+    def _solve_module(self, lazy=False):
+        if lazy:
+            modules = self.lazy_module
+            terminal = None
+        else:
+            from qpt.kernel.tools.qpt_qt import QTerminal, MessageBoxTerminalCallback
+            self.terminal = QTerminal()
+            modules = self.sub_module
+            terminal = self.terminal.shell_func(callback=MessageBoxTerminalCallback())
+        for sub_name in modules:
             sub_module = SubModule(sub_name)
             sub_module.prepare(work_dir=self.work_dir,
                                interpreter_path=self.interpreter_path,
                                module_path=self.base_dir,
-                               terminal=self.terminal.shell_func(callback=MessageBoxTerminalCallback()))
+                               terminal=terminal)
             sub_module.unpack()
 
     def unzip_resources(self):
@@ -190,10 +200,10 @@ class RunExecutableModule:
 
     def run(self):
         # prepare qpt lazy module - GUI组件需要在此之后才能进行
-        self.solve_sub_module(self.configs["lazy_module"])
-
+        self._solve_module(lazy=True)
         # prepare module
-        self.solve_sub_module(self.configs["sub_module"])
+        self._solve_module()
+
         # 设置工作目录
         self.solve_work_dir()
         # 执行主程序

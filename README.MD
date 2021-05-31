@@ -1,4 +1,10 @@
 # QPT - Quick packaging tool Python快捷封装工具 Alpha
+![GitHub forks](https://img.shields.io/github/forks/GT-ZhangAcer/QPT)
+![GitHub Repo stars](https://img.shields.io/github/stars/GT-ZhangAcer/QPT)
+[![Downloads](https://static.pepy.tech/personalized-badge/qpt?period=total&units=international_system&left_color=grey&right_color=orange&left_text=Pypi%20User)](https://pepy.tech/project/qpt)
+![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/GT-ZhangAcer/QPT?include_prereleases)
+![GitHub](https://img.shields.io/github/license/GT-ZhangAcer/QPT)
+[![Upload Python Package](https://github.com/GT-ZhangAcer/RIFLE_Module/actions/workflows/python-publish.yml/badge.svg)](https://github.com/GT-ZhangAcer/RIFLE_Module/actions/workflows/python-publish.yml)
 > EAP: 当前版本为尝鲜版本，仅具备基本功能，该项目将长期维护
 
 将Python打包为EXE文件虽然是一种很非主流的事情，但不可否认的是Cz_freeze、Pyinstaller等优秀的打包工具在这些看似极端的场景下也可以脱颖而出。

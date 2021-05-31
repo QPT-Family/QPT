@@ -4,7 +4,6 @@
 # Please indicate the source for reprinting.
 
 import os
-import sys
 
 from qpt.modules.base import SubModule, SubModuleOpt, HIGH_LEVEL, TOP_LEVEL_REDUCE, GENERAL_LEVEL_REDUCE
 from qpt.kernel.tools.log_op import Logging
@@ -29,7 +28,7 @@ def set_pip_tools(lib_package_path=None,
 # 第三方库部署方式
 LOCAL_DOWNLOAD_DEPLOY_MODE = "为用户准备Whl包，首次启动时会自动安装，可能会有兼容性问题"
 LOCAL_INSTALL_DEPLOY_MODE = "[不推荐]预编译第三方库，首次启动无需安装但将额外消耗硬盘空间，可能会有兼容性问题并且只支持二进制包"
-ONLINE_DEPLOY_MODE = "在线安装Python第三方库"
+ONLINE_DEPLOY_MODE = "用户使用时在线安装Python第三方库"
 DEFAULT_DEPLOY_MODE = LOCAL_DOWNLOAD_DEPLOY_MODE
 
 # 第三方库下载版本
@@ -178,6 +177,9 @@ class RequirementsPackage(SubModule):
                  requirements_file_path,
                  deploy_mode=DEFAULT_DEPLOY_MODE):
         super().__init__(name=None)
+        # 部分情况需要序列号requirement.txt文件
+        if deploy_mode != LOCAL_DOWNLOAD_DEPLOY_MODE:
+            pass
         requirements_file_path = "-r " + requirements_file_path
         if deploy_mode == LOCAL_DOWNLOAD_DEPLOY_MODE:
             self.add_pack_opt(DownloadWhlOpt(package=requirements_file_path,
@@ -215,7 +217,7 @@ class AutoRequirementsPackage(RequirementsPackage):
                 requirements.pop(requirement)
 
         # 保存依赖至
-        requirements_path = os.path.join(get_qpt_tmp_path("cache"), "requirements_dev.txt")
+        requirements_path = os.path.join(get_qpt_tmp_path(), "requirements_dev.txt")
         pip.save_requirements_file(requirements, requirements_path)
 
         # 执行常规的安装
@@ -227,7 +229,7 @@ class QPTDependencyPackage(SubModule):
     def __init__(self):
         self.level = TOP_LEVEL_REDUCE
         super().__init__(name=None)
-        # ToDO 修改qpt_dependency.txt文件
+        # ToDO 上线后修改qpt_dependency.txt文件
         kernel_dependency_path = os.path.join(os.path.split(__file__)[0], "qpt_kernel_dependency.txt")
         lazy_dependency_path = os.path.join(os.path.split(__file__)[0], "qpt_lazy_dependency.txt")
         kernel = "-r " + kernel_dependency_path

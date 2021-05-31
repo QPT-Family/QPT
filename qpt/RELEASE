@@ -1,0 +1,6 @@
+# 发版规则
+
+1. 通过沙盒测试
+2. 修改qpt_kernel_dependency的QPT版本
+3. 修改setup中版本
+4. 修改README

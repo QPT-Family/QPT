@@ -22,7 +22,7 @@ class PipTools:
             from pip import main as pip_main
         self.pip_main = pip_main
         self.source = source
-        # ToDo 增加环境管理部分 - 可考虑生成软链
+        # ToDo 可考虑增加环境管理部分 - 可考虑生成软链
         pass
 
     def pip_shell(self, shell):

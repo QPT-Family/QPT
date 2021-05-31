@@ -6,6 +6,7 @@
 import psutil
 import pynvml
 
+
 class SubCMD:
     """
     在Python中调用Windows终端

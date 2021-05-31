@@ -16,7 +16,7 @@ def dynamic_load_package(packages_name, lib_packages_path):
     :param lib_packages_path: site-packages路径/包所在的目录
     :return: Python包
     """
-    module_spec = util.find_spec("pip", lib_packages_path)
+    module_spec = util.find_spec(packages_name, lib_packages_path)
     module = util.module_from_spec(module_spec)
     module_spec.loader.exec_module(module)
     return module
@@ -54,7 +54,13 @@ def download(url, path, file_name, clean=False):
             raise Exception("文件下载失败，报错如下：" + str(e))
 
 
-def get_qpt_tmp_path(dir_name, clean=False):
+def get_qpt_tmp_path(dir_name="QPTCache", clean=False):
+    """
+    获取一个临时目录
+    :param dir_name: 临时目录名
+    :param clean: 是否强制清空目录
+    :return: 目录路径
+    """
     base_path = tempfile.gettempdir()
     dir_path = os.path.join(base_path, "QPT_Cache", dir_name)
     if os.path.exists(dir_path) and clean:
@@ -79,3 +85,20 @@ class StdOutWrapper(io.TextIOWrapper):
 
     def flush(self):
         self.buff = ''
+
+
+class FileSerialize:
+    def __init__(self, file_path):
+        with open(file_path, "rb")as file:
+            self._data = file.read()
+
+    def get_data(self):
+        return self._data
+
+    @staticmethod
+    def serialize2file(data):
+        tmp_path = get_qpt_tmp_path()
+        file_path = os.path.join(tmp_path.name, "cache.tmp")
+        with open(file_path, "wb") as file:
+            file.write(data)
+        return file_path

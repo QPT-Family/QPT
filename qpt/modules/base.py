@@ -1,5 +1,4 @@
 import os
-import collections
 import pickle
 
 from qpt.kernel.tools.os_op import download

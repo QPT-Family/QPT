@@ -6,6 +6,7 @@ import os
 import sys
 
 from qpt.kernel.tools.os_op import StdOutWrapper, dynamic_load_package
+from qpt.kernel.tools.log_op import clean_stout
 
 
 class PipTools:
@@ -19,7 +20,7 @@ class PipTools:
         if lib_packages_path:
             pip_main = dynamic_load_package(packages_name="pip", lib_packages_path=lib_packages_path).main
         else:
-            from pip import main as pip_main
+            from pip._internal.cli.main import main as pip_main
         self.pip_main = pip_main
         self.source = source
         # ToDo 可考虑增加环境管理部分 - 可考虑生成软链
@@ -28,6 +29,7 @@ class PipTools:
     def pip_shell(self, shell):
         shell += " --isolated --disable-pip-version-check"
         self.pip_main(shell.split(" "))
+        clean_stout(['console', 'console_errors', 'console_subprocess'])
 
     def pip_package_shell(self,
                           package: str = None,

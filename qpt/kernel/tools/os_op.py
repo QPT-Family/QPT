@@ -81,7 +81,8 @@ class StdOutWrapper(io.TextIOWrapper):
     def write(self, output_stream):
         if self.do_print:
             self.buff += output_stream
-        self.container.append(output_stream)
+        if self.container is not None:
+            self.container.append(output_stream)
 
     def flush(self):
         self.buff = ''

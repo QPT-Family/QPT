@@ -9,8 +9,7 @@ from qpt._compatibility import com_configs
 
 from qpt.modules.base import SubModule
 from qpt.modules.python_env import BasePythonEnv, AutoPythonEnv
-from qpt.modules.package import AutoRequirementsPackage, QPTDependencyPackage, DEFAULT_DEPLOY_MODE, \
-    set_default_package_for_python_version
+from qpt.modules.package import AutoRequirementsPackage, QPTDependencyPackage, DEFAULT_DEPLOY_MODE
 
 from qpt.kernel.tools.log_op import Logging
 

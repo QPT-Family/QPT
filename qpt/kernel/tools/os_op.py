@@ -38,14 +38,14 @@ def set_qpt_env_var(path):
         return False
 
 
-def download(url, path, file_name, clean=False):
+def download(url, file_name, path=None, clean=False):
     import wget
     if not os.path.exists(path):
         os.makedirs(path)
     file_path = os.path.join(path, file_name)
     if not os.path.exists(file_path) or clean:
         try:
-            wget.download(url, out=file_path)
+            wget.download(url, file_path)
         except Exception as e:
             Logging.error(f"无法下载文件，请检查网络是否可以连接以下链接\n"
                           f"{url}\n"
@@ -54,7 +54,7 @@ def download(url, path, file_name, clean=False):
             raise Exception("文件下载失败，报错如下：" + str(e))
 
 
-def get_qpt_tmp_path(dir_name="QPTCache", clean=False):
+def get_qpt_tmp_path(dir_name="Cache", clean=False):
     """
     获取一个临时目录
     :param dir_name: 临时目录名
@@ -68,6 +68,12 @@ def get_qpt_tmp_path(dir_name="QPTCache", clean=False):
     else:
         os.makedirs(dir_path, exist_ok=True)
     return dir_path
+
+
+def clean_qpt_cache():
+    base_path = tempfile.gettempdir()
+    dir_path = os.path.join(base_path, "QPT_Cache")
+    shutil.rmtree(dir_path)
 
 
 class StdOutWrapper(io.TextIOWrapper):
@@ -99,7 +105,7 @@ class FileSerialize:
     @staticmethod
     def serialize2file(data):
         tmp_path = get_qpt_tmp_path()
-        file_path = os.path.join(tmp_path.name, "cache.tmp")
+        file_path = os.path.join(tmp_path, "FileSerialize.tmp")
         with open(file_path, "wb") as file:
             file.write(data)
         return file_path

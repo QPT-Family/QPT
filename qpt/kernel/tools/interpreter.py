@@ -5,7 +5,7 @@
 import os
 import sys
 
-from qpt.kernel.tools.os_op import StdOutWrapper, dynamic_load_package
+from qpt.kernel.tools.os_op import StdOutWrapper, dynamic_load_package, FileSerialize
 from qpt.kernel.tools.log_op import clean_stout
 
 
@@ -143,7 +143,8 @@ class PipTools:
               f"已在\033[32m{os.path.abspath(save_file_path)}\033[0m 中创建了依赖列表\n"
               f"Tips:查看文件后可能需要关闭查看该文件的文本查看器，这样可以有效避免文件被占用\n"
               f"---------------------------------------------------------------------\n"
-              f"请在检查/修改依赖后在此处按下回车键继续...\n")
+              f"请在检查/修改依赖后在此处按下回车键继续...\n"
+              f"请键入指令[回车键]:_")
 
         if return_path:
             return save_file_path

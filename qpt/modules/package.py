@@ -8,7 +8,7 @@ import os
 from qpt.modules.base import SubModule, SubModuleOpt, HIGH_LEVEL, TOP_LEVEL_REDUCE, GENERAL_LEVEL_REDUCE
 from qpt.kernel.tools.log_op import Logging
 from qpt.kernel.tools.interpreter import PipTools
-from qpt.kernel.tools.os_op import get_qpt_tmp_path
+from qpt.kernel.tools.os_op import get_qpt_tmp_path, FileSerialize
 from qpt._compatibility import com_configs
 
 pip = PipTools()
@@ -71,6 +71,9 @@ class DownloadWhlOpt(SubModuleOpt):
         self.python_version = python_version
 
     def act(self) -> None:
+        if "[FLAG-FileSerialize]" in self.package[:32]:
+            self.package = self.package.strip("[FLAG-FileSerialize]")
+            self.package = "-r " + FileSerialize.serialize2file(self.package)
         pip.download_package(self.package,
                              version=self.version,
                              save_path=os.path.join(self.module_path, "opt/packages"),
@@ -93,7 +96,9 @@ class LocalInstallWhlOpt(SubModuleOpt):
         self.version = version
 
     def act(self) -> None:
-        # ToDO 需考虑文件不被序列化的情况
+        if "[FLAG-FileSerialize]" in self.package[:32]:
+            self.package = self.package.strip("[FLAG-FileSerialize]")
+            self.package = "-r " + FileSerialize.serialize2file(self.package)
         pip.install_local_package(self.package,
                                   version=self.version,
                                   whl_dir=os.path.join(self.module_path, "opt/packages"),
@@ -177,17 +182,19 @@ class RequirementsPackage(SubModule):
                  requirements_file_path,
                  deploy_mode=DEFAULT_DEPLOY_MODE):
         super().__init__(name=None)
-        # 部分情况需要序列号requirement.txt文件
-        if deploy_mode != LOCAL_DOWNLOAD_DEPLOY_MODE:
-            pass
+        fs_data = ""
+        # 部分情况需要序列化requirement.txt文件
+        if deploy_mode != LOCAL_INSTALL_DEPLOY_MODE:
+            fs = FileSerialize(requirements_file_path)
+            fs_data = "[FLAG-FileSerialize]" + fs.get_data()
         requirements_file_path = "-r " + requirements_file_path
         if deploy_mode == LOCAL_DOWNLOAD_DEPLOY_MODE:
             self.add_pack_opt(DownloadWhlOpt(package=requirements_file_path,
                                              no_dependent=False))
-            self.add_unpack_opt(LocalInstallWhlOpt(package=requirements_file_path,
+            self.add_unpack_opt(LocalInstallWhlOpt(package=fs_data,
                                                    no_dependent=True))
         elif deploy_mode == ONLINE_DEPLOY_MODE:
-            self.add_unpack_opt(OnlineInstallWhlOpt(package=requirements_file_path,
+            self.add_unpack_opt(OnlineInstallWhlOpt(package=fs_data,
                                                     no_dependent=False))
         elif deploy_mode == LOCAL_INSTALL_DEPLOY_MODE:
             self.add_pack_opt(OnlineInstallWhlOpt(package=requirements_file_path,

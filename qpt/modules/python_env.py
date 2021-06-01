@@ -44,14 +44,14 @@ class PackPythonEnvOpt(SubModuleOpt):
         if self.mode == PYTHON_ENV_MODE_SPEED_FIRST:
             dir_name = get_qpt_tmp_path(os.path.join("Python", "".join(list(filter(str.isdigit, self.url)))[-10:]))
             Logging.info(f"正在下载Python解释器原文件至{dir_name}")
-            download(self.url, dir_name, "Python.zip")
+            download(self.url, "Python.zip", dir_name)
             zip_path = os.path.join(dir_name, "Python.zip")
             # 解压至输出文件夹
             with zipfile.ZipFile(zip_path) as zip_obj:
                 zip_obj.extractall(os.path.join(self.module_path, "Python"), pwd="gt_qpt".encode("utf-8"))
         elif self.mode == PYTHON_ENV_MODE_PACKAGE_VOLUME_FIRST:
             Logging.info(f"正在下载Python解释器原文件")
-            download(self.url, self.module_path, "Python.zip")
+            download(self.url, "Python.zip", self.module_path)
         elif self.mode == PYTHON_ENV_MODE_ONLINE_INSTALLATION:
             pass
 
@@ -73,7 +73,7 @@ class UnPackPythonEnvOpt(SubModuleOpt):
         elif self.mode == PYTHON_ENV_MODE_ONLINE_INSTALLATION:
             dir_name = get_qpt_tmp_path(os.path.join("Python", "".join(list(filter(str.isdigit, self.url)))[-10:]))
             Logging.debug(f"正在下载Python解释器原文件至{dir_name}")
-            download(self.url, dir_name, "Python.zip")
+            download(self.url, "Python.zip", dir_name)
             zip_path = os.path.join(dir_name, "Python.zip")
             # 解压至输出文件夹
             with zipfile.ZipFile(zip_path) as zip_obj:

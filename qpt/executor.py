@@ -5,13 +5,14 @@ import importlib
 
 from typing import List
 
+import qpt
 from qpt._compatibility import com_configs
-
 from qpt.modules.base import SubModule
 from qpt.modules.python_env import BasePythonEnv, AutoPythonEnv
 from qpt.modules.package import AutoRequirementsPackage, QPTDependencyPackage, DEFAULT_DEPLOY_MODE
 
 from qpt.kernel.tools.log_op import Logging
+from qpt.kernel.tools.os_op import clean_qpt_cache
 
 
 class CreateExecutableModule:
@@ -69,10 +70,6 @@ class CreateExecutableModule:
         # 初始化终端 - 占位 待lazy_module执行完毕后生成终端（依赖Qt lazy module）
         self.terminal = None
 
-    # ToDO 增加对子工作目录支持
-    # def add_sub_workdir(self, path):
-    #     pass
-
     def add_sub_module(self, sub_module: SubModule):
         """
         为Module添加子模块
@@ -97,6 +94,8 @@ class CreateExecutableModule:
             self.terminal = QTerminal()
             modules = self.sub_module
             terminal = self.terminal.shell_func(callback=MessageBoxTerminalCallback())
+        # 依靠优先级进行排序
+        modules.sort(key=lambda m: m.level, reverse=True)
         for sub in modules:
             # ToDO设置序列化路径
             sub._module_path = self.module_path
@@ -137,10 +136,18 @@ class CreateExecutableModule:
         with open(self.config_file_path, "w", encoding="utf-8") as config_file:
             config_file.write(str(self.configs))
 
-        # ToDO 复制启动器文件
+        # 复制启动器文件
+        launcher_dir = os.path.join(qpt.__file__, "launcher")
+        shutil.copy(launcher_dir, dst=self.module_path)
+        shutil.move(os.path.join(launcher_dir, "launcher.exe"), os.path.join(launcher_dir, "启动程序.exe"))
 
         # 结束
         Logging.info(f"制作完毕，保存位置为：{os.path.abspath(self.module_path)}")
+        Logging.info("是否需要清空QPT在打包时产生的缓存文件？若不清空则可能会在下次使用QPT时复用缓存以提升打包速度")
+        clear_key = input("[清空(Y)/保留(N)]:_")
+        if clear_key.lower() == "y":
+            clean_qpt_cache()
+            Logging.info("QPT缓存已全部清空")
 
 
 class RunExecutableModule:
@@ -164,12 +171,7 @@ class RunExecutableModule:
         self.sub_module = self.configs["sub_module"]
 
     def solve_qpt_env(self):
-        # ToDO 增加NoneGUI模式
-        if self.configs["none_gui"] is False:
-            pass
-
-    def solve_python_env(self):
-        # ToDO 解决集市部分包管理问题
+        # ToDO 集市部分代码
         pass
 
     def _solve_module(self, lazy=False):
@@ -181,6 +183,8 @@ class RunExecutableModule:
             self.terminal = QTerminal()
             modules = self.sub_module
             terminal = self.terminal.shell_func(callback=MessageBoxTerminalCallback())
+        # ToDO 设计个进度条
+
         for sub_name in modules:
             sub_module = SubModule(sub_name)
             sub_module.prepare(work_dir=self.work_dir,
@@ -214,6 +218,6 @@ class RunExecutableModule:
             replace("\\", "."). \
             replace("/", ".")
         # 需提醒用户避免使用if __name__ == '__main__':
-        # ToDO 必要时自动替换对应字段，并生成类似混淆名称的函数，在程序末尾执行run
+        # ToDO 必要时删除该字段并代码块整体缩进一格
         lib = importlib.import_module(main_lib_path)
         input("QPT执行完毕，请按任意键退出")

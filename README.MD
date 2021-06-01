@@ -64,7 +64,7 @@ if __name__ == '__main__':
     module.make()
 ```
 关于CreateExecutable Module用法可见[文档手册](https://github.com/GT-ZhangAcer/QPT#%E6%96%87%E6%A1%A3%E6%89%8B%E5%86%8C)
-### Step3 调试 - 测试在当前环境下是否可以正常执行/达到预期
+## 调试流程 - 测试在当前环境下是否可以正常执行/达到预期
 ```python
 from qpt.executor import RunExecutableModule
 
@@ -76,6 +76,7 @@ if __name__ == '__main__':
 
 ### Step4 实测程序是否可以正常执行
 此处晚上在写
+
 ## 文档手册
 还没写
 ## 设计思想  

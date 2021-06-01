@@ -137,15 +137,15 @@ class CreateExecutableModule:
             config_file.write(str(self.configs))
 
         # 复制启动器文件
-        launcher_dir = os.path.join(qpt.__file__, "launcher")
-        shutil.copy(launcher_dir, dst=self.module_path)
-        shutil.move(os.path.join(launcher_dir, "launcher.exe"), os.path.join(launcher_dir, "启动程序.exe"))
+        launcher_dir = os.path.join(os.path.split(qpt.__file__)[0], "ext/launcher")
+        shutil.copytree(launcher_dir, dst=self.module_path, dirs_exist_ok=True)
+        os.rename(os.path.join(self.module_path, "QPT_launcher.exe"), os.path.join(self.module_path, "启动程序.exe"))
 
         # 结束
         Logging.info(f"制作完毕，保存位置为：{os.path.abspath(self.module_path)}")
-        Logging.info("是否需要清空QPT在打包时产生的缓存文件？若不清空则可能会在下次使用QPT时复用缓存以提升打包速度")
-        clear_key = input("[清空(Y)/保留(N)]:_")
-        if clear_key.lower() == "y":
+        Logging.info("是否需要保留QPT在打包时产生的缓存文件？若不清空则可能会在下次使用QPT时复用缓存以提升打包速度")
+        clear_key = input("[保留(Y)/清空(N)]:_")
+        if clear_key.lower() == "n":
             clean_qpt_cache()
             Logging.info("QPT缓存已全部清空")
 

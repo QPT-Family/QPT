@@ -21,15 +21,15 @@ PYTHON_ENV_MODE_PACKAGE_VOLUME_FIRST = "[暂不支持]封装后保留压缩的Py
 PYTHON_ENV_MODE_ONLINE_INSTALLATION = "[暂不支持]不封装Python环境，用户使用时在线进行下载并部署"
 DEFINE_PYTHON_ENV_MODE = PYTHON_ENV_MODE_SPEED_FIRST
 
-RESOURCES_URLS = {"Python3.7Env": "https://bj.bcebos.com/v1/ai-studio-online/d2f7d32b62764ff88db21a5268335c3719"
-                                  "aae6edd36445d0bb1aa846f2c035c3?responseContentDisposition=attachment%3B%20"
-                                  "filename%3DPython%233.7.9%23.zip",
-                  "Python3.8Env": "https://bj.bcebos.com/v1/ai-studio-online/412288a0a9414898a3dd84da65a2e5007"
-                                  "f3b38bf30444268b5946ee096741f02?responseContentDisposition=attachment%3B%20"
-                                  "filename%3DPython%233.8.10%23.zip",
-                  "Python3.9Env": "https://bj.bcebos.com/v1/ai-studio-online/ddf55cf667f141fc98c0e10d836677545"
-                                  "9a778565feb4ad9ba8e2019721d62ce?responseContentDisposition=attachment%3B%20"
-                                  "filename%3DPython%233.9.5%23.zip"}
+RESOURCES_URLS = {"Python3.7Env-E": "https://bj.bcebos.com/v1/ai-studio-online/5077c69b480d41c9a63d3fbad550e1d"
+                                    "d975a319abb8f484b9b5de933fcc41808?responseContentDisposition=attachment%3B%20"
+                                    "filename%3DPython3.7.9.zip",
+                  "Python3.8Env": "https://bj.bcebos.com/v1/ai-studio-online/7e52a71dbf1744eb9ede86b079df3039"
+                                  "01b97ed580454eb79f23b5fc27d50bfa?responseContentDisposition=attachment%3B%20"
+                                  "filename%3DPython3.8.10.zip",
+                  "Python3.9Env": "https://bj.bcebos.com/v1/ai-studio-online/137676ad57d14871a0fd7359c0a0d46c0"
+                                  "44752e07b1e465880fcff362311766c?responseContentDisposition=attachment%3B%20"
+                                  "filename%3DPython3.9.5.zip"}
 
 DEFAULT_PYTHON_IMAGE_VERSION = "3.8"
 
@@ -110,6 +110,7 @@ class BasePythonEnv(SubModule):
         super().__init__(name, level=TOP_LEVEL)
         self.add_pack_opt(PackPythonEnvOpt(url=url, mode=mode))
         self.add_unpack_opt(UnPackPythonEnvOpt(url=url, mode=mode))
+        self.python_version = "非标准的PythonSubModule，需指定版本号"
 
 
 class AutoPythonEnv(BasePythonEnv):

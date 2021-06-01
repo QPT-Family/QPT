@@ -96,7 +96,7 @@ class StdOutWrapper(io.TextIOWrapper):
 
 class FileSerialize:
     def __init__(self, file_path):
-        with open(file_path, "rb")as file:
+        with open(file_path, "r", encoding="utf-8")as file:
             self._data = file.read()
 
     def get_data(self):
@@ -106,6 +106,6 @@ class FileSerialize:
     def serialize2file(data):
         tmp_path = get_qpt_tmp_path()
         file_path = os.path.join(tmp_path, "FileSerialize.tmp")
-        with open(file_path, "wb") as file:
+        with open(file_path, "w", encoding="utf-8") as file:
             file.write(data)
         return file_path

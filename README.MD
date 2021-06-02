@@ -69,7 +69,7 @@ if __name__ == '__main__':
 from qpt.executor import RunExecutableModule
 
 if __name__ == '__main__':
-    module = RunExecutableModule("./out")   # "./out"就是刚刚打包后相关文件的输出目录
+    module = RunExecutableModule("./out/Debug")   # "./out/Debug"就是刚刚打包后输出目录的Debug目录
     module.run()
 ```
 常见Debug教程详见：还没写
@@ -100,10 +100,10 @@ if __name__ == '__main__':
 
 ## 开源协议
 本项目使用GNU LESSER GENERAL PUBLIC LICENSE(LGPL)开源协议。  
-###补充内容：
+### 补充内容：
 1. 在“未修改QPT本体源码”且“仅使用QPT对个人软件进行打包”的情况时可认定该类项目是“借助了QPT的作品”，该情况下可像正常的自由软件一样使用，并且无需申请QPT授权以及更换个人代码仓库完整的开源协议。  
 2. 相反，若对QPT本体进行了修改等操作会被认为该项目是QPT的“衍生品”，此时需要向本仓库进行申请许可并在QPT部分保留LGPL开源协议副本等LGPL开源协议中要求的内容。
 
-###Example：
+### Example：
 1. 小张使用QPT打包了自己的“强化学习小游戏”，仅仅使用了QPT代码，并未对QPT本体进行进行修改，那么小张可像正常的自由软件一样使用，并且无需申请QPT授权以及更换个人代码仓库完整的开源协议。   
 2. 小王clone了QPT代码，并修改了"executor.py"文件且增加了少许代码进行发布。尽管这些代码非恶意代码，但为了保证开发者和使用者权益和安全，在未取得QPT授权的情况下需要开源完整的源代码等LGPL协议中所要求的内容。

@@ -5,7 +5,7 @@
 import os
 import sys
 
-from qpt.kernel.tools.os_op import StdOutWrapper, dynamic_load_package, FileSerialize
+from qpt.kernel.tools.os_op import StdOutWrapper, dynamic_load_package, get_qpt_tmp_path
 from qpt.kernel.tools.log_op import clean_stout
 
 
@@ -27,7 +27,7 @@ class PipTools:
         pass
 
     def pip_shell(self, shell):
-        shell += " --isolated --disable-pip-version-check"
+        shell += f" --isolated --disable-pip-version-check --cache-dir{get_qpt_tmp_path('pip_cache')}"
         self.pip_main(shell.split(" "))
         clean_stout(['console', 'console_errors', 'console_subprocess'])
 

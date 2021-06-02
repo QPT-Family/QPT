@@ -2,6 +2,7 @@ import os
 import sys
 import shutil
 import importlib
+import datetime
 
 from typing import List
 
@@ -93,6 +94,7 @@ class CreateExecutableModule:
     def _solve_module(self, lazy=False):
         if lazy:
             modules = self.lazy_module
+            # lazy mode 不支持terminal
             terminal = None
         else:
             from qpt.kernel.tools.qpt_qt import QTerminal, MessageBoxTerminalCallback
@@ -141,17 +143,22 @@ class CreateExecutableModule:
         with open(self.config_file_path, "w", encoding="utf-8") as config_file:
             config_file.write(str(self.configs))
 
-        # 复制启动器文件
-        # Release
+        # 复制Release启动器文件
         launcher_dir = os.path.join(os.path.split(qpt.__file__)[0], "ext/launcher")
         shutil.copytree(launcher_dir, dst=self.module_path, dirs_exist_ok=True)
-        os.rename(os.path.join(self.module_path, "QPT_launcher.exe"), os.path.join(self.module_path, "启动程序.exe"))
-        # Debug
+        os.rename(os.path.join(self.module_path, "QPT_launcher.exe"),
+                  os.path.join(self.module_path, "启动程序.exe"))
+
+        # 复制Debug所需文件
         if self.with_debug:
             debug_dir = os.path.join(os.path.split(qpt.__file__)[0], "ext/launcher_debug")
             shutil.copytree(debug_dir, dst=self.debug_path, dirs_exist_ok=True)
             shutil.copytree(self.module_path, dst=self.debug_path, dirs_exist_ok=True)
-            os.rename(os.path.join(self.debug_path, "QPT_launcher.exe"), os.path.join(self.module_path, "启动Debug程序.exe"))
+            os.rename(os.path.join(self.debug_path, "QPT_launcher.exe"),
+                      os.path.join(self.module_path, "启动Debug程序.exe"))
+            unlock_file_path = os.path.join(self.config_path, "unlock.cache")
+            with open(unlock_file_path, "w", encoding="utf-8") as unlock_file:
+                unlock_file.write(str(datetime.datetime.now()))
 
         # 收尾工作
         Logging.info(f"制作完毕，保存位置为：{os.path.abspath(self.module_path)}，该目录下将会有以下文件夹\n"
@@ -161,9 +168,8 @@ class CreateExecutableModule:
                      f"|             \t即可启动您制作的程序  \n"
                      f"| ----------------------------------------------------------------------------- |\n")
         Logging.warning(f"| ---------------------------------Warning!------------------------------------ |\n"
-                        f"| 请勿打开Release目录下的“启动程序.exe”文件，原因如下： "
-                        f"| 1. 该程序会加载“一次性部署模块”，部署后会销毁该模块，目录下文件将只能在本机使用，并不能\n"
-                        f"|    被他人打开/正常使用。\n"
+                        f"| 请勿在本机打开Release目录下的“启动程序.exe”文件，原因如下： \n"
+                        f"| 1. 该程序会加载“一次性部署模块”，部署后该模块会消失，消失后可能无法在其他电脑上使用。\n"
                         f"| 2. 该程序会解压缩当前环境，执行“启动程序.exe”后整个目录大小可能会增加1~5倍。（取决于压缩率）\n"
                         f"| 3. 若需要测试打包后程序是否可以正常运行，请在Debug目录下进行测试。\n"
                         f"| 4. 若特殊情况必须在Release目录下进行测试，请制作Release目录的备份，在他人需要时提供该备份\n"
@@ -229,8 +235,38 @@ class RunExecutableModule:
         sys.path.append(self.work_dir)
 
     def run(self):
+        # 获取启动信息 - 避免在Release下进行Debug
+        env_warning_flag = True
+        lock_file_path = os.path.join(self.config_path, "unlock.cache")
+        if os.path.exists(lock_file_path):
+            env_warning_flag = False
+        # ToDO 增加cache检测 - 生成时根据输入路径生成base64编码，启动时解码判断是否存在
         # prepare qpt lazy module - GUI组件需要在此之后才能进行
         self._solve_module(lazy=True)
+
+        if env_warning_flag:
+            try:
+                from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox
+                app = QApplication(sys.argv)
+                widget = QWidget()
+                msg = QMessageBox.information(widget,
+                                              'Warning',
+                                              f"非常不建议在该环境下进行调试，原因如下： \n"
+                                              f" 1. 继续执行将会加载“一次性部署模块”，部署后该模块会消失，消失后可能无法在其他电脑上使用。\n"
+                                              f" 2. 该程序会解压缩当前环境，执行“启动程序.exe”后整个目录大小可能会增加1~5倍。（取决于压缩率）\n"
+                                              f" 3. 若需要测试打包后程序是否可以正常运行，请在Debug目录下进行测试。\n"
+                                              f" 4. 若特殊情况必须在Release目录下进行测试，请制作Release目录的备份，在他人需要时提供该备份\n"
+                                              f"    文件或重新打包，以避免因执行“启动程序.exe”后丢失“一次性部署模块”，从而无法被他人使用。\n"
+                                              f"-----------------------------------------------------------------------------\n"
+                                              f"请问是否还要在该环境下继续执行？",
+                                              QMessageBox.Yes | QMessageBox.No,
+                                              defaultButton=QMessageBox.No)
+                if msg == QMessageBox.No:
+                    exit(0)
+                widget.close()
+            except Exception as e:
+                Logging.error("部署失败，报错信息如下：\n" + str(e))
+
         # prepare module
         self._solve_module()
 

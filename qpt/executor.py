@@ -27,12 +27,17 @@ class CreateExecutableModule:
                  module_name="未命名模型",
                  version="未知版本号",
                  author="未知作者",
-                 none_gui: bool = False):
+                 none_gui: bool = False,
+                 with_debug: bool = True):
         # 初始化路径成员变量
         self.launcher_py_path = os.path.abspath(launcher_py_path).replace(os.path.abspath(work_dir) + "\\", "./")
         self.work_dir = work_dir
-        self.module_path = save_path
+        self.save_path = save_path
+        self.module_path = os.path.join(save_path, "Release")
+        self.debug_path = os.path.join(save_path, "Debug")
         self.interpreter_path = os.path.join(self.module_path, "Python")
+
+        self.with_debug = with_debug
 
         # 新建配置信息
         self.configs = dict()
@@ -118,10 +123,10 @@ class CreateExecutableModule:
         self.print_details()
 
         # 创建基本环境目录
-        if os.path.exists(self.module_path):
-            Logging.warning(f"{os.path.abspath(self.module_path)}已存在，已清空该目录")
-            shutil.rmtree(self.module_path)
-        os.mkdir(self.module_path)
+        if os.path.exists(self.save_path):
+            Logging.warning(f"{os.path.abspath(self.save_path)}已存在，已清空该目录")
+            shutil.rmtree(self.save_path)
+        os.mkdir(self.save_path)
 
         # 解析子模块
         self._solve_module(lazy=True)
@@ -137,12 +142,34 @@ class CreateExecutableModule:
             config_file.write(str(self.configs))
 
         # 复制启动器文件
+        # Release
         launcher_dir = os.path.join(os.path.split(qpt.__file__)[0], "ext/launcher")
         shutil.copytree(launcher_dir, dst=self.module_path, dirs_exist_ok=True)
         os.rename(os.path.join(self.module_path, "QPT_launcher.exe"), os.path.join(self.module_path, "启动程序.exe"))
+        # Debug
+        if self.with_debug:
+            debug_dir = os.path.join(os.path.split(qpt.__file__)[0], "ext/launcher_debug")
+            shutil.copytree(debug_dir, dst=self.debug_path, dirs_exist_ok=True)
+            shutil.copytree(self.module_path, dst=self.debug_path, dirs_exist_ok=True)
+            os.rename(os.path.join(self.debug_path, "QPT_launcher.exe"), os.path.join(self.module_path, "启动Debug程序.exe"))
 
-        # 结束
-        Logging.info(f"制作完毕，保存位置为：{os.path.abspath(self.module_path)}")
+        # 收尾工作
+        Logging.info(f"制作完毕，保存位置为：{os.path.abspath(self.module_path)}，该目录下将会有以下文件夹\n"
+                     f"| ----------------------------------------------------------------------------- |\n"
+                     f"| Debug目录：\t该目录下提供了Debug环境，可简单验证打包后程序是否可以正常执行。        \n"
+                     f"| Release目录：\t将该目录进行压缩，并发给您的用户，待您的用户打开该压缩包下的“启动程序.exe”后\n"
+                     f"|             \t即可启动您制作的程序  \n"
+                     f"| ----------------------------------------------------------------------------- |\n")
+        Logging.warning(f"| ---------------------------------Warning!------------------------------------ |\n"
+                        f"| 请勿打开Release目录下的“启动程序.exe”文件，原因如下： "
+                        f"| 1. 该程序会加载“一次性部署模块”，部署后会销毁该模块，目录下文件将只能在本机使用，并不能\n"
+                        f"|    被他人打开/正常使用。\n"
+                        f"| 2. 该程序会解压缩当前环境，执行“启动程序.exe”后整个目录大小可能会增加1~5倍。（取决于压缩率）\n"
+                        f"| 3. 若需要测试打包后程序是否可以正常运行，请在Debug目录下进行测试。\n"
+                        f"| 4. 若特殊情况必须在Release目录下进行测试，请制作Release目录的备份，在他人需要时提供该备份\n"
+                        f"|    文件或重新打包，以避免因执行“启动程序.exe”后丢失“一次性部署模块”，从而无法被他人使用。\n"
+                        f"| ----------------------------------------------------------------------------- |\n")
+
         Logging.info("是否需要保留QPT在打包时产生的缓存文件？若不清空则可能会在下次使用QPT时复用缓存以提升打包速度")
         clear_key = input("[保留(Y)/清空(N)]:_")
         if clear_key.lower() == "n":

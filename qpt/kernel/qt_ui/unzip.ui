@@ -2,68 +2,38 @@
 <ui version="4.0">
  <class>unzip_file_dialog</class>
  <widget class="QDialog" name="unzip_file_dialog">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>521</width>
-    <height>60</height>
+    <width>290</width>
+    <height>22</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>DGModule运行前准备工作 资源文件释放</string>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
   </property>
-  <widget class="QLabel" name="label">
+  <property name="windowTitle">
+   <string>初始化环境</string>
+  </property>
+  <widget class="QProgressBar" name="progressBar">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>111</width>
-     <height>16</height>
+     <x>0</x>
+     <y>0</y>
+     <width>291</width>
+     <height>22</height>
     </rect>
    </property>
-   <property name="text">
-    <string>正在解压缩文件</string>
+   <property name="value">
+    <number>24</number>
    </property>
-  </widget>
-  <widget class="QLabel" name="act_label">
-   <property name="geometry">
-    <rect>
-     <x>110</x>
-     <y>10</y>
-     <width>111</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>None</string>
-   </property>
-  </widget>
-  <widget class="QWidget" name="">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>30</y>
-     <width>491</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-     <widget class="QProgressBar" name="progressBar">
-      <property name="value">
-       <number>24</number>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QPushButton" name="exit_button">
-      <property name="text">
-       <string>终止解压</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
   </widget>
  </widget>
  <resources/>

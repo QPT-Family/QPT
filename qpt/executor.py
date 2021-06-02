@@ -3,6 +3,7 @@ import sys
 import shutil
 import importlib
 import datetime
+import base64
 
 from typing import List
 
@@ -49,6 +50,7 @@ class CreateExecutableModule:
         self.configs["version"] = version
         self.configs["lazy_module"] = list()
         self.configs["sub_module"] = list()
+        self.configs["local_uid"] = base64.b64encode(os.path.abspath(os.path.abspath(launcher_py_path)).encode('utf-8'))
 
         # 额外的成员变量
         self.resources_path = os.path.join(self.module_path, "resources")
@@ -156,6 +158,7 @@ class CreateExecutableModule:
             shutil.copytree(self.module_path, dst=self.debug_path, dirs_exist_ok=True)
             os.rename(os.path.join(self.debug_path, "QPT_launcher.exe"),
                       os.path.join(self.module_path, "启动Debug程序.exe"))
+            # 生成Debug标识符
             unlock_file_path = os.path.join(self.config_path, "unlock.cache")
             with open(unlock_file_path, "w", encoding="utf-8") as unlock_file:
                 unlock_file.write(str(datetime.datetime.now()))
@@ -211,20 +214,26 @@ class RunExecutableModule:
         if lazy:
             modules = self.lazy_module
             terminal = None
+            for sub_name in modules:
+                sub_module = SubModule(sub_name)
+                sub_module.prepare(work_dir=self.work_dir,
+                                   interpreter_path=self.interpreter_path,
+                                   module_path=self.base_dir,
+                                   terminal=terminal)
+                sub_module.unpack()
         else:
             from qpt.kernel.tools.qpt_qt import QTerminal, MessageBoxTerminalCallback
             self.terminal = QTerminal()
             modules = self.sub_module
             terminal = self.terminal.shell_func(callback=MessageBoxTerminalCallback())
-        # ToDO 设计个进度条
 
-        for sub_name in modules:
-            sub_module = SubModule(sub_name)
-            sub_module.prepare(work_dir=self.work_dir,
-                               interpreter_path=self.interpreter_path,
-                               module_path=self.base_dir,
-                               terminal=terminal)
-            sub_module.unpack()
+            for sub_module_id, sub_name in enumerate(modules):
+                sub_module = SubModule(sub_name)
+                sub_module.prepare(work_dir=self.work_dir,
+                                   interpreter_path=self.interpreter_path,
+                                   module_path=self.base_dir,
+                                   terminal=terminal)
+                sub_module.unpack()
 
     def unzip_resources(self):
         # ToDO 增加单文件执行模式，优先级暂时靠后
@@ -237,10 +246,13 @@ class RunExecutableModule:
     def run(self):
         # 获取启动信息 - 避免在Release下进行Debug
         env_warning_flag = True
+        local_uid = base64.b64decode(self.configs["local_uid"]).decode("utf-8")
+        if os.path.exists(local_uid):
+            env_warning_flag = True
         lock_file_path = os.path.join(self.config_path, "unlock.cache")
         if os.path.exists(lock_file_path):
             env_warning_flag = False
-        # ToDO 增加cache检测 - 生成时根据输入路径生成base64编码，启动时解码判断是否存在
+
         # prepare qpt lazy module - GUI组件需要在此之后才能进行
         self._solve_module(lazy=True)
 

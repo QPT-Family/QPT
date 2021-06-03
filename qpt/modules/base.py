@@ -65,6 +65,7 @@ class SubModuleOpt:
             Logging.debug(f"找到该OP状态文件{self.name}.inactive，故跳过该OP")
         else:
             self.act()
+        if self.disposable and os.path.exists(os.path.dirname(op_path)):
             with open(inactive_file, "w", encoding="utf-8") as f:
                 f.write(f"于{str(datetime.datetime.now())}创建了该状态文件")
 

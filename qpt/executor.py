@@ -151,32 +151,32 @@ class CreateExecutableModule:
         with open(self.config_file_path, "w", encoding="utf-8") as config_file:
             config_file.write(str(self.configs))
 
-        # 复制Release启动器文件
-        launcher_dir = os.path.join(os.path.split(qpt.__file__)[0], "ext/launcher")
-        shutil.copytree(launcher_dir, dst=self.module_path, dirs_exist_ok=True)
-        os.rename(os.path.join(self.module_path, "QPT_launcher.exe"),
-                  os.path.join(self.module_path, "启动程序.exe"))
-
         # 复制Debug所需文件
         if self.with_debug:
             debug_dir = os.path.join(os.path.split(qpt.__file__)[0], "ext/launcher_debug")
             shutil.copytree(debug_dir, dst=self.debug_path, dirs_exist_ok=True)
             shutil.copytree(self.module_path, dst=self.debug_path, dirs_exist_ok=True)
             os.rename(os.path.join(self.debug_path, "QPT_launcher.exe"),
-                      os.path.join(self.module_path, "启动Debug程序.exe"))
+                      os.path.join(self.debug_path, "启动Debug程序.exe"))
             # 生成Debug标识符
-            unlock_file_path = os.path.join(self.config_path, "unlock.cache")
+            unlock_file_path = os.path.join(self.debug_path, "configs/unlock.cache")
             with open(unlock_file_path, "w", encoding="utf-8") as unlock_file:
                 unlock_file.write(str(datetime.datetime.now()))
 
+        # 复制Release启动器文件
+        launcher_dir = os.path.join(os.path.split(qpt.__file__)[0], "ext/launcher")
+        shutil.copytree(launcher_dir, dst=self.module_path, dirs_exist_ok=True)
+        os.rename(os.path.join(self.module_path, "QPT_launcher.exe"),
+                  os.path.join(self.module_path, "启动程序.exe"))
+
         # 收尾工作
-        Logging.info(f"制作完毕，保存位置为：{os.path.abspath(self.module_path)}，该目录下将会有以下文件夹\n"
+        Logging.info(f"\n制作完毕，保存位置为：{os.path.abspath(self.module_path)}，该目录下将会有以下文件夹\n"
                      f"| ----------------------------------------------------------------------------- |\n"
                      f"| Debug目录：\t该目录下提供了Debug环境，可简单验证打包后程序是否可以正常执行。        \n"
                      f"| Release目录：\t将该目录进行压缩，并发给您的用户，待您的用户打开该压缩包下的“启动程序.exe”后\n"
                      f"|             \t即可启动您制作的程序  \n"
                      f"| ----------------------------------------------------------------------------- |\n")
-        Logging.warning(f"| ---------------------------------Warning!------------------------------------ |\n"
+        Logging.warning(f"\n| ---------------------------------Warning!------------------------------------ |\n"
                         f"| 请勿在本机打开Release目录下的“启动程序.exe”文件，原因如下： \n"
                         f"| 1. 该程序会加载“一次性部署模块”，部署后该模块会消失，消失后可能无法在其他电脑上使用。\n"
                         f"| 2. 该程序会解压缩当前环境，执行“启动程序.exe”后整个目录大小可能会增加1~5倍。（取决于压缩率）\n"
@@ -236,6 +236,7 @@ class RunExecutableModule:
             from PyQt5.QtWidgets import QApplication
             app = QApplication(sys.argv)
             unzip_bar = Unzip()
+            unzip_bar.show()
             for sub_module_id, sub_name in enumerate(modules):
                 sub_module = SubModule(sub_name)
                 sub_module.prepare(work_dir=self.work_dir,

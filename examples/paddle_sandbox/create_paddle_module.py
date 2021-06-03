@@ -8,5 +8,5 @@ if __name__ == '__main__':
     #                                 sub_modules=[PaddlePaddlePackage()])
     module = CreateExecutableModule(work_dir="./paddle_program",
                                     launcher_py_path="./paddle_program/run.py",
-                                    save_path="./out", dependency_file=True)
+                                    save_path="./out")
     module.make()

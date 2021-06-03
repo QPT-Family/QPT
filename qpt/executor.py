@@ -19,10 +19,10 @@ from qpt.kernel.tools.os_op import clean_qpt_cache
 
 class CreateExecutableModule:
     def __init__(self,
-                 launcher_py_path,
                  work_dir,
+                 launcher_py_path,
                  save_path,
-                 auto_dependency=True,
+                 requirements_file="auto",
                  deploy_mode=DEFAULT_DEPLOY_MODE,
                  sub_modules: List[SubModule] = None,
                  interpreter_module: BasePythonEnv = AutoPythonEnv(),
@@ -69,11 +69,17 @@ class CreateExecutableModule:
         if none_gui is False:
             pass
         self.sub_module = sub_modules if sub_modules is not None else list()
-        if auto_dependency:
-            auto_dependency_module = AutoRequirementsPackage(work_home=self.work_dir,
+
+        # 解析依赖
+        if requirements_file == "auto":
+            auto_dependency_module = AutoRequirementsPackage(path=self.work_dir,
                                                              module_list=self.sub_module,
                                                              deploy_mode=deploy_mode)
-            self.sub_module.append(auto_dependency_module)
+        else:
+            auto_dependency_module = AutoRequirementsPackage(path=requirements_file,
+                                                             module_list=self.sub_module,
+                                                             deploy_mode=deploy_mode)
+        self.sub_module.append(auto_dependency_module)
 
         # 初始化终端 - 占位 待lazy_module执行完毕后生成终端（依赖Qt lazy module）
         self.terminal = None
@@ -226,7 +232,10 @@ class RunExecutableModule:
             self.terminal = QTerminal()
             modules = self.sub_module
             terminal = self.terminal.shell_func(callback=MessageBoxTerminalCallback())
-
+            from qpt.gui.qpt_unzip import Unzip
+            from PyQt5.QtWidgets import QApplication
+            app = QApplication(sys.argv)
+            unzip_bar = Unzip()
             for sub_module_id, sub_name in enumerate(modules):
                 sub_module = SubModule(sub_name)
                 sub_module.prepare(work_dir=self.work_dir,
@@ -234,6 +243,9 @@ class RunExecutableModule:
                                    module_path=self.base_dir,
                                    terminal=terminal)
                 sub_module.unpack()
+                unzip_bar.update_value(sub_module_id / len(modules) * 100)
+                unzip_bar.update_title(f"正在部署：{sub_name}")
+                app.processEvents()
 
     def unzip_resources(self):
         # ToDO 增加单文件执行模式，优先级暂时靠后

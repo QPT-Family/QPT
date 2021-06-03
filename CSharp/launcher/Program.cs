@@ -12,7 +12,7 @@ namespace QPTLauncher
         {
             //ConsoleHelper.hideConsole();
             Process p = new Process();
-            Console.Title = "Debug";
+            Console.Title = "QPT-Debug";
             Console.WriteLine("传入参数为：" + args);
 
             string launcherPath = Environment.CurrentDirectory;
@@ -55,7 +55,7 @@ public static class ConsoleHelper
 
     [DllImport("user32.dll", SetLastError = true)]
     private static extern bool ShowWindow(IntPtr hWnd, uint nCmdShow);
-    public static void hideConsole(string ConsoleTitle = "")
+    public static void hideConsole(string ConsoleTitle = "QPT-Release")
     {
         ConsoleTitle = String.IsNullOrEmpty(ConsoleTitle) ? Console.Title : ConsoleTitle;
         IntPtr hWnd = FindWindow("ConsoleWindowClass", ConsoleTitle);
@@ -64,7 +64,7 @@ public static class ConsoleHelper
             ShowWindow(hWnd, 0);
         }
     }
-    public static void showConsole(string ConsoleTitle = "")
+    public static void showConsole(string ConsoleTitle = "QPT-Release")
     {
         ConsoleTitle = String.IsNullOrEmpty(ConsoleTitle) ? Console.Title : ConsoleTitle;
         IntPtr hWnd = FindWindow("ConsoleWindowClass", ConsoleTitle);

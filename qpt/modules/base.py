@@ -1,5 +1,6 @@
 import os
 import pickle
+import datetime
 
 from qpt.kernel.tools.os_op import download
 from qpt.kernel.tools.log_op import Logging
@@ -59,10 +60,13 @@ class SubModuleOpt:
         pass
 
     def run(self, op_path):
-        if self.disposable and os.path.exists(op_path + ".inactive"):
+        inactive_file = op_path + ".inactive"
+        if self.disposable and os.path.exists(inactive_file):
             Logging.debug(f"找到该OP状态文件{self.name}.inactive，故跳过该OP")
         else:
             self.act()
+            with open(inactive_file, "w", encoding="utf-8") as f:
+                f.write(f"于{str(datetime.datetime.now())}创建了该状态文件")
 
     @property
     def interpreter_path(self):

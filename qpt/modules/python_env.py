@@ -21,9 +21,9 @@ PYTHON_ENV_MODE_PACKAGE_VOLUME_FIRST = "[暂不支持]封装后保留压缩的Py
 PYTHON_ENV_MODE_ONLINE_INSTALLATION = "[暂不支持]不封装Python环境，用户使用时在线进行下载并部署"
 DEFINE_PYTHON_ENV_MODE = PYTHON_ENV_MODE_SPEED_FIRST
 
-RESOURCES_URLS = {"Python3.7Env-E": "https://bj.bcebos.com/v1/ai-studio-online/5077c69b480d41c9a63d3fbad550e1d"
-                                    "d975a319abb8f484b9b5de933fcc41808?responseContentDisposition=attachment%3B%20"
-                                    "filename%3DPython3.7.9.zip",
+RESOURCES_URLS = {"Python3.7Env": "https://bj.bcebos.com/v1/ai-studio-online/5077c69b480d41c9a63d3fbad550e1d"
+                                  "d975a319abb8f484b9b5de933fcc41808?responseContentDisposition=attachment%3B%20"
+                                  "filename%3DPython3.7.9.zip",
                   "Python3.8Env": "https://bj.bcebos.com/v1/ai-studio-online/7e52a71dbf1744eb9ede86b079df3039"
                                   "01b97ed580454eb79f23b5fc27d50bfa?responseContentDisposition=attachment%3B%20"
                                   "filename%3DPython3.8.10.zip",

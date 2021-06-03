@@ -177,7 +177,7 @@ class CustomPackage(SubModule):
                                                   opts=opts))
 
 
-class RequirementsPackage(SubModule):
+class _RequirementsPackage(SubModule):
     def __init__(self,
                  requirements_file_path,
                  deploy_mode=DEFAULT_DEPLOY_MODE):
@@ -202,17 +202,26 @@ class RequirementsPackage(SubModule):
                                                   to_module_env_path=True))
 
 
-class AutoRequirementsPackage(RequirementsPackage):
+class AutoRequirementsPackage(_RequirementsPackage):
     """
     注意，这并不是个普通的Module
     """
 
     def __init__(self,
-                 work_home,
+                 path,
                  module_list: list,
                  deploy_mode=DEFAULT_DEPLOY_MODE):
-        Logging.info(f"正在分析{os.path.abspath(work_home)}下的依赖情况...")
-        requirements = pip.analyze_dependence(work_home, return_path=False)
+        """
+        自动获取Requirements
+        :param path: 待扫描的文件夹路径或requirements文件路径，若提供了requirements文件路径则不会自动分析依赖情况
+        :param module_list: Module callback
+        :param deploy_mode: 部署模式
+        """
+        if os.path.isfile(path):
+            requirements = pip.analyze_requirements_file(path)
+        else:
+            Logging.info(f"正在分析{os.path.abspath(path)}下的依赖情况...")
+            requirements = pip.analyze_dependence(path, return_path=False)
 
         # 对特殊包进行过滤和特殊化
         for requirement in dict(requirements):

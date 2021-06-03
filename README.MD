@@ -96,9 +96,9 @@ Options:
 - [ ] 模型加密
 
 ### 发版安排
-2021.6上旬    QPT V1.0 Alpha版本发布
-2021.6       QPT V1.0 Release Candidate(RC)版本发布
-2021.7       QPT V1.0 正式版发布
+2021.6上旬    QPT V1.0 Alpha版本发布  
+2021.6       QPT V1.0 Release Candidate(RC)版本发布  
+2021.7       QPT V1.0 正式版发布  
 
 ## 开源协议
 本项目使用GNU LESSER GENERAL PUBLIC LICENSE(LGPL)开源协议。  

@@ -2,3 +2,4 @@ click
 pynvml
 psutil
 PyQt5
+paddlepaddle

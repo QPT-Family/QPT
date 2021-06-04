@@ -6,6 +6,7 @@
 ![GitHub](https://img.shields.io/github/license/GT-ZhangAcer/QPT)
 [![Upload Python Package](https://github.com/GT-ZhangAcer/QPT/actions/workflows/python-publish.yml/badge.svg)](https://github.com/GT-ZhangAcer/QPT/actions/workflows/python-publish.yml)
 > EAP: 当前版本为尝鲜版本，仅具备基本功能，该项目将长期维护  
+> Alpha发布前待解决问题：1. .Net运行库兼容性 2. 增加控制台脚本选择开关 3. 添加GPU支持
 
 QPT是一款可以“模拟”开发环境的多功能封装工具，一行命令即可将普通的Python脚本打包成EXE可执行程序，与此同时还可轻松引入CUDA等深度学习加速库，
 尽可能在用户使用时复现您的开发环境。  

@@ -156,8 +156,6 @@ class CreateExecutableModule:
             debug_dir = os.path.join(os.path.split(qpt.__file__)[0], "ext/launcher_debug")
             shutil.copytree(debug_dir, dst=self.debug_path, dirs_exist_ok=True)
             shutil.copytree(self.module_path, dst=self.debug_path, dirs_exist_ok=True)
-            os.rename(os.path.join(self.debug_path, "QPT_launcher.exe"),
-                      os.path.join(self.debug_path, "启动Debug程序.exe"))
             # 生成Debug标识符
             unlock_file_path = os.path.join(self.debug_path, "configs/unlock.cache")
             with open(unlock_file_path, "w", encoding="utf-8") as unlock_file:
@@ -166,8 +164,6 @@ class CreateExecutableModule:
         # 复制Release启动器文件
         launcher_dir = os.path.join(os.path.split(qpt.__file__)[0], "ext/launcher")
         shutil.copytree(launcher_dir, dst=self.module_path, dirs_exist_ok=True)
-        os.rename(os.path.join(self.module_path, "QPT_launcher.exe"),
-                  os.path.join(self.module_path, "启动程序.exe"))
 
         # 收尾工作
         Logging.info(f"\n制作完毕，保存位置为：{os.path.abspath(self.module_path)}，该目录下将会有以下文件夹\n"

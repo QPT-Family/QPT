@@ -99,7 +99,7 @@ class FileSerialize:
         with open(file_path, "r", encoding="utf-8")as file:
             self._data = file.read()
 
-    def get_data(self):
+    def get_serialize_data(self):
         return self._data
 
     @staticmethod

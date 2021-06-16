@@ -186,7 +186,7 @@ class _RequirementsPackage(SubModule):
         # 部分情况需要序列化requirement.txt文件
         if deploy_mode != LOCAL_INSTALL_DEPLOY_MODE:
             fs = FileSerialize(requirements_file_path)
-            fs_data = "[FLAG-FileSerialize]" + fs.get_data()
+            fs_data = "[FLAG-FileSerialize]" + fs.get_serialize_data()
         requirements_file_path = "-r " + requirements_file_path
         if deploy_mode == LOCAL_DOWNLOAD_DEPLOY_MODE:
             self.add_pack_opt(DownloadWhlOpt(package=requirements_file_path,
@@ -248,6 +248,7 @@ class QPTDependencyPackage(SubModule):
         # ToDO 上线后修改qpt_dependency.txt文件
         kernel_dependency_path = os.path.join(os.path.split(__file__)[0], "qpt_kernel_dependency.txt")
         lazy_dependency_path = os.path.join(os.path.split(__file__)[0], "qpt_lazy_dependency.txt")
+        lazy_dependency_serialize = "[FLAG-FileSerialize]" + FileSerialize(lazy_dependency_path).get_serialize_data()
         kernel = "-r " + kernel_dependency_path
         lazy = "-r " + lazy_dependency_path
         self.add_pack_opt(OnlineInstallWhlOpt(package=kernel,
@@ -255,7 +256,7 @@ class QPTDependencyPackage(SubModule):
                                               to_module_env_path=True))
         self.add_pack_opt(DownloadWhlOpt(package=lazy,
                                          no_dependent=False))
-        self.add_unpack_opt(LocalInstallWhlOpt(package=lazy,
+        self.add_unpack_opt(LocalInstallWhlOpt(package=lazy_dependency_serialize,
                                                no_dependent=False))
 
 

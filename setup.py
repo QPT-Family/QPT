@@ -1,6 +1,7 @@
 from setuptools import setup
 from setuptools import find_packages
 
+# python setup.py sdist bdist_wheel
 setup(
     name='QPT',
     version='1.0a0-pre',

@@ -4,7 +4,7 @@ from setuptools import find_packages
 # python setup.py sdist bdist_wheel
 setup(
     name='QPT',
-    version='1.0a3',
+    version='1.0a4',
     packages=find_packages(),
     url='https://github.com/GT-ZhangAcer/QPT',
     license='LGPL',

@@ -1,1 +1,2 @@
 recursive-include qpt/ext *
+recursive-include qpt/modules *

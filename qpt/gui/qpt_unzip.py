@@ -7,6 +7,7 @@ import sys
 import os
 
 from PyQt5.QtWidgets import QApplication, QWidget
+from PyQt5 import QtCore
 
 from qpt.kernel.qt_ui.unzip import Ui_unzip_file_dialog
 
@@ -17,6 +18,7 @@ class Unzip(QWidget, Ui_unzip_file_dialog):
         self.setupUi(self)
         self.progressBar.setValue(0)
         self.progressBar.setMaximum(100)
+        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
 
     def update_value(self, value):
         if not isinstance(value, int):

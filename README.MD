@@ -6,7 +6,8 @@
 ![GitHub](https://img.shields.io/github/license/GT-ZhangAcer/QPT)
 [![Upload Python Package](https://github.com/GT-ZhangAcer/QPT/actions/workflows/python-publish.yml/badge.svg)](https://github.com/GT-ZhangAcer/QPT/actions/workflows/python-publish.yml)
 > EAP: 当前版本为尝鲜版本，仅具备基本功能，该项目将长期维护  
-> Alpha发布前待解决问题：1. .Net运行库兼容性 2. 增加控制台脚本选择开关 3. 添加GPU支持
+
+> 使用时如有问题可加QQ群1128826410进行解决
 
 QPT是一款可以“模拟”开发环境的多功能封装工具，一行命令即可将普通的Python脚本打包成EXE可执行程序，与此同时还可轻松引入CUDA等深度学习加速库，
 尽可能在用户使用时复现您的开发环境。  
@@ -17,12 +18,9 @@ QPT是一款可以“模拟”开发环境的多功能封装工具，一行命�
 
 ## 快速使用QPT
 #### 安装QPT到当前环境
-> Warning!当前版本暂未发版，预计6月15日之前完成最终封装测试  
-> 不好意思，再次咕咕咕，尽量本周发版！  
+> 当前版本号为 1.0a0-pre
 
-`pip install qpt -i https://pypi.tuna.tsinghua.edu.cn/simple`    
-或  
-`pip install qpt`  
+`pip install qpt -i https://pypi.tuna.tsinghua.edu.cn/simple` or `pip install qpt`
 
 #### 目录结构
 首先介绍一下示例项目的目录结构，其中`sample_program`就是待打包的**项目文件夹**，里面的`run.py`就是用户点击EXE文件后需要执行的**主程序文件**，
@@ -110,5 +108,5 @@ Options:
 ## 开源协议
 本项目使用GNU LESSER GENERAL PUBLIC LICENSE(LGPL)开源协议。  
 ### Example：
-1. 小张使用QPT简单打包了自己的“强化学习小游戏”，该情况无需申请QPT授权以及更换个人代码仓库完整的开源协议。   
-2. 小王QPT源代码进行了修改，尽管这些代码非恶意代码，但为了保证开发者和使用者权益和安全，在未取得QPT授权的情况下需要开源完整的源代码等LGPL协议中所要求的内容。
+1. 使用QPT简单打包了自己的“强化学习小游戏”，该情况无需申请QPT授权以及更换个人代码仓库完整的开源协议。   
+2. 对QPT源代码进行了修改，尽管这些代码非恶意代码，但为了保证开发者和使用者权益和安全，在未取得QPT授权的情况下需要开源完整的源代码等LGPL协议中所要求的内容。

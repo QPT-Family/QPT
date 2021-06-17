@@ -1,1 +1,4 @@
-qpt
+qpt==1.0a0-pre
+pyqt5==5.15.4
+pyqt5-Qt5==5.15.2
+pyqt5-sip==12.9.0

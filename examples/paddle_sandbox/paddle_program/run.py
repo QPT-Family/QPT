@@ -21,12 +21,11 @@ class Example(QWidget):
                 opt.clear_grad()
             print("Epoch:", i, "loss:", loss.numpy())
 
-        QMessageBox.information(self, '测试结果', 'PaddlePaddle简单案例测试成功',
-                                QMessageBox.Yes)
+        self.msg = QMessageBox.information(self, '测试结果', 'PaddlePaddle简单案例测试成功',
+                                           QMessageBox.Yes)
 
 
 app = QApplication(sys.argv)
 ex = Example()
 
 input("PaddlePaddle测试成功！")
-sys.exit(app.exec_())

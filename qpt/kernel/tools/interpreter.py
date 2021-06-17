@@ -129,10 +129,13 @@ class PipTools:
                 requirements["non-existent"] += "# " + package + "\n"
 
         with open(save_file_path, "w", encoding="utf-8") as req_file:
-            req_file.write("# 以下是QPT自动推导出的包列表 - 此处可无视主包中的依赖包，只关心主要包情况即可\n"
-                           "# 例如paddlepaddle依赖Pillow，即使Pillow在下方被注释，但在封装时依旧会被打包\n"
+            req_file.write("# Here is the list of packages automatically derived by QPT\n"
+                           "# you can ignore the dependent packages in the main package and only care "
+                           "about the main package\n"
+                           "# For example, you need to install paddlepaddle and pillow, because paddlepaddle "
+                           "relies on pillow, so you only need to install paddlepaddle.\n"
                            "# ---------------------------------------------------------------------\n"
-                           "# QPT源码:        https://github.com/GT-ZhangAcer/QPT\n"
+                           "# QPT Home:        https://github.com/GT-ZhangAcer/QPT\n"
                            "# ---------------------------------------------------------------------\n"
                            "# \n")
             req_file.write(requirements["existent"])
@@ -171,8 +174,8 @@ class PipTools:
         return requirements
 
     @staticmethod
-    def save_requirements_file(requirements_dict, save_file_path):
-        with open(save_file_path, "w", encoding="utf-8") as file:
+    def save_requirements_file(requirements_dict, save_file_path, encoding="utf-8"):
+        with open(save_file_path, "w", encoding=encoding) as file:
             for requirement in requirements_dict:
                 if requirements_dict[requirement] is not None:
                     line = f"{requirement}=={requirements_dict[requirement]}\n"

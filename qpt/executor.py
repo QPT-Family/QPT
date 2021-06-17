@@ -212,37 +212,28 @@ class RunExecutableModule:
         # ToDO 集市部分代码
         pass
 
-    def _solve_module(self, lazy=False):
-        if lazy:
-            modules = self.lazy_module
-            terminal = None
-            for sub_name in modules:
-                sub_module = SubModule(sub_name)
-                sub_module.prepare(work_dir=self.work_dir,
-                                   interpreter_path=self.interpreter_path,
-                                   module_path=self.base_dir,
-                                   terminal=terminal)
-                sub_module.unpack()
-        else:
-            from qpt.kernel.tools.qpt_qt import QTerminal, MessageBoxTerminalCallback
-            self.terminal = QTerminal()
-            modules = self.sub_module
-            terminal = self.terminal.shell_func(callback=MessageBoxTerminalCallback())
-            from qpt.gui.qpt_unzip import Unzip
-            from PyQt5.QtWidgets import QApplication
-            app = QApplication(sys.argv)
-            unzip_bar = Unzip()
-            unzip_bar.show()
-            for sub_module_id, sub_name in enumerate(modules):
-                sub_module = SubModule(sub_name)
-                sub_module.prepare(work_dir=self.work_dir,
-                                   interpreter_path=self.interpreter_path,
-                                   module_path=self.base_dir,
-                                   terminal=terminal)
-                sub_module.unpack()
-                unzip_bar.update_value(sub_module_id / len(modules) * 100)
-                unzip_bar.update_title(f"正在部署：{sub_name}")
-                app.processEvents()
+    def _solve_module(self):
+        modules = self.lazy_module + self.sub_module
+        from qpt.kernel.tools.qpt_qt import QTerminal, MessageBoxTerminalCallback
+        from qpt.gui.qpt_unzip import Unzip
+        from PyQt5.QtWidgets import QApplication
+        from PyQt5.QtGui import QIcon
+        self.terminal = QTerminal()
+        terminal = self.terminal.shell_func(callback=MessageBoxTerminalCallback())
+        app = QApplication(sys.argv)
+        unzip_bar = Unzip()
+        unzip_bar.setWindowIcon(QIcon(os.path.join(self.base_dir, "Logo.ico")))
+        unzip_bar.show()
+        for sub_module_id, sub_name in enumerate(modules):
+            sub_module = SubModule(sub_name)
+            sub_module.prepare(work_dir=self.work_dir,
+                               interpreter_path=self.interpreter_path,
+                               module_path=self.base_dir,
+                               terminal=terminal)
+            sub_module.unpack()
+            unzip_bar.update_value(sub_module_id / len(self.sub_module) * 100)
+            unzip_bar.update_title(f"正在初始化：{sub_name}")
+            app.processEvents()
 
     def unzip_resources(self):
         # ToDO 增加单文件执行模式，优先级暂时靠后
@@ -262,33 +253,30 @@ class RunExecutableModule:
         if os.path.exists(lock_file_path):
             env_warning_flag = False
 
-        # prepare qpt lazy module - GUI组件需要在此之后才能进行
-        self._solve_module(lazy=True)
+        # if env_warning_flag:
+        #     try:
+        #         from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox
+        #         app = QApplication(sys.argv)
+        #         widget = QWidget()
+        #         msg = QMessageBox.information(widget,
+        #                                       'Warning',
+        #                                       f"非常不建议在该环境下进行调试，原因如下： \n"
+        #                                       f" 1. 继续执行将会加载“一次性部署模块”，部署后该模块会消失，消失后可能无法在其他电脑上使用。\n"
+        #                                       f" 2. 该程序会解压缩当前环境，执行“启动程序.exe”后整个目录大小可能会增加1~5倍。（取决于压缩率）\n"
+        #                                       f" 3. 若需要测试打包后程序是否可以正常运行，请在Debug目录下进行测试。\n"
+        #                                       f" 4. 若特殊情况必须在Release目录下进行测试，请制作Release目录的备份，在他人需要时提供该备份\n"
+        #                                       f"    文件或重新打包，以避免因执行“启动程序.exe”后丢失“一次性部署模块”，从而无法被他人使用。\n"
+        #                                       f"-----------------------------------------------------------------------------\n"
+        #                                       f"请问是否还要在该环境下继续执行？",
+        #                                       QMessageBox.Yes | QMessageBox.No)
+        #         if msg == QMessageBox.No:
+        #             exit(0)
+        #         widget.close()
+        #         app.exit()
+        #     except Exception as e:
+        #         Logging.error("部署失败，报错信息如下：\n" + str(e))
 
-        if env_warning_flag:
-            try:
-                from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox
-                app = QApplication(sys.argv)
-                widget = QWidget()
-                msg = QMessageBox.information(widget,
-                                              'Warning',
-                                              f"非常不建议在该环境下进行调试，原因如下： \n"
-                                              f" 1. 继续执行将会加载“一次性部署模块”，部署后该模块会消失，消失后可能无法在其他电脑上使用。\n"
-                                              f" 2. 该程序会解压缩当前环境，执行“启动程序.exe”后整个目录大小可能会增加1~5倍。（取决于压缩率）\n"
-                                              f" 3. 若需要测试打包后程序是否可以正常运行，请在Debug目录下进行测试。\n"
-                                              f" 4. 若特殊情况必须在Release目录下进行测试，请制作Release目录的备份，在他人需要时提供该备份\n"
-                                              f"    文件或重新打包，以避免因执行“启动程序.exe”后丢失“一次性部署模块”，从而无法被他人使用。\n"
-                                              f"-----------------------------------------------------------------------------\n"
-                                              f"请问是否还要在该环境下继续执行？",
-                                              QMessageBox.Yes | QMessageBox.No,
-                                              defaultButton=QMessageBox.No)
-                if msg == QMessageBox.No:
-                    exit(0)
-                widget.close()
-            except Exception as e:
-                Logging.error("部署失败，报错信息如下：\n" + str(e))
-
-        # prepare module
+        # prepare module - GUI组件需要在此之后才能进行
         self._solve_module()
 
         # 设置工作目录

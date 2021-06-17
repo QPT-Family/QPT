@@ -31,7 +31,6 @@ import click
 def cli(folder,
         py,
         save,
-        auto_dependency,
         require):
     Logging.info("-----------------------------QPT--------------------------------")
     Logging.info("当前执行模式为命令式执行，仅提供QPT基础功能，高阶操作可在GitHub参考最新文档")
@@ -40,7 +39,7 @@ def cli(folder,
     Logging.info(f"[--folder]待打包的文件夹路径为\t{os.path.abspath(folder)}")
     Logging.info(f"[--py]待打包的主Python文件路径为\t{os.path.abspath(py)}")
     Logging.info(f"[--save]打包后文件保存路径为\t{os.path.abspath(save)}")
-    if auto_dependency.lower() == "auto":
+    if require.lower() == "auto":
         Logging.info(f"[--require]使用自动化依赖查找Module：AutoRequirementsPackage")
     else:
         Logging.info(f"[--require]使依赖列表文件路径为：{os.path.abspath(require)}")

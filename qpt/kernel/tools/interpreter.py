@@ -27,7 +27,8 @@ class PipTools:
         pass
 
     def pip_shell(self, shell):
-        shell += f" --isolated --disable-pip-version-check --cache-dir {get_qpt_tmp_path('pip_cache')}"
+        shell += f" --isolated --disable-pip-version-check --cache-dir {get_qpt_tmp_path('pip_cache')}" \
+                 f" --timeout 60"
         self.pip_main(shell.split(" "))
         clean_stout(['console', 'console_errors', 'console_subprocess'])
 

@@ -1,8 +1,8 @@
 # QPT - Quick packaging tool 快捷封装工具
+![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/GT-ZhangAcer/QPT?include_prereleases)
 ![GitHub forks](https://img.shields.io/github/forks/GT-ZhangAcer/QPT)
 ![GitHub Repo stars](https://img.shields.io/github/stars/GT-ZhangAcer/QPT)
 [![Downloads](https://static.pepy.tech/personalized-badge/qpt?period=total&units=international_system&left_color=grey&right_color=orange&left_text=Pypi%20User)](https://pepy.tech/project/qpt)
-![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/GT-ZhangAcer/QPT?include_prereleases)
 ![GitHub](https://img.shields.io/github/license/GT-ZhangAcer/QPT)
 [![Upload Python Package](https://github.com/GT-ZhangAcer/QPT/actions/workflows/python-publish.yml/badge.svg)](https://github.com/GT-ZhangAcer/QPT/actions/workflows/python-publish.yml)
 [![QQGroup](https://img.shields.io/badge/QQ_Group-1128826410-52B6EF?style=social&logo=tencent-qq&logoColor=000&logoWidth=20)](https://jq.qq.com/?_wv=1027&k=49HB5ymm)

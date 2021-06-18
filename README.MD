@@ -7,13 +7,12 @@
 [![Upload Python Package](https://github.com/GT-ZhangAcer/QPT/actions/workflows/python-publish.yml/badge.svg)](https://github.com/GT-ZhangAcer/QPT/actions/workflows/python-publish.yml)
 [![QQGroup](https://img.shields.io/badge/QQ_Group-1128826410-52B6EF?style=social&logo=tencent-qq&logoColor=000&logoWidth=20)](https://jq.qq.com/?_wv=1027&k=49HB5ymm)
 
-> EAP: 当前版本为尝鲜版本，仅具备基本功能，该项目将长期维护  
-
-> 使用时如有问题可加QQ群1128826410进行解决
-
 QPT是一款可以“模拟”开发环境的多功能封装工具，一行命令即可将普通的Python脚本打包成EXE可执行程序，与此同时还可轻松引入CUDA等深度学习加速库，
 尽可能在用户使用时复现您的开发环境。  
-  
+
+## EAP
+邀测版本：当前版本为尝鲜版本，仅具备基本功能，而且可能会有未测试出的Bug！  
+> 使用时如有问题或者发现了Bug，强烈建议加QQ群1128826410或者联系QQ：ZhangAcer进行解决QAQ  
 
 ## 相关案例
 > 正在更新...

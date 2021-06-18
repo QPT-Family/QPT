@@ -154,8 +154,14 @@ class CreateExecutableModule:
         # 复制Debug所需文件
         if self.with_debug:
             debug_dir = os.path.join(os.path.split(qpt.__file__)[0], "ext/launcher_debug")
-            shutil.copytree(debug_dir, dst=self.debug_path, dirs_exist_ok=True)
-            shutil.copytree(self.module_path, dst=self.debug_path, dirs_exist_ok=True)
+            try:
+                shutil.copytree(debug_dir, dst=self.debug_path, dirs_exist_ok=True)
+                shutil.copytree(self.module_path, dst=self.debug_path, dirs_exist_ok=True)
+            except TypeError:
+                shutil.copytree(debug_dir, dst=self.debug_path)
+                shutil.copytree(self.module_path, dst=self.debug_path)
+                Logging.debug("打包策略将对Python3.7版本进行支持")
+
             # 生成Debug标识符
             unlock_file_path = os.path.join(self.debug_path, "configs/unlock.cache")
             with open(unlock_file_path, "w", encoding="utf-8") as unlock_file:
@@ -165,7 +171,10 @@ class CreateExecutableModule:
 
         # 复制Release启动器文件
         launcher_dir = os.path.join(os.path.split(qpt.__file__)[0], "ext/launcher")
-        shutil.copytree(launcher_dir, dst=self.module_path, dirs_exist_ok=True)
+        try:
+            shutil.copytree(launcher_dir, dst=self.module_path, dirs_exist_ok=True)
+        except TypeError:
+            shutil.copytree(launcher_dir, dst=self.module_path)
         os.rename(os.path.join(self.module_path, "compatibility_mode.cmd"),
                   os.path.join(self.module_path, "使用兼容模式运行.cmd"))
         os.rename(os.path.join(self.module_path, "main.exe"),

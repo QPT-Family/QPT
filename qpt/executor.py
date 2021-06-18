@@ -161,13 +161,17 @@ class CreateExecutableModule:
                 shutil.copytree(debug_dir, dst=self.debug_path)
                 shutil.copytree(self.module_path, dst=self.debug_path)
                 Logging.debug("打包策略将对Python3.7版本进行支持")
+            finally:
+                # 生成Debug标识符
+                unlock_file_path = os.path.join(self.debug_path, "configs/unlock.cache")
+                with open(unlock_file_path, "w", encoding="utf-8") as unlock_file:
+                    unlock_file.write(str(datetime.datetime.now()))
 
-            # 生成Debug标识符
-            unlock_file_path = os.path.join(self.debug_path, "configs/unlock.cache")
-            with open(unlock_file_path, "w", encoding="utf-8") as unlock_file:
-                unlock_file.write(str(datetime.datetime.now()))
-            os.rename(os.path.join(self.debug_path, "compatibility_mode.cmd"),
-                      os.path.join(self.debug_path, "使用兼容模式运行.cmd"))
+                # 重命名兼容模式文件
+                compatibility_mode_file = os.path.join(self.debug_path, "compatibility_mode.cmd")
+                if os.path.exists(compatibility_mode_file):
+                    os.rename(compatibility_mode_file,
+                              os.path.join(self.debug_path, "使用兼容模式运行.cmd"))
 
         # 复制Release启动器文件
         launcher_dir = os.path.join(os.path.split(qpt.__file__)[0], "ext/launcher")
@@ -175,10 +179,17 @@ class CreateExecutableModule:
             shutil.copytree(launcher_dir, dst=self.module_path, dirs_exist_ok=True)
         except TypeError:
             shutil.copytree(launcher_dir, dst=self.module_path)
-        os.rename(os.path.join(self.module_path, "compatibility_mode.cmd"),
-                  os.path.join(self.module_path, "使用兼容模式运行.cmd"))
-        os.rename(os.path.join(self.module_path, "main.exe"),
-                  os.path.join(self.module_path, "启动程序.exe"))
+        # 重命名兼容模式文件
+        compatibility_mode_file = os.path.join(self.module_path, "compatibility_mode.cmd")
+        if os.path.exists(compatibility_mode_file):
+            os.rename(compatibility_mode_file,
+                      os.path.join(self.module_path, "使用兼容模式运行.cmd"))
+
+        # 重命名启动器文件
+        launcher_file = os.path.join(self.module_path, "main.exe")
+        if os.path.exists(launcher_file):
+            os.rename(launcher_file,
+                      os.path.join(self.module_path, "启动程序.exe"))
 
         # 收尾工作
         Logging.info(f"\n制作完毕，保存位置为：{os.path.abspath(self.module_path)}，该目录下将会有以下文件夹\n"

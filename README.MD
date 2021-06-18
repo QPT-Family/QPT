@@ -5,6 +5,8 @@
 ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/GT-ZhangAcer/QPT?include_prereleases)
 ![GitHub](https://img.shields.io/github/license/GT-ZhangAcer/QPT)
 [![Upload Python Package](https://github.com/GT-ZhangAcer/QPT/actions/workflows/python-publish.yml/badge.svg)](https://github.com/GT-ZhangAcer/QPT/actions/workflows/python-publish.yml)
+[![QQGroup](https://img.shields.io/badge/QQ_Group-1128826410-52B6EF?style=social&logo=tencent-qq&logoColor=000&logoWidth=20)](https://jq.qq.com/?_wv=1027&k=49HB5ymm)
+
 > EAP: 当前版本为尝鲜版本，仅具备基本功能，该项目将长期维护  
 
 > 使用时如有问题可加QQ群1128826410进行解决

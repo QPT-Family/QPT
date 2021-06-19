@@ -25,7 +25,7 @@ class Example(QWidget):
                                            QMessageBox.Yes)
 
 
-app = QApplication(sys.argv)
-ex = Example()
-
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    ex = Example()
 input("PaddlePaddle测试成功！")

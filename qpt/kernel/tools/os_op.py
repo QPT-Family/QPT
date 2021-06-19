@@ -94,6 +94,35 @@ class StdOutWrapper(io.TextIOWrapper):
         self.buff = ''
 
 
+def copytree(src, dst, ignore_dirs: list = None):
+    """
+    复制整个目录树
+    最开始是用shutil.copytree()，但奈何Python3.7和3.8差别挺大，算了忽略这点效率吧，反正是在打包过程中，不影响用户
+    :param src: 源路径
+    :param dst: 目标路径
+    :param ignore_dirs: 忽略的文件夹名
+    """
+    if ignore_dirs is None:
+        ignore_dirs = list()
+    else:
+        ignore_dirs = [os.path.abspath(d) for d in ignore_dirs]
+    if not os.path.exists(dst):
+        os.makedirs(dst)
+
+    if os.path.exists(src):
+        for root, dirs, files in os.walk(src):
+            if os.path.abspath(root) in ignore_dirs:
+                continue
+            dst_root = os.path.join(os.path.abspath(dst),
+                                    os.path.abspath(root).replace(os.path.abspath(src), "").strip("\\"))
+            for file in files:
+                src_file = os.path.join(root, file)
+                dst_file = os.path.join(dst_root, file)
+                if not os.path.exists(dst_root):
+                    os.makedirs(dst_root, exist_ok=True)
+                shutil.copy(src_file, dst_file)
+
+
 class FileSerialize:
     def __init__(self, file_path):
         with open(file_path, "r", encoding="utf-8")as file:

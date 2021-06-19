@@ -5,11 +5,13 @@
 
 import os
 
-from qpt.modules.base import SubModule, SubModuleOpt, HIGH_LEVEL, TOP_LEVEL_REDUCE, GENERAL_LEVEL_REDUCE
+from qpt.modules.base import SubModule, SubModuleOpt, HIGH_LEVEL, TOP_LEVEL_REDUCE, GENERAL_LEVEL_REDUCE, LOW_LEVEL
 from qpt.kernel.tools.log_op import Logging
 from qpt.kernel.tools.interpreter import PipTools
 from qpt.kernel.tools.os_op import get_qpt_tmp_path, FileSerialize
 from qpt._compatibility import com_configs
+
+DOWN_PACKAGES_RELATIVE_PATH = "opt/packages"
 
 pip = PipTools()
 
@@ -26,7 +28,7 @@ def set_pip_tools(lib_package_path=None,
 
 
 # 第三方库部署方式
-LOCAL_DOWNLOAD_DEPLOY_MODE = "为用户准备Whl包，首次启动时会自动安装，可能会有兼容性问题"
+LOCAL_DOWNLOAD_DEPLOY_MODE = "为用户准备Whl包，首次启动时会自动安装，即使这样也可能会有兼容性问题"
 LOCAL_INSTALL_DEPLOY_MODE = "[不推荐]预编译第三方库，首次启动无需安装但将额外消耗硬盘空间，可能会有兼容性问题并且只支持二进制包"
 ONLINE_DEPLOY_MODE = "用户使用时在线安装Python第三方库"
 DEFAULT_DEPLOY_MODE = LOCAL_DOWNLOAD_DEPLOY_MODE
@@ -76,7 +78,7 @@ class DownloadWhlOpt(SubModuleOpt):
             self.package = "-r " + FileSerialize.serialize2file(self.package)
         pip.download_package(self.package,
                              version=self.version,
-                             save_path=os.path.join(self.module_path, "opt/packages"),
+                             save_path=os.path.join(self.module_path, DOWN_PACKAGES_RELATIVE_PATH),
                              no_dependent=self.no_dependent,
                              find_links=self.find_links,
                              python_version=self.python_version,
@@ -99,9 +101,13 @@ class LocalInstallWhlOpt(SubModuleOpt):
         if "[FLAG-FileSerialize]" in self.package[:32]:
             self.package = self.package.strip("[FLAG-FileSerialize]")
             self.package = "-r " + FileSerialize.serialize2file(self.package)
+        if self.opts is None:
+            self.opts = ""
+        self.opts += "--target " + os.path.join(self.interpreter_path,
+                                                com_configs["RELATIVE_INTERPRETER_SITE_PACKAGES_PATH"])
         pip.install_local_package(self.package,
                                   version=self.version,
-                                  whl_dir=os.path.join(self.module_path, "opt/packages"),
+                                  whl_dir=os.path.join(self.module_path, DOWN_PACKAGES_RELATIVE_PATH),
                                   no_dependent=self.no_dependent,
                                   opts=self.opts)
 
@@ -142,6 +148,24 @@ class OnlineInstallWhlOpt(SubModuleOpt):
                               find_links=self.find_links,
                               no_dependent=self.no_dependent,
                               opts=self.opts)
+
+
+class BatchInstallationOpt(SubModuleOpt):
+    def __init__(self, path=None):
+        super(BatchInstallationOpt, self).__init__(disposable=True)
+        self.path = path
+
+    def act(self) -> None:
+        if self.path is None:
+            self.path = os.path.join(self.module_path, DOWN_PACKAGES_RELATIVE_PATH)
+        whl_list = [whl.split("-")[0] for whl in os.listdir(self.path)]
+        opts = "--target " + os.path.join(self.interpreter_path,
+                                          com_configs["RELATIVE_INTERPRETER_SITE_PACKAGES_PATH"])
+        for whl_name in whl_list:
+            pip.install_local_package(whl_name,
+                                      whl_dir=self.path,
+                                      no_dependent=True,
+                                      opts=opts)
 
 
 class CustomPackage(SubModule):
@@ -192,7 +216,7 @@ class _RequirementsPackage(SubModule):
             self.add_pack_opt(DownloadWhlOpt(package=requirements_file_path,
                                              no_dependent=False))
             self.add_unpack_opt(LocalInstallWhlOpt(package=fs_data,
-                                                   no_dependent=True))
+                                                   no_dependent=False))
         elif deploy_mode == ONLINE_DEPLOY_MODE:
             self.add_unpack_opt(OnlineInstallWhlOpt(package=fs_data,
                                                     no_dependent=False))
@@ -223,13 +247,17 @@ class AutoRequirementsPackage(_RequirementsPackage):
             Logging.info(f"正在分析{os.path.abspath(path)}下的依赖情况...")
             requirements = pip.analyze_dependence(path, return_path=False)
 
+        module_name_list = [m.name for m in module_list]
         # 对特殊包进行过滤和特殊化
         for requirement in dict(requirements):
             if requirement in SPECIAL_MODULE:
                 special_module, parameter = SPECIAL_MODULE[requirement]
                 parameter["version"] = requirements[requirement]
                 parameter["deploy_mode"] = deploy_mode
-                module_list.append(special_module(**parameter))
+                module = special_module(**parameter)
+                # 如果开发者没有定义这个Module，那么则添加Module
+                if module.name not in module_name_list:
+                    module_list.append(module)
                 requirements.pop(requirement)
 
         # 保存依赖至
@@ -260,6 +288,14 @@ class QPTDependencyPackage(SubModule):
                                                no_dependent=False))
 
 
+class BatchInstallation(SubModule):
+    def __init__(self):
+        super().__init__()
+        self.level = LOW_LEVEL
+        if DEFAULT_DEPLOY_MODE == LOCAL_DOWNLOAD_DEPLOY_MODE:
+            self.add_unpack_opt(BatchInstallationOpt())
+
+
 class PaddlePaddlePackage(CustomPackage):
     def __init__(self,
                  version: str = None,
@@ -271,7 +307,8 @@ class PaddlePaddlePackage(CustomPackage):
                              version=version,
                              deploy_mode=deploy_mode)
         else:
-            raise Exception("暂不支持该模式，请等待后期更新")
+            # ToDo 增加Soft-CUDA
+            raise Exception("暂不支持PaddlePaddle模式，请等待近期更新")
             # Logging.warning("正在为PaddlePaddle添加CUDA支持...\n"
             #                 "请注意2.0版本的PaddlePaddle在添加CUDA支持后，即使用户没有合适的GPU设备，"
             #                 "也将默认以GPU模式进行执行。若不添加判断/设备选择的代码，则可能会出现设备相关的报错！\n"

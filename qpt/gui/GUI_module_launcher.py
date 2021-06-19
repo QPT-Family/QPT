@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 
 from qpt.kernel.qt_ui import GUIML
 from qpt.kernel.tools.log_op import Logging
-from qpt.kernel.tools.qpt_qt import QTCondaVenv, QTerminal
+from qpt.kernel.tools.terminal import QTCondaVenv, QTerminal
 from qpt.kernel.tools.os_op import SysInfo
 
 """

@@ -41,7 +41,7 @@ class CreateExecutableModule:
         if self.launcher_py_path[:1] == "\\":
             self.launcher_py_path = self.launcher_py_path[1:]
         self.work_dir = work_dir
-        assert os.path.abspath(work_dir) not in os.path.abspath(save_path), \
+        assert os.path.relpath(save_path, work_dir) not in save_path, \
             "打包后的保存路径不能在被打包的文件夹中，这样会打包了打包后的文件^n (,,•́ . •̀,,)"
         self.save_path = save_path
         self.module_path = os.path.join(save_path, "Release")

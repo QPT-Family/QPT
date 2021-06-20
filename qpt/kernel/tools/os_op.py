@@ -105,13 +105,13 @@ def copytree(src, dst, ignore_dirs: list = None):
     if ignore_dirs is None:
         ignore_dirs = list()
     else:
-        ignore_dirs = [os.path.abspath(d) for d in ignore_dirs]
+        ignore_dirs = [os.path.relpath(os.path.join(src, d)) for d in ignore_dirs]
     if not os.path.exists(dst):
         os.makedirs(dst)
 
     if os.path.exists(src):
         for root, dirs, files in os.walk(src):
-            if os.path.abspath(root) in ignore_dirs:
+            if os.path.relpath(root, src) in ignore_dirs:
                 continue
             dst_root = os.path.join(os.path.abspath(dst),
                                     os.path.abspath(root).replace(os.path.abspath(src), "").strip("\\"))

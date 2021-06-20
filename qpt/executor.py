@@ -49,6 +49,9 @@ class CreateExecutableModule:
         self.interpreter_path = os.path.join(self.module_path, "Python")
         if ignore_dirs is None:
             self.ignore_dirs = list()
+        self.ignore_dirs.append(".github")
+        self.ignore_dirs.append(".git")
+        self.ignore_dirs.append(".idea")
 
         set_default_deploy_mode(deploy_mode)
         self.with_debug = with_debug
@@ -281,7 +284,7 @@ class RunExecutableModule:
                                module_path=self.base_dir,
                                terminal=terminal)
             sub_module.unpack()
-            unzip_bar.update_value(min(sub_module_id / len(self.sub_module) * 100, 99))
+            unzip_bar.update_value(min(sub_module_id / modules * 100, 99))
             unzip_bar.update_title(f"正在初始化：{sub_name}")
             app.processEvents()
 

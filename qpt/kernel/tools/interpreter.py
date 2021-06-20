@@ -6,7 +6,15 @@ import os
 import sys
 
 from qpt.kernel.tools.os_op import StdOutWrapper, dynamic_load_package, get_qpt_tmp_path
-from qpt.kernel.tools.log_op import clean_stout
+from qpt.kernel.tools.log_op import clean_stout, Logging
+
+DEFAULT_PIP_SOURCE = "https://pypi.tuna.tsinghua.edu.cn/simple"
+
+
+def set_default_pip_source(source: str):
+    global DEFAULT_PIP_SOURCE
+    DEFAULT_PIP_SOURCE = source
+    Logging.debug(f"已设置PIP镜像源为：{DEFAULT_PIP_SOURCE}")
 
 
 class PipTools:
@@ -15,7 +23,7 @@ class PipTools:
     """
 
     def __init__(self,
-                 source: str = "https://pypi.tuna.tsinghua.edu.cn/simple",
+                 source: str = DEFAULT_PIP_SOURCE,
                  lib_packages_path=None):
         if lib_packages_path:
             pip_main = dynamic_load_package(packages_name="pip", lib_packages_path=lib_packages_path).main

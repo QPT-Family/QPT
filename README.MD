@@ -15,7 +15,7 @@ EAP邀测版本：当前版本为尝鲜版本，仅具备基本功能，而且�
 > 使用时如发现问题，强烈建议加QQ群1128826410与我们进行交流，当然也可联系QQ：ZhangAcer进行解决[感谢] 
 
 ## 相关案例
-> 交互式语义分割标注软件 - [PaddleCV-SIG/iann](https://github.com/PaddleCV-SIG/iann)
+1. 交互式语义分割标注软件 - [PaddleCV-SIG/iann](https://github.com/PaddleCV-SIG/iann)
 
 ## 快速使用QPT
 #### 安装QPT到当前环境
@@ -80,8 +80,10 @@ Options:
 ```
 
 ## 进阶使用QPT
-太多了，捋一捋
-## 高阶文档手册
+- [x] [1. 更改QPT全局镜像源](examples/advanced/更换镜像源.md)
+
+完整进阶使用文档详见[examples/advanced](examples/advanced)
+## 高阶开发手册
 还没写
 ## 设计思想  
 仍在编

@@ -80,7 +80,7 @@ Options:
 ```
 
 ## 进阶使用QPT
-- [x] [1. 更改QPT全局镜像源](examples/advanced/更换镜像源.md)
+- [x] [1. 更改QPT全局镜像源（V1.0a7上线）](examples/advanced/更换镜像源.md)
 
 完整进阶使用文档详见[examples/advanced](examples/advanced)
 ## 高阶开发手册

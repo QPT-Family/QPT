@@ -21,7 +21,7 @@ EAP邀测版本：当前版本为尝鲜版本，仅具备基本功能和Win10兼
 #### 安装QPT到当前环境
 > 当前版本号为 1.0a*
 
-`pip install qpt -i https://pypi.tuna.tsinghua.edu.cn/simple -U` or `pip install qpt -U`
+`pip install qpt -U` or `pip install qpt -i https://pypi.tuna.tsinghua.edu.cn/simple -U`
 
 #### 目录结构
 首先介绍一下示例项目的目录结构，其中`sample_program`就是待打包的**项目文件夹**，里面的`run.py`就是用户点击EXE文件后需要执行的**主程序文件**，

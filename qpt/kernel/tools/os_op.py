@@ -103,15 +103,20 @@ def copytree(src, dst, ignore_dirs: list = None):
     :param ignore_dirs: 忽略的文件夹名
     """
     if ignore_dirs is None:
-        ignore_dirs = list()
+        rel_ignore_dirs = list()
     else:
-        ignore_dirs = [os.path.relpath(os.path.abspath(d), src) for d in ignore_dirs]
+        rel_ignore_dirs = [os.path.relpath(os.path.abspath(d), src) for d in ignore_dirs]
     if not os.path.exists(dst):
         os.makedirs(dst)
 
     if os.path.exists(src):
+        dir_cache = "-%NONE-FLAG%-"
         for root, dirs, files in os.walk(src):
-            if os.path.relpath(root, src) in ignore_dirs:
+            rel_path = os.path.relpath(root, src)
+            if rel_path in rel_ignore_dirs:
+                dir_cache = os.path.relpath(root, src)
+                continue
+            if dir_cache in rel_path and rel_path.index(dir_cache) == 0:
                 continue
             dst_root = os.path.join(os.path.abspath(dst),
                                     os.path.abspath(root).replace(os.path.abspath(src), "").strip("\\"))

@@ -5,6 +5,7 @@
 
 import os
 
+from qpt.version import version as qpt_version
 from qpt.modules.base import SubModule, SubModuleOpt, HIGH_LEVEL, TOP_LEVEL_REDUCE, GENERAL_LEVEL_REDUCE, LOW_LEVEL
 from qpt.kernel.tools.log_op import Logging
 from qpt.kernel.tools.interpreter import PipTools
@@ -161,6 +162,7 @@ class BatchInstallationOpt(SubModuleOpt):
         whl_list = [whl.split("-")[0] for whl in os.listdir(self.path)]
         # opts = "--target " + os.path.join(self.interpreter_path,
         #                                   com_configs["RELATIVE_INTERPRETER_SITE_PACKAGES_PATH"])
+        opts = ""
         for whl_name in whl_list:
             pip.install_local_package(whl_name,
                                       whl_dir=self.path,
@@ -279,6 +281,9 @@ class QPTDependencyPackage(SubModule):
         lazy_dependency_serialize = "[FLAG-FileSerialize]" + FileSerialize(lazy_dependency_path).get_serialize_data()
         kernel = "-r " + kernel_dependency_path
         lazy = "-r " + lazy_dependency_path
+        self.add_pack_opt(OnlineInstallWhlOpt(package="qpt",
+                                              version=qpt_version,
+                                              no_dependent=True))
         self.add_pack_opt(OnlineInstallWhlOpt(package=kernel,
                                               no_dependent=False,
                                               to_module_env_path=True))

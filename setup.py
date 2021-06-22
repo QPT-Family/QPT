@@ -1,10 +1,11 @@
 from setuptools import setup
 from setuptools import find_packages
+from qpt.version import version
 
 # python setup.py sdist bdist_wheel
 setup(
     name='QPT',
-    version='1.0a6',
+    version=version,
     packages=find_packages(),
     url='https://github.com/GT-ZhangAcer/QPT',
     license='LGPL',

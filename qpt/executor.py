@@ -76,20 +76,25 @@ class CreateExecutableModule:
         # 设置全局下载的Python包默认解释器版本号 - 更换兼容性方案
         # set_default_package_for_python_version(interpreter_module.python_version)
 
-        # 避免打包虚拟环境
+        # 避免打包虚拟环境等
+        venv_dir = "-%NONE-FLAG%-"
         for root, dirs, files in os.walk(self.work_dir):
             if "pyvenv.cfg" in files:
+                venv_dir = root
                 self.ignore_dirs.append(root)
                 Logging.warning(f"检测到pyvenv.cfg，推测出{os.path.abspath(root)}为Python虚拟环境主目录，在打包时会忽略该目录")
-            elif ".github" in dirs:
+                continue
+            if ".github" in dirs:
                 self.ignore_dirs.append(os.path.join(root, ".github"))
                 Logging.warning(f"检测到.github，推测出{os.path.abspath(root)}为.github目录，在打包时会忽略该目录")
-            elif ".git" in dirs:
+            if ".git" in dirs:
                 self.ignore_dirs.append(os.path.join(root, ".git"))
                 Logging.warning(f"检测到.git，推测出{os.path.abspath(root)}为.git目录，在打包时会忽略该目录")
-            elif ".idea" in dirs:
+            if ".idea" in dirs:
                 self.ignore_dirs.append(os.path.join(root, ".idea"))
                 Logging.warning(f"检测到.idea，推测出{os.path.abspath(root)}为.idea目录，在打包时会忽略该目录")
+            if "__pycache__" in dirs and not (venv_dir in root and root.index(venv_dir) == 0):
+                self.ignore_dirs.append(os.path.join(root, "__pycache__"))
 
         # 获取SubModule列表
         self.lazy_module = [interpreter_module, QPTDependencyPackage()]
@@ -291,7 +296,7 @@ class RunExecutableModule:
                                module_path=self.base_dir,
                                terminal=terminal)
             sub_module.unpack()
-            unzip_bar.update_value(min(sub_module_id / modules * 100, 99))
+            unzip_bar.update_value(min(sub_module_id / len(modules) * 100, 99))
             unzip_bar.update_title(f"正在初始化：{sub_name}")
             app.processEvents()
 

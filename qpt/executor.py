@@ -37,7 +37,8 @@ class CreateExecutableModule:
                  none_gui: bool = False,
                  with_debug: bool = True):
         # 初始化路径成员变量
-        self.launcher_py_path = os.path.abspath(launcher_py_path).replace(os.path.abspath(work_dir), "")
+        # self.launcher_py_path = os.path.abspath(launcher_py_path).replace(os.path.abspath(work_dir), "")
+        self.launcher_py_path = os.path.relpath(launcher_py_path, work_dir)
         if self.launcher_py_path[:1] == "\\":
             self.launcher_py_path = self.launcher_py_path[1:]
         self.work_dir = work_dir
@@ -49,9 +50,6 @@ class CreateExecutableModule:
         self.interpreter_path = os.path.join(self.module_path, "Python")
         if ignore_dirs is None:
             self.ignore_dirs = list()
-        self.ignore_dirs.append(".github")
-        self.ignore_dirs.append(".git")
-        self.ignore_dirs.append(".idea")
 
         set_default_deploy_mode(deploy_mode)
         self.with_debug = with_debug
@@ -80,9 +78,18 @@ class CreateExecutableModule:
 
         # 避免打包虚拟环境
         for root, dirs, files in os.walk(self.work_dir):
-            if files == "pyvenv.cfg":
+            if "pyvenv.cfg" in files:
                 self.ignore_dirs.append(root)
-                Logging.warning(f"检测到{files}，推测出{root}为Python虚拟环境主目录，在打包时会忽略该目录")
+                Logging.warning(f"检测到pyvenv.cfg，推测出{os.path.abspath(root)}为Python虚拟环境主目录，在打包时会忽略该目录")
+            elif ".github" in dirs:
+                self.ignore_dirs.append(os.path.join(root, ".github"))
+                Logging.warning(f"检测到.github，推测出{os.path.abspath(root)}为.github目录，在打包时会忽略该目录")
+            elif ".git" in dirs:
+                self.ignore_dirs.append(os.path.join(root, ".git"))
+                Logging.warning(f"检测到.git，推测出{os.path.abspath(root)}为.git目录，在打包时会忽略该目录")
+            elif ".idea" in dirs:
+                self.ignore_dirs.append(os.path.join(root, ".idea"))
+                Logging.warning(f"检测到.idea，推测出{os.path.abspath(root)}为.idea目录，在打包时会忽略该目录")
 
         # 获取SubModule列表
         self.lazy_module = [interpreter_module, QPTDependencyPackage()]

@@ -103,8 +103,8 @@ class LocalInstallWhlOpt(SubModuleOpt):
             self.package = "-r " + FileSerialize.serialize2file(self.package)
         if self.opts is None:
             self.opts = ""
-        self.opts += "--target " + os.path.join(self.interpreter_path,
-                                                com_configs["RELATIVE_INTERPRETER_SITE_PACKAGES_PATH"])
+        # self.opts += "--target " + os.path.join(self.interpreter_path,
+        #                                         com_configs["RELATIVE_INTERPRETER_SITE_PACKAGES_PATH"])
         pip.install_local_package(self.package,
                                   version=self.version,
                                   whl_dir=os.path.join(self.module_path, DOWN_PACKAGES_RELATIVE_PATH),
@@ -159,8 +159,8 @@ class BatchInstallationOpt(SubModuleOpt):
         if self.path is None:
             self.path = os.path.join(self.module_path, DOWN_PACKAGES_RELATIVE_PATH)
         whl_list = [whl.split("-")[0] for whl in os.listdir(self.path)]
-        opts = "--target " + os.path.join(self.interpreter_path,
-                                          com_configs["RELATIVE_INTERPRETER_SITE_PACKAGES_PATH"])
+        # opts = "--target " + os.path.join(self.interpreter_path,
+        #                                   com_configs["RELATIVE_INTERPRETER_SITE_PACKAGES_PATH"])
         for whl_name in whl_list:
             pip.install_local_package(whl_name,
                                       whl_dir=self.path,

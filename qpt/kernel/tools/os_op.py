@@ -105,7 +105,7 @@ def copytree(src, dst, ignore_dirs: list = None):
     if ignore_dirs is None:
         ignore_dirs = list()
     else:
-        ignore_dirs = [os.path.relpath(os.path.join(src, d)) for d in ignore_dirs]
+        ignore_dirs = [os.path.relpath(os.path.abspath(d), src) for d in ignore_dirs]
     if not os.path.exists(dst):
         os.makedirs(dst)
 

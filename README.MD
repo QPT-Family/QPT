@@ -11,17 +11,17 @@ QPT是一款可以“模拟”开发环境的多功能封装工具，一行命�
 尽可能在用户使用时复现您的开发环境。  
 
 ## EAP - The Early Access Program
-EAP邀测版本：当前版本为尝鲜版本，仅具备基本功能，而且可能会有未测试出的Bug  
+EAP邀测版本：当前版本为尝鲜版本，仅具备基本功能和Win10兼容，而且可能会有未测试出的Bug  
 > 使用时如发现问题，强烈建议加QQ群1128826410与我们进行交流，当然也可联系QQ：ZhangAcer进行解决[感谢] 
 
 ## 相关案例
 1. 交互式语义分割标注软件 - [PaddleCV-SIG/iann](https://github.com/PaddleCV-SIG/iann)
 
-## 快速使用QPT
+## 快速使用
 #### 安装QPT到当前环境
 > 当前版本号为 1.0a*
 
-`pip install qpt -i https://pypi.tuna.tsinghua.edu.cn/simple -U` or `pip install qpt -U`
+`pip install qpt -U` or `pip install qpt -i https://pypi.tuna.tsinghua.edu.cn/simple -U`
 
 #### 目录结构
 首先介绍一下示例项目的目录结构，其中`sample_program`就是待打包的**项目文件夹**，里面的`run.py`就是用户点击EXE文件后需要执行的**主程序文件**，
@@ -37,7 +37,7 @@ EAP邀测版本：当前版本为尝鲜版本，仅具备基本功能，而且�
 
 #### 开始打包
 
-##### [推荐]方式一、撰写打包脚本
+##### 方式一、撰写打包脚本[推荐]
 在`sample_sandbox`目录下新建一个名为`create_sample_module.py`的py文件。
 ```
 ------------
@@ -60,7 +60,7 @@ if __name__ == '__main__':
     # 开始打包
     module.make()
 ```
-##### [快捷]方式二、使用命令打包
+##### 方式二、使用命令打包[快捷]
 注意：使用命令打包的前提是当前**默认Python环境**中使用pip安装了`qpt`，否则可能存在形如`qpt不是内部或外部命令,也不是可运行的程序`的报错信息。  
 
 打开cmd/终端并输入以下命令即可完成打包：  
@@ -80,7 +80,7 @@ Options:
 ```
 
 ## 进阶使用QPT
-- [x] [1. 更改QPT全局镜像源](examples/advanced/更换镜像源.md)
+- [x] [1. 更改QPT全局镜像源（V1.0a7上线）](examples/advanced/更换镜像源.md)
 
 完整进阶使用文档详见[examples/advanced](examples/advanced)
 ## 高阶开发手册

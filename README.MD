@@ -16,6 +16,7 @@ EAP邀测版本：当前版本为尝鲜版本，仅具备基本功能和Win10兼
 
 ## 相关案例
 1. 交互式语义分割标注软件 - [PaddleCV-SIG/iann](https://github.com/PaddleCV-SIG/iann)
+2. 景观健康效益辅助评估工具 - [JiehangXie/Landscape-Heath-Score](https://github.com/JiehangXie/Landscape-Heath-Score)
 
 ## 快速使用
 #### 安装QPT到当前环境
@@ -80,7 +81,7 @@ Options:
 ```
 
 ## 进阶使用QPT
-- [x] [1. 更改QPT全局镜像源（V1.0a7上线）](examples/advanced/更换镜像源.md)
+- [x] [1. 更改QPT全局镜像源](examples/advanced/更换镜像源.md)
 
 完整进阶使用文档详见[examples/advanced](examples/advanced)
 ## 高阶开发手册

@@ -8,25 +8,11 @@ import os
 from qpt.version import version as qpt_version
 from qpt.modules.base import SubModule, SubModuleOpt, HIGH_LEVEL, TOP_LEVEL_REDUCE, GENERAL_LEVEL_REDUCE, LOW_LEVEL
 from qpt.kernel.tools.log_op import Logging
-from qpt.kernel.tools.interpreter import PipTools
+from qpt.kernel.tools.interpreter import PIP
 from qpt.kernel.tools.os_op import get_qpt_tmp_path, FileSerialize
 from qpt._compatibility import com_configs
 
 DOWN_PACKAGES_RELATIVE_PATH = "opt/packages"
-
-pip = PipTools()
-
-
-def set_pip_tools(lib_package_path=None,
-                  source: str = "https://pypi.tuna.tsinghua.edu.cn/simple"):
-    """
-    设置全局pip工具组件
-    :param lib_package_path: pip所在位置
-    :param source: 镜像源地址
-    """
-    global pip
-    pip = PipTools(lib_packages_path=lib_package_path, source=source)
-
 
 # 第三方库部署方式
 LOCAL_DOWNLOAD_DEPLOY_MODE = "为用户准备Whl包，首次启动时会自动安装，即使这样也可能会有兼容性问题"
@@ -77,7 +63,7 @@ class DownloadWhlOpt(SubModuleOpt):
         if "[FLAG-FileSerialize]" in self.package[:32]:
             self.package = self.package.strip("[FLAG-FileSerialize]")
             self.package = "-r " + FileSerialize.serialize2file(self.package)
-        pip.download_package(self.package,
+        PIP.download_package(self.package,
                              version=self.version,
                              save_path=os.path.join(self.module_path, DOWN_PACKAGES_RELATIVE_PATH),
                              no_dependent=self.no_dependent,
@@ -106,7 +92,7 @@ class LocalInstallWhlOpt(SubModuleOpt):
             self.opts = ""
         # self.opts += "--target " + os.path.join(self.interpreter_path,
         #                                         com_configs["RELATIVE_INTERPRETER_SITE_PACKAGES_PATH"])
-        pip.install_local_package(self.package,
+        PIP.install_local_package(self.package,
                                   version=self.version,
                                   whl_dir=os.path.join(self.module_path, DOWN_PACKAGES_RELATIVE_PATH),
                                   no_dependent=self.no_dependent,
@@ -143,7 +129,7 @@ class OnlineInstallWhlOpt(SubModuleOpt):
                                                     com_configs["RELATIVE_INTERPRETER_SITE_PACKAGES_PATH"])
             if self.to_python_env_version:
                 self.opts += f" --python-version {self.to_python_env_version} --only-binary :all:"
-        pip.pip_package_shell(self.package,
+        PIP.pip_package_shell(self.package,
                               act="install",
                               version=self.version,
                               find_links=self.find_links,
@@ -164,7 +150,7 @@ class BatchInstallationOpt(SubModuleOpt):
         #                                   com_configs["RELATIVE_INTERPRETER_SITE_PACKAGES_PATH"])
         opts = ""
         for whl_name in whl_list:
-            pip.install_local_package(whl_name,
+            PIP.install_local_package(whl_name,
                                       whl_dir=self.path,
                                       no_dependent=True,
                                       opts=opts)
@@ -244,10 +230,10 @@ class AutoRequirementsPackage(_RequirementsPackage):
         :param deploy_mode: 部署模式
         """
         if os.path.isfile(path):
-            requirements = pip.analyze_requirements_file(path)
+            requirements = PIP.analyze_requirements_file(path)
         else:
             Logging.info(f"正在分析{os.path.abspath(path)}下的依赖情况...")
-            requirements = pip.analyze_dependence(path, return_path=False)
+            requirements = PIP.analyze_dependence(path, return_path=False)
 
         module_name_list = [m.name for m in module_list]
         # 对特殊包进行过滤和特殊化
@@ -264,7 +250,7 @@ class AutoRequirementsPackage(_RequirementsPackage):
 
         # 保存依赖至
         requirements_path = os.path.join(get_qpt_tmp_path(), "requirements_dev.txt")
-        pip.save_requirements_file(requirements, requirements_path)
+        PIP.save_requirements_file(requirements, requirements_path)
 
         # 执行常规的安装
         super().__init__(requirements_file_path=requirements_path,

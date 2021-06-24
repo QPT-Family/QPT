@@ -8,13 +8,11 @@ import sys
 from qpt.kernel.tools.os_op import StdOutWrapper, dynamic_load_package, get_qpt_tmp_path
 from qpt.kernel.tools.log_op import clean_stout, Logging
 
-DEFAULT_PIP_SOURCE = "https://pypi.tuna.tsinghua.edu.cn/simple"
+TSINGHUA_PIP_SOURCE = "https://pypi.tuna.tsinghua.edu.cn/simple"
+BAIDU_PIP_SOURCE = "https://mirror.baidu.com/pypi/simple"
+DOUBAN_PIP_SOURCE = "https://pypi.douban.com/simple"
 
-
-def set_default_pip_source(source: str):
-    global DEFAULT_PIP_SOURCE
-    DEFAULT_PIP_SOURCE = source
-    Logging.debug(f"已设置PIP镜像源为：{DEFAULT_PIP_SOURCE}")
+DEFAULT_PIP_SOURCE = TSINGHUA_PIP_SOURCE
 
 
 class PipTools:
@@ -23,8 +21,10 @@ class PipTools:
     """
 
     def __init__(self,
-                 source: str = DEFAULT_PIP_SOURCE,
+                 source: str = None,
                  lib_packages_path=None):
+        if source is None:
+            source = DEFAULT_PIP_SOURCE
         if lib_packages_path:
             pip_main = dynamic_load_package(packages_name="pip", lib_packages_path=lib_packages_path).main
         else:
@@ -191,3 +191,25 @@ class PipTools:
                 else:
                     line = requirement + "\n"
                 file.write(line)
+
+
+PIP = PipTools()
+
+
+def set_default_pip_source(source: str):
+    global PIP, DEFAULT_PIP_SOURCE
+    PIP.source = source
+    DEFAULT_PIP_SOURCE = source
+    Logging.debug(f"已设置PIP镜像源为：{source}")
+
+
+def set_pip_configs(lib_package_path=None,
+                    source: str = DEFAULT_PIP_SOURCE):
+    """
+    设置全局pip工具组件
+    :param lib_package_path: pip所在位置
+    :param source: 镜像源地址
+    """
+    # 存在Bug，建议开个set接口来替换
+    global PIP
+    PIP = PipTools(lib_packages_path=lib_package_path, source=source)

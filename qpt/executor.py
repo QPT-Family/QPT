@@ -1,9 +1,16 @@
+# Author: Acer Zhang
+# Datetime: 2021/5/26
+# Copyright belongs to the author.
+# Please indicate the source for reprinting.
+
 import os
 import sys
 import shutil
 import importlib
 import datetime
 import base64
+import win32api
+import win32con
 
 from typing import List
 
@@ -30,12 +37,13 @@ class CreateExecutableModule:
                  requirements_file="auto",
                  deploy_mode=DEFAULT_DEPLOY_MODE,
                  sub_modules: List[SubModule] = None,
-                 interpreter_module: BasePythonEnv = AutoPythonEnv(),
+                 interpreter_module: BasePythonEnv = None,
                  module_name="未命名模型",
                  version="未知版本号",
                  author="未知作者",
                  none_gui: bool = False,
-                 with_debug: bool = True):
+                 with_debug: bool = False):
+        self.with_debug = with_debug
         # 初始化路径成员变量
         # self.launcher_py_path = os.path.abspath(launcher_py_path).replace(os.path.abspath(work_dir), "")
         self.launcher_py_path = os.path.relpath(launcher_py_path, work_dir)
@@ -96,6 +104,10 @@ class CreateExecutableModule:
             if "__pycache__" in dirs and not (venv_dir in root and root.index(venv_dir) == 0):
                 self.ignore_dirs.append(os.path.join(root, "__pycache__"))
 
+        # Module相关
+        # 初始化解释器Module
+        if interpreter_module is None:
+            interpreter_module = AutoPythonEnv()
         # 获取SubModule列表
         self.lazy_module = [interpreter_module, QPTDependencyPackage()]
 
@@ -180,6 +192,12 @@ class CreateExecutableModule:
         # 复制资源文件
         assert os.path.exists(self.work_dir), f"{os.path.abspath(self.work_dir)}不存在，请检查该路径是否正确"
         copytree(self.work_dir, self.resources_path, ignore_dirs=self.ignore_dirs)
+
+        # QPT的dev模式
+        if self.with_debug:
+            Logging.debug("当前已开启QPT-dev模式，将会复制当前版本的QPT文件至相应目录")
+            qpt_dir_path = os.path.split(qpt.__file__)[0]
+            copytree(src=qpt_dir_path, dst=os.path.join(self.interpreter_path, "Lib/site-packages/qpt"))
 
         # 避免出现if __name__ == '__main__':
         with open(os.path.join(self.resources_path, self.launcher_py_path), "r", encoding="utf-8") as lf:
@@ -296,7 +314,7 @@ class RunExecutableModule:
                                module_path=self.base_dir,
                                terminal=terminal)
             sub_module.unpack()
-            unzip_bar.update_value(min(sub_module_id / len(modules) * 100, 99))
+            unzip_bar.update_value(min(sub_module_id + 1 / len(modules) * 100, 99))
             unzip_bar.update_title(f"正在初始化：{sub_name}")
             app.processEvents()
 
@@ -318,29 +336,19 @@ class RunExecutableModule:
         if os.path.exists(lock_file_path):
             env_warning_flag = False
 
-        # if env_warning_flag:
-        #     try:
-        #         from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox
-        #         app = QApplication(sys.argv)
-        #         widget = QWidget()
-        #         msg = QMessageBox.information(widget,
-        #                                       'Warning',
-        #                                       f"非常不建议在该环境下进行调试，原因如下： \n"
-        #                                       f" 1. 继续执行将会加载“一次性部署模块”，部署后该模块会消失，消失后可能无法在其他电脑上使用。\n"
-        #                                       f" 2. 该程序会解压缩当前环境，执行“启动程序.exe”后整个目录大小可能会增加1~5倍。（取决于压缩率）\n"
-        #                                       f" 3. 若需要测试打包后程序是否可以正常运行，请在Debug目录下进行测试。\n"
-        #                                       f" 4. 若特殊情况必须在Release目录下进行测试，请制作Release目录的备份，在他人需要时提供该备份\n"
-        #                                       f"    文件或重新打包，以避免因执行“启动程序.exe”后丢失“一次性部署模块”，从而无法被他人使用。\n"
-        #                                       f"-----------------------------------------------------------------------------\n"
-        #                                       f"请问是否还要在该环境下继续执行？",
-        #                                       QMessageBox.Yes | QMessageBox.No)
-        #         if msg == QMessageBox.No:
-        #             exit(0)
-        #         widget.close()
-        #         app.exit()
-        #     except Exception as e:
-        #         Logging.error("部署失败，报错信息如下：\n" + str(e))
-
+        if env_warning_flag:
+            msg = win32api.MessageBox(0, f"非常不建议在该环境下进行调试，原因如下： \n"
+                                         f" 1. 继续执行将会加载“一次性部署模块”，部署后该模块会消失，消失后可能无法在其他电脑上使用。\n"
+                                         f" 2. 该程序会解压缩当前环境，执行“启动程序.exe”后整个目录大小可能会增加1~5倍。（取决于压缩率）\n"
+                                         f" 3. 若需要测试打包后程序是否可以正常运行，请在Debug目录下进行测试。\n"
+                                         f" 4. 若特殊情况必须在Release目录下进行测试，请制作Release目录的备份，在他人需要时提供该备份\n"
+                                         f"    文件或重新打包，以避免因执行“启动程序.exe”后丢失“一次性部署模块”，从而无法被他人使用。\n"
+                                         f"-----------------------------------------------------------------------------\n"
+                                         f"请问是否还要在该环境下继续执行？",
+                                      "Warning",
+                                      win32con.MB_OKCANCEL | win32con.MB_ICONEXCLAMATION)
+            if msg == 2:
+                exit(0)
         # prepare module - GUI组件需要在此之后才能进行
         self._solve_module()
 

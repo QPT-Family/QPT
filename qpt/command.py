@@ -25,7 +25,7 @@ import click
 @click.option("-r",
               "--require",
               default="auto",
-              prompt="是否需要自动检测打包所需的依赖库",
+              prompt="请输入requirements.txt文件路径，若无该文件可直接按下[回车键]自动生成该文件",
               help='自动检测软件包依赖，填写auto后将会自动查找待打包的文件夹路径中所有py文件的import使用情况，最终生成requirements文件\n'
                    '当然，也可传入requirements.txt文件路径，这样即可指定依赖列表进行安装。')
 def cli(folder,

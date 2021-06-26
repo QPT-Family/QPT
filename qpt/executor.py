@@ -44,13 +44,19 @@ class CreateExecutableModule:
                  none_gui: bool = False,
                  with_debug: bool = False):
         self.with_debug = with_debug
+
         # 初始化路径成员变量
-        # self.launcher_py_path = os.path.abspath(launcher_py_path).replace(os.path.abspath(work_dir), "")
         self.launcher_py_path = os.path.relpath(launcher_py_path, work_dir)
         if self.launcher_py_path[:1] == "\\":
             self.launcher_py_path = self.launcher_py_path[1:]
         self.work_dir = work_dir
-        assert os.path.relpath(save_path, work_dir) not in save_path, \
+        assert os.path.exists(os.path.join(self.work_dir, self.launcher_py_path)), \
+            f"请检查{launcher_py_path}文件是否存在{self.work_dir}目录"
+        try:
+            check_same_path = os.path.abspath(os.path.relpath(save_path, work_dir))
+        except ValueError:
+            check_same_path = save_path + "-"
+        assert check_same_path not in save_path, \
             "打包后的保存路径不能在被打包的文件夹中，这样会打包了打包后的文件^n (,,•́ . •̀,,)"
         self.save_path = save_path
         self.module_path = os.path.join(save_path, "Release")
@@ -314,9 +320,11 @@ class RunExecutableModule:
                                module_path=self.base_dir,
                                terminal=terminal)
             sub_module.unpack()
-            unzip_bar.update_value(min(sub_module_id + 1 / len(modules) * 100, 99))
+            unzip_bar.update_value(min((sub_module_id + 1) / len(modules) * 100, 99))
             unzip_bar.update_title(f"正在初始化：{sub_name}")
             app.processEvents()
+        unzip_bar.close()
+        # app.exit()
 
     def unzip_resources(self):
         # ToDO 增加单文件执行模式，优先级暂时靠后
@@ -343,7 +351,7 @@ class RunExecutableModule:
                                          f" 3. 若需要测试打包后程序是否可以正常运行，请在Debug目录下进行测试。\n"
                                          f" 4. 若特殊情况必须在Release目录下进行测试，请制作Release目录的备份，在他人需要时提供该备份\n"
                                          f"    文件或重新打包，以避免因执行“启动程序.exe”后丢失“一次性部署模块”，从而无法被他人使用。\n"
-                                         f"-----------------------------------------------------------------------------\n"
+                                         f"---------------------------------------------------------------------------\n"
                                          f"请问是否还要在该环境下继续执行？",
                                       "Warning",
                                       win32con.MB_OKCANCEL | win32con.MB_ICONEXCLAMATION)

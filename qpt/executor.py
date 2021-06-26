@@ -56,7 +56,7 @@ class CreateExecutableModule:
             check_same_path = os.path.abspath(os.path.relpath(save_path, work_dir))
         except ValueError:
             check_same_path = save_path + "-"
-        assert check_same_path not in save_path, \
+        assert check_same_path not in os.path.abspath(save_path), \
             "打包后的保存路径不能在被打包的文件夹中，这样会打包了打包后的文件^n (,,•́ . •̀,,)"
         self.save_path = save_path
         self.module_path = os.path.join(save_path, "Release")

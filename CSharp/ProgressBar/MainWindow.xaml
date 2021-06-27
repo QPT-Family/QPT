@@ -1,0 +1,15 @@
+﻿<Window x:Class="WpfApp2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp2"
+        mc:Ignorable="d"
+        Title="QPT初始化程序 - 就绪" Height="66" Width="448" ResizeMode="NoResize" Icon="Logo.ico">
+    <Grid Margin="0,0,2,-1">
+
+        <ProgressBar Margin="10,10,65,10"/>
+        <TextBox TextWrapping="Wrap" Text="100%" HorizontalAlignment="Right" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" RenderTransformOrigin="0.489,1.111" Width="64" Background="{x:Null}" BorderThickness="0"/>
+
+    </Grid>
+</Window>

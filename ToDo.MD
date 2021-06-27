@@ -12,3 +12,4 @@
 - [ ] 排除VENV文件夹
 - [ ] 要不要加个环境变量PYTHONPATH
 - [ ] 图标问题可参考
+- [ ] .Net在低版本的Win平台需要先请求保证4.0Net"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP

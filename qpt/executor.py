@@ -187,9 +187,14 @@ class CreateExecutableModule:
 
         # 创建基本环境目录
         if os.path.exists(self.save_path):
-            Logging.warning(f"{os.path.abspath(self.save_path)}已存在，已清空该目录")
-            shutil.rmtree(self.save_path)
-        os.mkdir(self.save_path)
+            if os.path.exists(self.resources_path):
+                Logging.warning(f"{os.path.abspath(self.module_path)}已存在，已清空该目录")
+                shutil.rmtree(self.module_path)
+            if os.path.exists(self.debug_path):
+                Logging.warning(f"{os.path.abspath(self.debug_path)}已存在，已清空该目录")
+                shutil.rmtree(self.debug_path)
+        else:
+            os.mkdir(self.save_path)
 
         # 解析子模块
         self._solve_module(lazy=True)

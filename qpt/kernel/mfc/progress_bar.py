@@ -29,9 +29,9 @@ class ProgressBar(dialog.Dialog):
                     win32con.WS_VISIBLE | win32con.WS_CAPTION | win32con.WS_SYSMENU,
                     win32con.WS_EX_CLIENTEDGE | win32con.WS_EX_APPWINDOW,
                     (9, "MS Sans Serif")])
-        ids.append(["CONTROL", None, 1001, (0, 0, 204, 10)])
-        ids.append(["CONTROL", "100%", -1, "Static", win32con.SS_LEFTNOWORDWRAP | win32con.WS_GROUP, (202, 1, 20, 9),
-                    win32con.WS_EX_RIGHT])
+        # ids.append(["CONTROL", None, 1001, (0, 0, 204, 10)])
+        # ids.append(["CONTROL", "100%", -1, "Static", win32con.SS_LEFTNOWORDWRAP | win32con.WS_GROUP, (202, 1, 20, 9),
+        #             win32con.WS_EX_RIGHT])
         super(ProgressBar, self).__init__(ids)
 
 

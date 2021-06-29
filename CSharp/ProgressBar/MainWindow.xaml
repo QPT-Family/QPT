@@ -8,8 +8,10 @@
         Title="QPT初始化程序 - 就绪" Height="66" Width="448" ResizeMode="NoResize" Icon="Logo.ico">
     <Grid Margin="0,0,2,-1">
 
-        <ProgressBar Margin="10,10,65,10"/>
-        <TextBox TextWrapping="Wrap" Text="100%" HorizontalAlignment="Right" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" RenderTransformOrigin="0.489,1.111" Width="64" Background="{x:Null}" BorderThickness="0"/>
+        <ProgressBar x:Name="progressBar" Margin="10,10,53,10" Value="{Binding Text, ElementName=textBox}"/>
+        <TextBox x:Name="textBox" TextWrapping="Wrap" Text="100" HorizontalAlignment="Right" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" RenderTransformOrigin="0.489,1.111" Width="29" Background="{x:Null}" BorderThickness="0" IsEnabled="False" Margin="0,0,19,0"/>
+        <Button x:Name="act_button" Content="Button" HorizontalAlignment="Left" Height="25" Margin="7,43,0,-30" VerticalAlignment="Top" Width="87"/>
+        <TextBox x:Name="textBox_Copy" TextWrapping="Wrap" Text="%" HorizontalAlignment="Right" VerticalContentAlignment="Center" RenderTransformOrigin="0.489,1.111" Width="18" Background="{x:Null}" BorderThickness="0" IsEnabled="False" Margin="0,0,1,0"/>
 
     </Grid>
 </Window>

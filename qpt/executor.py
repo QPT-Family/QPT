@@ -41,7 +41,7 @@ class CreateExecutableModule:
                  module_name="未命名模型",
                  version="未知版本号",
                  author="未知作者",
-                 none_gui: bool = False,
+                 hidden_terminal: bool = False,
                  with_debug: bool = False):
         self.with_debug = with_debug
 
@@ -67,11 +67,12 @@ class CreateExecutableModule:
 
         set_default_deploy_mode(deploy_mode)
         self.with_debug = with_debug
+        self.hidden_gui = hidden_terminal
 
         # 新建配置信息
         self.configs = dict()
         self.configs["launcher_py_path"] = self.launcher_py_path
-        self.configs["none_gui"] = none_gui
+        self.configs["hidden_gui"] = hidden_terminal
         self.configs["module_name"] = module_name
         self.configs["author"] = author
         self.configs["version"] = version
@@ -117,8 +118,6 @@ class CreateExecutableModule:
         # 获取SubModule列表
         self.lazy_module = [interpreter_module, QPTDependencyPackage()]
 
-        if none_gui is False:
-            pass
         self.sub_module = sub_modules if sub_modules is not None else list()
 
         # 放入增强包
@@ -228,9 +227,9 @@ class CreateExecutableModule:
             config_file.write(str(self.configs))
 
         # 复制Debug所需文件
+        debug_ext_dir = os.path.join(os.path.split(qpt.__file__)[0], "ext/launcher_debug")
         if self.with_debug:
-            debug_dir = os.path.join(os.path.split(qpt.__file__)[0], "ext/launcher_debug")
-            copytree(debug_dir, dst=self.debug_path)
+            copytree(debug_ext_dir, dst=self.debug_path)
             copytree(self.module_path, dst=self.debug_path)
             # 生成Debug标识符
             unlock_file_path = os.path.join(self.debug_path, "configs/unlock.cache")
@@ -244,8 +243,13 @@ class CreateExecutableModule:
                           os.path.join(self.debug_path, "使用兼容模式运行.cmd"))
 
         # 复制Release启动器文件
-        launcher_dir = os.path.join(os.path.split(qpt.__file__)[0], "ext/launcher")
-        copytree(launcher_dir, dst=self.module_path)
+        launcher_ext_dir = os.path.join(os.path.split(qpt.__file__)[0], "ext/launcher")
+        launcher_ignore_file = None
+        if not self.hidden_gui:
+            launcher_ignore_file = ["Main.exe", "entry.cmd"]
+            shutil.copy(src=os.path.join(debug_ext_dir, "Debug.exe"), dst=os.path.join(self.module_path, "启动程序.exe"))
+            shutil.copy(src=os.path.join(debug_ext_dir, "entry.cmd"), dst=self.module_path)
+        copytree(launcher_ext_dir, dst=self.module_path, ignore_files=launcher_ignore_file)
         # 重命名兼容模式文件
         compatibility_mode_file = os.path.join(self.module_path, "compatibility_mode.cmd")
         if os.path.exists(compatibility_mode_file):
@@ -253,7 +257,7 @@ class CreateExecutableModule:
                       os.path.join(self.module_path, "使用兼容模式运行.cmd"))
 
         # 重命名启动器文件
-        launcher_file = os.path.join(self.module_path, "main.exe")
+        launcher_file = os.path.join(self.module_path, "Main.exe")
         if os.path.exists(launcher_file):
             os.rename(launcher_file,
                       os.path.join(self.module_path, "启动程序.exe"))

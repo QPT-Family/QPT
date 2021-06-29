@@ -70,14 +70,17 @@ if __name__ == '__main__':
 完整命令列表可使用`qpt --help`获取：
 ```bash
 Options:
-  -f, --folder TEXT   待打包的文件夹路径，该目录也应当为整个项目的根目录或工作目录，否则可能会导致出现找不到模块等Python基础报错
-                      。  [必须]
-  -p, --py TEXT       待打包的主要Py脚本文件所在的路径，例如要yyy/xxx.py中xxx.py是需要打包的主要Python文件，那
-                      么该处填写xxx.py即可。  [必须]
-  -s, --save TEXT     打包后文件保存的路径。  [必须]
-  -r, --require TEXT  自动检测软件包依赖，默认/填写auto后将会自动查找待打包的文件夹路径中所有py文件的import使用情况，最终生成r
-                      equirements文件。当然，也可传入requirements.txt文件路径，这样即可指定依赖列表进行安装。
-  --help              查看帮助.
+  -f, --folder TEXT     待打包的文件夹路径，该目录也应当为整个项目的根目录或工作目录，否则可能会导致出现找不到模块等Python基础
+                        报错。  [required]
+  -p, --py TEXT         待打包的主要Py脚本文件所在的路径，例如要yyy/xxx.py中xxx.py是需要打包的主要Python文件
+                        ，那么该处填写xxx.py即可。  [required]
+  -s, --save TEXT       打包后文件保存的路径。  [required]
+  -r, --require TEXT    自动检测软件包依赖，填写auto后将会自动查找待打包的文件夹路径中所有py文件的import使用情况，最终生
+                        成requirements文件
+                        当然，也可传入requirements.txt文件路径，这样即可指定依赖列表进行安装。
+  -h, --hidden BOOLEAN  是否隐藏全部终端窗口，若输入true或判定为真则隐藏全部Terminal窗口（适用于使用了PyQT、TK等桌
+                        面级可视化程序），输入false或判定为否则不隐藏（适用于Console & 终端程序）。
+  --help                Show this message and exit.
 ```
 
 ## 进阶使用QPT

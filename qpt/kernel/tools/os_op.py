@@ -94,18 +94,23 @@ class StdOutWrapper(io.TextIOWrapper):
         self.buff = ''
 
 
-def copytree(src, dst, ignore_dirs: list = None):
+def copytree(src, dst, ignore_dirs: list = None, ignore_files: list = None):
     """
     复制整个目录树
     最开始是用shutil.copytree()，但奈何Python3.7和3.8差别挺大，算了忽略这点效率吧，反正是在打包过程中，不影响用户
     :param src: 源路径
     :param dst: 目标路径
     :param ignore_dirs: 忽略的文件夹名
+    :param ignore_files: 忽略的文件名
     """
     if ignore_dirs is None:
         rel_ignore_dirs = list()
     else:
         rel_ignore_dirs = [os.path.relpath(os.path.abspath(d), src) for d in ignore_dirs]
+    if ignore_files is None:
+        ignore_files = list()
+    else:
+        ignore_files = [os.path.abspath(os.path.join(src, f)) for f in ignore_files]
     if not os.path.exists(dst):
         os.makedirs(dst)
 
@@ -122,6 +127,8 @@ def copytree(src, dst, ignore_dirs: list = None):
                                     os.path.abspath(root).replace(os.path.abspath(src), "").strip("\\"))
             for file in files:
                 src_file = os.path.join(root, file)
+                if os.path.abspath(src_file) in ignore_files:
+                    continue
                 dst_file = os.path.join(dst_root, file)
                 if not os.path.exists(dst_root):
                     os.makedirs(dst_root, exist_ok=True)

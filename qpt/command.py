@@ -26,12 +26,19 @@ import click
               "--require",
               default="auto",
               prompt="请输入requirements.txt文件路径，若无该文件可直接按下[回车键]自动生成该文件",
-              help='自动检测软件包依赖，填写auto后将会自动查找待打包的文件夹路径中所有py文件的import使用情况，最终生成requirements文件\n'
-                   '当然，也可传入requirements.txt文件路径，这样即可指定依赖列表进行安装。')
+              help="自动检测软件包依赖，填写auto后将会自动查找待打包的文件夹路径中所有py文件的import使用情况，最终生成requirements文件\n"
+                   "当然，也可传入requirements.txt文件路径，这样即可指定依赖列表进行安装。")
+@click.option("-h",
+              "--hidden",
+              default=False,
+              type=bool,
+              help="是否隐藏全部终端窗口，若输入true或判定为真则隐藏全部Terminal窗口（适用于使用了PyQT、TK等桌面级可视化程序），"
+                   "输入false或判定为否则不隐藏（适用于Console & 终端程序）。")
 def cli(folder,
         py,
         save,
-        require):
+        require,
+        hidden):
     Logging.info("-----------------------------QPT--------------------------------")
     Logging.info("当前执行模式为命令式执行，仅提供QPT基础功能，高阶操作可在GitHub参考最新文档")
     Logging.info("            https://github.com/GT-ZhangAcer/QPT")
@@ -43,10 +50,12 @@ def cli(folder,
         Logging.info(f"[--require]使用自动化依赖查找Module：AutoRequirementsPackage")
     else:
         Logging.info(f"[--require]使依赖列表文件路径为：{os.path.abspath(require)}")
+
     module = CreateExecutableModule(work_dir=folder,
                                     launcher_py_path=py,
                                     save_path=save,
-                                    requirements_file=require)
+                                    requirements_file=require,
+                                    hidden_terminal=hidden)
     module.make()
 
 

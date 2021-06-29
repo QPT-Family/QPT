@@ -8,5 +8,6 @@ if __name__ == '__main__':
                                     launcher_py_path="./sandbox_m/run.py",
                                     save_path="./out",
                                     requirements_file="sandbox_m/requirements_with_opt.txt",
-                                    with_debug=True)
+                                    with_debug=True,
+                                    hidden_terminal=True)
     module.make()

@@ -50,7 +50,12 @@ def cli(folder,
         Logging.info(f"[--require]使用自动化依赖查找Module：AutoRequirementsPackage")
     else:
         Logging.info(f"[--require]使依赖列表文件路径为：{os.path.abspath(require)}")
+    if hidden:
+        Logging.info("当前打包模式为：隐藏全部的Terminal窗口")
+    else:
+        Logging.info("当前打包模式为：显示Terminal窗口（就是用户打开后的那个黑色框框，可通过指定 -h True 命令来隐藏）")
 
+    Logging.info("QPT使用命令可输入：qpt --help 获取")
     module = CreateExecutableModule(work_dir=folder,
                                     launcher_py_path=py,
                                     save_path=save,

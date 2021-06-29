@@ -228,19 +228,17 @@ class CreateExecutableModule:
 
         # 复制Debug所需文件
         debug_ext_dir = os.path.join(os.path.split(qpt.__file__)[0], "ext/launcher_debug")
-        if self.with_debug:
-            copytree(debug_ext_dir, dst=self.debug_path)
-            copytree(self.module_path, dst=self.debug_path)
-            # 生成Debug标识符
-            unlock_file_path = os.path.join(self.debug_path, "configs/unlock.cache")
-            with open(unlock_file_path, "w", encoding="utf-8") as unlock_file:
-                unlock_file.write(str(datetime.datetime.now()))
-
-            # 重命名兼容模式文件
-            compatibility_mode_file = os.path.join(self.debug_path, "compatibility_mode.cmd")
-            if os.path.exists(compatibility_mode_file):
-                os.rename(compatibility_mode_file,
-                          os.path.join(self.debug_path, "使用兼容模式运行.cmd"))
+        copytree(debug_ext_dir, dst=self.debug_path)
+        copytree(self.module_path, dst=self.debug_path)
+        # 生成Debug标识符
+        unlock_file_path = os.path.join(self.debug_path, "configs/unlock.cache")
+        with open(unlock_file_path, "w", encoding="utf-8") as unlock_file:
+            unlock_file.write(str(datetime.datetime.now()))
+        # 重命名兼容模式文件
+        compatibility_mode_file = os.path.join(self.debug_path, "compatibility_mode.cmd")
+        if os.path.exists(compatibility_mode_file):
+            os.rename(compatibility_mode_file,
+                      os.path.join(self.debug_path, "使用兼容模式运行.cmd"))
 
         # 复制Release启动器文件
         launcher_ext_dir = os.path.join(os.path.split(qpt.__file__)[0], "ext/launcher")

@@ -85,6 +85,7 @@ Options:
 
 ## 进阶使用QPT
 - [x] [1. 更改QPT全局镜像源](examples/advanced/更换镜像源.md)
+- [x] [2. 隐藏运行时的终端窗口](examples/advanced/隐藏控制台窗口.md)
 
 完整进阶使用文档详见[examples/advanced](examples/advanced)
 ## 高阶开发手册

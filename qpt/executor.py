@@ -67,12 +67,12 @@ class CreateExecutableModule:
 
         set_default_deploy_mode(deploy_mode)
         self.with_debug = with_debug
-        self.hidden_gui = hidden_terminal
+        self.hidden_terminal = hidden_terminal
 
         # 新建配置信息
         self.configs = dict()
         self.configs["launcher_py_path"] = self.launcher_py_path
-        self.configs["hidden_gui"] = hidden_terminal
+        self.configs["hidden_terminal"] = hidden_terminal
         self.configs["module_name"] = module_name
         self.configs["author"] = author
         self.configs["version"] = version
@@ -122,6 +122,7 @@ class CreateExecutableModule:
 
         # 放入增强包
         self.sub_module.append(BatchInstallation())
+        # ToDo 放入QT增强包 - 加判断
 
         # 解析依赖
         if requirements_file == "auto":
@@ -243,7 +244,7 @@ class CreateExecutableModule:
         # 复制Release启动器文件
         launcher_ext_dir = os.path.join(os.path.split(qpt.__file__)[0], "ext/launcher")
         launcher_ignore_file = None
-        if not self.hidden_gui:
+        if not self.hidden_terminal:
             launcher_ignore_file = ["Main.exe", "entry.cmd"]
             shutil.copy(src=os.path.join(debug_ext_dir, "Debug.exe"), dst=os.path.join(self.module_path, "启动程序.exe"))
             shutil.copy(src=os.path.join(debug_ext_dir, "entry.cmd"), dst=self.module_path)
@@ -298,8 +299,8 @@ class RunExecutableModule:
         with open(self.config_file_path, "r", encoding="utf-8") as config_file:
             self.configs = eval(config_file.read())
 
-        # 初始化终端
-        self.terminal = None
+        # 获取GUI选项
+        self.hidden_terminal = self.configs["hidden_terminal"]
 
         # 获取Module
         self.lazy_module = self.configs["lazy_module"]
@@ -311,27 +312,31 @@ class RunExecutableModule:
 
     def _solve_module(self):
         modules = self.lazy_module + self.sub_module
-        from qpt.gui.qpt_unzip import Unzip
-        from PyQt5.QtWidgets import QApplication
-        from PyQt5.QtGui import QIcon
-        self.terminal = AutoTerminal()
-        terminal = self.terminal.shell_func()
-        app = QApplication(sys.argv)
-        unzip_bar = Unzip()
-        unzip_bar.setWindowIcon(QIcon(os.path.join(self.base_dir, "Logo.ico")))
-        unzip_bar.show()
-        for sub_module_id, sub_name in enumerate(modules):
-            sub_module = SubModule(sub_name)
-            sub_module.prepare(work_dir=self.work_dir,
-                               interpreter_path=self.interpreter_path,
-                               module_path=self.base_dir,
-                               terminal=terminal)
-            sub_module.unpack()
-            unzip_bar.update_value(min((sub_module_id + 1) / len(modules) * 100, 99))
-            unzip_bar.update_title(f"正在初始化：{sub_name}")
-            app.processEvents()
-        unzip_bar.close()
-        # app.exit()
+        if self.hidden_terminal:
+            from qpt.gui.qpt_unzip import Unzip
+            from PyQt5.QtWidgets import QApplication
+            from PyQt5.QtGui import QIcon
+            auto_terminal = AutoTerminal()
+            terminal = auto_terminal.shell_func()
+            app = QApplication(sys.argv)
+            unzip_bar = Unzip()
+            unzip_bar.setWindowIcon(QIcon(os.path.join(self.base_dir, "configs/Logo.ico")))
+            unzip_bar.show()
+            for sub_module_id, sub_name in enumerate(modules):
+                sub_module = SubModule(sub_name)
+                sub_module.prepare(work_dir=self.work_dir,
+                                   interpreter_path=self.interpreter_path,
+                                   module_path=self.base_dir,
+                                   terminal=terminal)
+                sub_module.unpack()
+                unzip_bar.update_value(min((sub_module_id + 1) / len(modules) * 100, 99))
+                unzip_bar.update_title(f"正在初始化：{sub_name}")
+                app.processEvents()
+            unzip_bar.close()
+            # app.exit()
+        else:
+            # ToDo增加进度条
+            pass
 
     def unzip_resources(self):
         # ToDO 增加单文件执行模式，优先级暂时靠后

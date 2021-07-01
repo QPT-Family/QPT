@@ -17,7 +17,7 @@ EAP邀测版本：当前版本为尝鲜版本，仅具备基本功能和Win10兼
 > 使用时如发现问题，强烈建议加QQ群1128826410与我们进行交流，当然也可联系QQ：ZhangAcer进行解决[感谢] 
 
 ## 相关案例
-以下为为内测QPT提供支持的项目，在此非常感谢这些作者为QPT提供的宝贵建议以及多次的尝试与使用，~~同时也要感谢在面对Bug时的不杀之恩~~  
+以下为内测QPT提供支持的开源项目，在此非常感谢这些作者为QPT提供的宝贵建议以及多次的调试与沟通，这也是QPT走向成熟的关键，~~同时也要感谢各位大佬在面对Bug时的不杀之恩。~~  
 1. 交互式语义分割标注软件 - [PaddleCV-SIG/iann](https://github.com/PaddleCV-SIG/iann)
 2. 景观健康效益辅助评估工具 - [JiehangXie/Landscape-Heath-Score](https://github.com/JiehangXie/Landscape-Heath-Score)
 

@@ -306,10 +306,6 @@ class RunExecutableModule:
         self.lazy_module = self.configs["lazy_module"]
         self.sub_module = self.configs["sub_module"]
 
-    def solve_qpt_env(self):
-        # ToDO 集市部分代码
-        pass
-
     def _solve_module(self):
         modules = self.lazy_module + self.sub_module
         if self.hidden_terminal:
@@ -337,10 +333,6 @@ class RunExecutableModule:
         else:
             # ToDo增加进度条
             pass
-
-    def unzip_resources(self):
-        # ToDO 增加单文件执行模式，优先级暂时靠后
-        pass
 
     def solve_work_dir(self):
         os.chdir(self.work_dir)
@@ -382,7 +374,5 @@ class RunExecutableModule:
             replace(r"\\", "."). \
             replace("\\", "."). \
             replace("/", ".")
-        # 需提醒用户避免使用if __name__ == '__main__':
-        # ToDO 必要时删除该字段并代码块整体缩进一格
         lib = importlib.import_module(main_lib_path)
-        input("QPT执行完毕，请按任意键退出")
+        # input("QPT执行完毕，请按任意键退出")

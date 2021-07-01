@@ -299,7 +299,7 @@ class PaddlePaddlePackage(CustomPackage):
                              deploy_mode=deploy_mode)
         else:
             # ToDo 增加Soft-CUDA
-            raise Exception("暂不支持PaddlePaddle模式，请等待近期更新")
+            raise Exception("暂不支持PaddlePaddle-GPU模式，请等待近期更新")
             # Logging.warning("正在为PaddlePaddle添加CUDA支持...\n"
             #                 "请注意2.0版本的PaddlePaddle在添加CUDA支持后，即使用户没有合适的GPU设备，"
             #                 "也将默认以GPU模式进行执行。若不添加判断/设备选择的代码，则可能会出现设备相关的报错！\n"

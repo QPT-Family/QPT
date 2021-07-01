@@ -37,3 +37,11 @@ class Logging:
     @staticmethod
     def error(msg: str):
         logger.error("\033[41m" + msg + "\033[0m")
+
+
+class ProgressBar:
+    def __init__(self):
+        pass
+
+    def step(self, msg):
+        pass

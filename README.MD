@@ -120,6 +120,17 @@ Options:
 
 ## 开源协议
 本项目使用GNU LESSER GENERAL PUBLIC LICENSE(LGPL)开源协议。  
+### Cite
+如果你在研究中使用了QPT，可按如下格式引用：
+```
+@software{QPT,
+  author = {GT ZhangAcer},
+  title = {QPT:Quick packaging tool},
+  year = {2021},
+  url = {https://github.com/GT-ZhangAcer/QPT},
+}
+```
+
 ### Example：
 1. 使用QPT简单打包了自己的“强化学习小游戏”，该情况无需申请QPT授权以及更换个人代码仓库完整的开源协议。   
 2. 对QPT源代码进行了修改，尽管这些代码非恶意代码，但为了保证开发者和使用者权益和安全，在未取得QPT授权的情况下需要开源完整的源代码等LGPL协议中所要求的内容。

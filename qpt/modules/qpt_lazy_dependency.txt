@@ -1,2 +1,1 @@
-wget==3.2
-click
+wget

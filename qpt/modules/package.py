@@ -5,8 +5,9 @@
 
 import os
 
+from qpt.modules.paddle_family import PaddlePaddlePackage
 from qpt.version import version as qpt_version
-from qpt.modules.base import SubModule, SubModuleOpt, HIGH_LEVEL, TOP_LEVEL_REDUCE, GENERAL_LEVEL_REDUCE, LOW_LEVEL
+from qpt.modules.base import SubModule, SubModuleOpt, TOP_LEVEL_REDUCE, LOW_LEVEL
 from qpt.kernel.tools.log_op import Logging
 from qpt.kernel.tools.interpreter import PIP
 from qpt.kernel.tools.os_op import get_qpt_tmp_path, FileSerialize
@@ -262,7 +263,7 @@ class QPTDependencyPackage(SubModule):
         self.level = TOP_LEVEL_REDUCE
         super().__init__(name=None)
         # ToDO 上线后修改qpt_dependency.txt文件
-        kernel_dependency_path = os.path.join(os.path.split(__file__)[0], "qpt_kernel_dependency.txt")
+        kernel_dependency_path = os.path.join(os.path.split(__file__)[0], "kernel_dependency_GUI.txt")
         lazy_dependency_path = os.path.join(os.path.split(__file__)[0], "qpt_lazy_dependency.txt")
         lazy_dependency_serialize = "[FLAG-FileSerialize]" + FileSerialize(lazy_dependency_path).get_serialize_data()
         kernel = "-r " + kernel_dependency_path
@@ -285,73 +286,6 @@ class BatchInstallation(SubModule):
         self.level = LOW_LEVEL
         if DEFAULT_DEPLOY_MODE == LOCAL_DOWNLOAD_DEPLOY_MODE:
             self.add_unpack_opt(BatchInstallationOpt())
-
-
-class PaddlePaddlePackage(CustomPackage):
-    def __init__(self,
-                 version: str = None,
-                 include_cuda=False,
-                 deploy_mode=DEFAULT_DEPLOY_MODE):
-        self.level = GENERAL_LEVEL_REDUCE
-        if not include_cuda:
-            super().__init__("paddlepaddle",
-                             version=version,
-                             deploy_mode=deploy_mode)
-        else:
-            # ToDo 增加Soft-CUDA
-            raise Exception("暂不支持PaddlePaddle-GPU模式，请等待近期更新")
-            # Logging.warning("正在为PaddlePaddle添加CUDA支持...\n"
-            #                 "请注意2.0版本的PaddlePaddle在添加CUDA支持后，即使用户没有合适的GPU设备，"
-            #                 "也将默认以GPU模式进行执行。若不添加判断/设备选择的代码，则可能会出现设备相关的报错！\n"
-            #                 "Tips:未来QPT将在ONLINE_DEPLOY_MODE(在线安装)模式中添加“自动选择”参数为用户环境进行自动判断")
-            # super(PaddlePaddle, self).__init__("paddlepaddle-gpu",
-            #                                    version=version,
-            #                                    deploy_mode=deploy_mode)
-
-
-class PaddleHubPackage(CustomPackage):
-    def __init__(self,
-                 version: str = None,
-                 deploy_mode=DEFAULT_DEPLOY_MODE):
-        super().__init__("paddlehub",
-                         version=version,
-                         deploy_mode=deploy_mode)
-
-
-class PaddleDetectionPackage(CustomPackage):
-    def __init__(self,
-                 version: str = None,
-                 deploy_mode=DEFAULT_DEPLOY_MODE):
-        super().__init__("paddledetection",
-                         version=version,
-                         deploy_mode=deploy_mode)
-
-
-class PaddleSegPackage(CustomPackage):
-    def __init__(self,
-                 version: str = None,
-                 deploy_mode=DEFAULT_DEPLOY_MODE):
-        super().__init__("paddleseg",
-                         version=version,
-                         deploy_mode=deploy_mode)
-
-
-class PaddleXPackage(CustomPackage):
-    def __init__(self,
-                 version: str = None,
-                 deploy_mode=DEFAULT_DEPLOY_MODE):
-        super().__init__("paddlex",
-                         version=version,
-                         deploy_mode=deploy_mode)
-
-
-class PaddleGANPackage(CustomPackage):
-    def __init__(self,
-                 version: str = None,
-                 deploy_mode=DEFAULT_DEPLOY_MODE):
-        super().__init__("paddlegan",
-                         version=version,
-                         deploy_mode=deploy_mode)
 
 
 # 自动推理依赖时需要特殊处理的Module配置列表 格式{包名: (Module, Module参数字典)}

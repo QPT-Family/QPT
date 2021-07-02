@@ -1,5 +1,5 @@
 from qpt.executor import CreateExecutableModule
-from qpt.modules.package import PaddlePaddlePackage
+from qpt.modules.paddle_family import PaddlePaddlePackage
 
 if __name__ == '__main__':
     # module = CreateExecutableModule(launcher_py_path="./paddle_program/run.py",

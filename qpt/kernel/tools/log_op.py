@@ -39,9 +39,25 @@ class Logging:
         logger.error("\033[41m" + msg + "\033[0m")
 
 
-class ProgressBar:
-    def __init__(self):
-        pass
+class TProgressBar:
+    def __init__(self,
+                 msg: str = "",
+                 max_len: int = 100):
+        self.count = 0
+        self.msg = msg
+        self.max_len = max_len
+        self.block = 20
+        print("", flush=True)
 
-    def step(self, msg):
-        pass
+    def step(self, add_start_info="", add_end_info=""):
+        self.count += 1
+        rate = self.count / self.max_len
+
+        block_str = "".join(['■'] * int(rate * self.block)).ljust(self.block, "□")
+        block = f"\033[31m{block_str}\033[0m"
+
+        print("\r" + self.msg +
+              f"\t{self.count}/{self.max_len} {add_start_info}\t{block}\t{rate * 100:.2f}%\t" +
+              add_end_info,
+              end="",
+              flush=True)

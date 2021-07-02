@@ -8,7 +8,7 @@
 - [ ] 窗口化
 - [ ] 取消PyQT依赖
 - [ ] 增加图标支持
-- [ ] 增加CUDA支持
+- [ ] 增加CUDA支持 cuda_home = os.environ.get('CUDA_HOME') or os.environ.get('CUDA_PATH')
 - [ ] 增加非AVX的支持
 ## 一般优先级
 - [ ] 重写依赖搜索

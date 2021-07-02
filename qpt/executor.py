@@ -9,8 +9,6 @@ import shutil
 import importlib
 import datetime
 import base64
-import win32api
-import win32con
 
 from typing import List
 
@@ -21,8 +19,8 @@ from qpt.modules.python_env import BasePythonEnv, AutoPythonEnv
 from qpt.modules.package import AutoRequirementsPackage, QPTDependencyPackage, DEFAULT_DEPLOY_MODE, \
     set_default_deploy_mode, BatchInstallation
 
-from qpt.kernel.tools.log_op import Logging
-from qpt.kernel.tools.os_op import clean_qpt_cache, copytree
+from qpt.kernel.tools.log_op import Logging, TProgressBar
+from qpt.kernel.tools.os_op import clean_qpt_cache, copytree, check_chinese_char
 from qpt.kernel.tools.terminal import AutoTerminal
 
 __all__ = ["CreateExecutableModule", "RunExecutableModule"]
@@ -49,6 +47,13 @@ class CreateExecutableModule:
         self.launcher_py_path = os.path.relpath(launcher_py_path, work_dir)
         if self.launcher_py_path[:1] == "\\":
             self.launcher_py_path = self.launcher_py_path[1:]
+        assert "." not in self.launcher_py_path.strip(".py"), \
+            f"{self.launcher_py_path}中的路径或文件名中出现了除“.py”以外的“.”符号，请保证路径和文件中没有除“.py”以外的“.”符号\n" \
+            f"例如：C:/123.445/run.py 中123.445文件夹包含了“.”符号，该符号将可能导致Python程序运行终止，请修改该类情况！"
+        assert " " not in self.launcher_py_path, \
+            f"{self.launcher_py_path}中的路径或文件名中出现了空格符号，请删去文件夹或文件名中的空格\n" \
+            f"例如：C:/123 445/run.py 中123 445文件夹包含了空格符号，该符号将可能导致Python程序运行终止，请修改该类情况！"
+
         self.work_dir = work_dir
         assert os.path.exists(os.path.join(self.work_dir, self.launcher_py_path)), \
             f"请检查{launcher_py_path}文件是否存在{self.work_dir}目录"
@@ -288,6 +293,10 @@ class CreateExecutableModule:
 
 class RunExecutableModule:
     def __init__(self, module_path):
+        import win32api
+        import win32con
+        self.win32api = win32api
+        self.win32con = win32con
         # 初始化Module信息
         self.base_dir = os.path.abspath(module_path)
         self.config_path = os.path.join(self.base_dir, "configs")
@@ -295,6 +304,22 @@ class RunExecutableModule:
         self.dependent_file_path = os.path.join(self.base_dir, "configs", "dependent.gt")
         self.work_dir = os.path.join(self.base_dir, "resources")
         self.interpreter_path = os.path.join(self.base_dir, "Python")
+
+        # 检查路径是否非法
+        check_path = __file__
+        if check_chinese_char(check_path) or " " in check_path:
+            self.warning_msg_box(text=f"{self.base_dir}\n"
+                                      f"警告！当前路径中包含中文或空格，部分软件包将无法运行，强烈建议您修改相关的文件夹名，\n"
+                                      f"---------------------------------------\n"
+                                      f"不符合规范的路径如下：\n"
+                                      f"C:/GT真菜/xxx/yyy      -   ！带有中文！\n"
+                                      f"C:/GT真 菜/xxx/yyy     -   ！带有空格！\n"
+                                      f"---------------------------------------\n"
+                                      f"符合规范的路径如下：\n"
+                                      f"C:/hello/xxx/yyy\n"
+                                      f"---------------------------------------\n"
+                                      f"当然，您也可将Windows系统的默认编码模式更改为UTF-8，这也可能让程序更好运行，但操作难度较高。",
+                                 force=True)
 
         with open(self.config_file_path, "r", encoding="utf-8") as config_file:
             self.configs = eval(config_file.read())
@@ -305,6 +330,24 @@ class RunExecutableModule:
         # 获取Module
         self.lazy_module = self.configs["lazy_module"]
         self.sub_module = self.configs["sub_module"]
+
+    def warning_msg_box(self, title="Warning", text="", force=False):
+        """
+        发出警告框
+        :param title: 标题
+        :param text: 文本
+        :param force: 是否强制只有确定按钮
+        :return: 用户反馈
+        """
+        if force:
+            flag = self.win32con.MB_OK | self.win32con.MB_ICONEXCLAMATION
+        else:
+            flag = self.win32con.MB_OKCANCEL | self.win32con.MB_ICONEXCLAMATION
+        msg = self.win32api.MessageBox(0, text, title, flag)
+        if not force and msg == 2:
+            return False
+        else:
+            return True
 
     def _solve_module(self):
         modules = self.lazy_module + self.sub_module
@@ -331,8 +374,17 @@ class RunExecutableModule:
             unzip_bar.close()
             # app.exit()
         else:
-            # ToDo增加进度条
-            pass
+            auto_terminal = AutoTerminal()
+            terminal = auto_terminal.shell_func()
+            tp = TProgressBar("正在初始化程序", max_len=len(modules))
+            for sub_module_id, sub_name in enumerate(modules):
+                sub_module = SubModule(sub_name)
+                sub_module.prepare(work_dir=self.work_dir,
+                                   interpreter_path=self.interpreter_path,
+                                   module_path=self.base_dir,
+                                   terminal=terminal)
+                tp.step(sub_name, "部署中...")
+            Logging.info("初始化完毕！")
 
     def solve_work_dir(self):
         os.chdir(self.work_dir)
@@ -349,16 +401,14 @@ class RunExecutableModule:
             env_warning_flag = False
 
         if env_warning_flag:
-            msg = win32api.MessageBox(0, f"非常不建议在该环境下进行调试，原因如下： \n"
-                                         f" 1. 继续执行将会加载“一次性部署模块”，部署后该模块会消失，消失后可能无法在其他电脑上使用。\n"
-                                         f" 2. 该程序会解压缩当前环境，执行“启动程序.exe”后整个目录大小可能会增加1~5倍。（取决于压缩率）\n"
-                                         f" 3. 若需要测试打包后程序是否可以正常运行，请在Debug目录下进行测试。\n"
-                                         f" 4. 若特殊情况必须在Release目录下进行测试，请制作Release目录的备份，在他人需要时提供该备份\n"
-                                         f"    文件或重新打包，以避免因执行“启动程序.exe”后丢失“一次性部署模块”，从而无法被他人使用。\n"
-                                         f"---------------------------------------------------------------------------\n"
-                                         f"请问是否还要在该环境下继续执行？",
-                                      "Warning",
-                                      win32con.MB_OKCANCEL | win32con.MB_ICONEXCLAMATION)
+            msg = self.warning_msg_box("Warning", f"非常不建议在该环境下进行调试，原因如下： \n"
+                                                  f" 1. 继续执行将会加载“一次性部署模块”，部署后该模块会消失，消失后可能无法在其他电脑上使用。\n"
+                                                  f" 2. 该程序会解压缩当前环境，执行“启动程序.exe”后整个目录大小可能会增加1~5倍。（取决于压缩率）\n"
+                                                  f" 3. 若需要测试打包后程序是否可以正常运行，请在Debug目录下进行测试。\n"
+                                                  f" 4. 若特殊情况必须在Release目录下进行测试，请制作Release目录的备份，在他人需要时提供该备份\n"
+                                                  f"    文件或重新打包，以避免因执行“启动程序.exe”后丢失“一次性部署模块”，从而无法被他人使用。\n"
+                                                  f"---------------------------------------------------------------------------\n"
+                                                  f"请问是否还要在该环境下继续执行？")
             if msg == 2:
                 exit(0)
         # prepare module - GUI组件需要在此之后才能进行
@@ -366,13 +416,13 @@ class RunExecutableModule:
 
         # 设置工作目录
         self.solve_work_dir()
-        # 执行主程序
+        # 执行主程
         main_lib_path = self.configs["launcher_py_path"].replace(".py", "")
-        assert "." not in main_lib_path, "需要避免路径中带有'.'字符，该字符将严重影响程序执行"
         main_lib_path = main_lib_path. \
             replace(".py", ""). \
             replace(r"\\", "."). \
             replace("\\", "."). \
             replace("/", ".")
+        os.system('cls')
         lib = importlib.import_module(main_lib_path)
         # input("QPT执行完毕，请按任意键退出")

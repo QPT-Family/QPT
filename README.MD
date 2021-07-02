@@ -17,7 +17,7 @@ EAP邀测版本：当前版本为尝鲜版本，仅具备基本功能和Win10兼
 > 使用时如发现问题，强烈建议加QQ群1128826410与我们进行交流，当然也可联系QQ：ZhangAcer进行解决[感谢] 
 
 ## 相关案例
-以下为内测QPT提供支持的开源项目，在此非常感谢这些作者为QPT提供的宝贵建议以及多次的调试与沟通，这也是QPT走向成熟的关键，~~同时也要感谢各位大佬在面对Bug时的不杀之恩。~~  
+以下为内测QPT提供支持的开源项目，在此非常感谢这些作者为QPT提供的宝贵建议以及多次的调试与沟通，这也是QPT走向成熟的关键，同时也要感谢各位大佬~~在面对Bug时的不杀之恩。~~  
 1. 交互式语义分割标注软件 - [PaddleCV-SIG/iann](https://github.com/PaddleCV-SIG/iann)
 2. 景观健康效益辅助评估工具 - [JiehangXie/Landscape-Heath-Score](https://github.com/JiehangXie/Landscape-Heath-Score)
 
@@ -60,11 +60,9 @@ if __name__ == '__main__':
     # 实例化Module
     module = CreateExecutableModule(work_dir="./sample_program",                # [项目文件夹]待打包的目录，并且该目录下需要有↓下方提到的py文件
                                     launcher_py_path="./sample_program/run.py", # [主程序文件]用户启动EXE文件后，QPT要执行的py文件
-                                    save_path="./out")                          # [输出目录]打包后相关文件的输出目录
-                                    
-                                    # 可手动添加的参数
-                                    # requirements_file="auto"       # [依赖]此处可填入依赖文件路径，也可设置为auto自动搜索依赖
-                                    # hidden_terminal=False          # [终端模式]设置为True后，运行时将不会展示黑色终端窗口    
+                                    save_path="./out",                          # [输出目录]打包后相关文件的输出目录
+                                    requirements_file="auto",                   # [依赖]此处可填入依赖文件路径，也可设置为auto自动搜索依赖
+                                    hidden_terminal=False)                      # [终端窗口]设置为True后，运行时将不会展示黑色终端窗口    
     # 开始打包
     module.make()
 ```
@@ -117,8 +115,8 @@ Options:
 
 ### 发版安排
 2021.6上旬    QPT V1.0 Alpha版本发布  
-2021.6       QPT V1.0 Release Candidate(RC)版本发布  
-2021.7       QPT V1.0 正式版发布  
+2021.7       QPT V1.0 Release Candidate(RC)版本发布  
+2021.8       QPT V1.0 正式版发布  
 
 ## 开源协议
 本项目使用GNU LESSER GENERAL PUBLIC LICENSE(LGPL)开源协议。  

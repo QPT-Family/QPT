@@ -109,6 +109,9 @@ class StdOutLoggerWrapper:
     def close_file(self):
         self.log_file.close()
 
+    def isatty(self):
+        return True
+
 
 def copytree(src, dst, ignore_dirs: list = None, ignore_files: list = None):
     """

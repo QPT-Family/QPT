@@ -4,7 +4,7 @@ from qpt.kernel.tools.interpreter import set_default_pip_source
 
 set_default_pip_source("https://mirror.baidu.com/pypi/simple")
 
-M_MODULE = False
+M_MODULE = True
 if __name__ == '__main__':
     if M_MODULE:
         module = CreateExecutableModule(work_dir="./sandbox_m",

@@ -7,7 +7,7 @@ import os
 
 from qpt.sys_info import AVX_SUPPORT_FLAG
 from qpt.modules.base import SubModuleOpt, GENERAL_LEVEL_REDUCE
-from qpt.modules.package import CustomPackage, DEFAULT_DEPLOY_MODE
+from qpt.modules.package import CustomPackage, DEFAULT_DEPLOY_MODE, ONLINE_DEPLOY_MODE
 
 
 class SetPaddleFamilyEnvValueOpt(SubModuleOpt):
@@ -29,6 +29,7 @@ class PaddlePaddlePackage(CustomPackage):
         opts = None
         if not AVX_SUPPORT_FLAG:
             opts = "-f http://www.paddlepaddle.org.cn/whl/mkl/stable/noavx/html --no-index"
+            deploy_mode = ONLINE_DEPLOY_MODE
         if not include_cuda:
             super().__init__("paddlepaddle",
                              version=version,

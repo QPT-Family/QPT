@@ -98,5 +98,7 @@ def check_all():
 
 
 # Run则为定点触发，避免无法记录进日志
-if QPT_MODE != "Run":
+if QPT_MODE == "Run":
+    pass
+elif QPT_MODE == "Debug":
     check_all()

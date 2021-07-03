@@ -1,16 +1,33 @@
 import logging
+import os
 
-__all__ = ["Logging", "clean_stout"]
+__all__ = ["Logging", "clean_stout", "TProgressBar", "set_logger_file"]
 
 formatter = logging.Formatter('%(asctime)s %(levelname)s:   \t%(message)s')
 logger = logging.getLogger("qpt_logger")
 handler = logging.StreamHandler()
 handler.setFormatter(formatter)
 
-logger.setLevel(logging.DEBUG)
-handler.setLevel(logging.DEBUG)
+DEBUG_VAR = os.getenv("QPT_MODE")
+if DEBUG_VAR == "Run":
+    LEVEL = logging.INFO
+elif DEBUG_VAR == "Debug":
+    LEVEL = logging.DEBUG
+else:
+    LEVEL = logging.DEBUG
 
+logger.setLevel(LEVEL)
+handler.setLevel(LEVEL)
+
+# 设置标准输出流
 logger.addHandler(handler)
+
+
+def set_logger_file(file_path):
+    f_handler = logging.FileHandler(file_path, "w", encoding="utf-8")
+    f_handler.setLevel(logging.DEBUG)
+    f_handler.setFormatter(formatter)
+    logger.addHandler(f_handler)
 
 
 def clean_stout(name_list: list):
@@ -20,11 +37,10 @@ def clean_stout(name_list: list):
             logging.root.removeHandler(header)
 
 
-class Logging:
-
+class LoggingColor:
     @staticmethod
     def info(msg: str):
-        return logger.info("\033[34m" + msg + "\033[0m")
+        logger.info("\033[34m" + msg + "\033[0m")
 
     @staticmethod
     def debug(msg: str):
@@ -37,6 +53,31 @@ class Logging:
     @staticmethod
     def error(msg: str):
         logger.error("\033[41m" + msg + "\033[0m")
+
+
+class LoggingNoneColor:
+    @staticmethod
+    def info(msg: str):
+        logger.info(msg)
+
+    @staticmethod
+    def debug(msg: str):
+        logger.debug(msg)
+
+    @staticmethod
+    def warning(msg: str):
+        logger.warning(msg)
+
+    @staticmethod
+    def error(msg: str):
+        logger.error(msg)
+
+
+COLOR_VAR = os.getenv("QPT_COLOR")
+if COLOR_VAR == "True" or COLOR_VAR is None:
+    Logging = LoggingColor
+else:
+    Logging = LoggingNoneColor
 
 
 class TProgressBar:
@@ -54,10 +95,10 @@ class TProgressBar:
         rate = self.count / self.max_len
 
         block_str = "".join(['■'] * int(rate * self.block)).ljust(self.block, "□")
-        block = f"\033[31m{block_str}\033[0m"
+        block = f"{block_str}"
 
         print("\r" + self.msg +
-              f"\t{self.count}/{self.max_len} {add_start_info}\t{block}\t{rate * 100:.2f}%\t" +
+              f"{self.count}/{self.max_len} {add_start_info} {block} {rate * 100:.2f}% " +
               add_end_info,
               end="",
               flush=True)

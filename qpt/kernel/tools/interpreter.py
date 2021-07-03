@@ -31,12 +31,20 @@ class PipTools:
             from pip._internal.cli.main import main as pip_main
         self.pip_main = pip_main
         self.source = source
+
+        # 安静模式
+        self.quiet = True if os.getenv("QPT_MODE") == "Run" else False
+        if self.quiet:
+            Logging.debug("PipTools进入安静模式")
+
         # ToDo 可考虑增加环境管理部分 - 可考虑生成软链
         pass
 
     def pip_shell(self, shell):
         shell += f" --isolated --disable-pip-version-check --cache-dir {get_qpt_tmp_path('pip_cache')}" \
                  f" --timeout 60"
+        if self.quiet:
+            shell += " --quiet"
         self.pip_main(shell.split(" "))
         clean_stout(['console', 'console_errors', 'console_subprocess'])
 

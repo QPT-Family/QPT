@@ -94,6 +94,22 @@ class StdOutWrapper(io.TextIOWrapper):
         self.buff = ''
 
 
+class StdOutLoggerWrapper:
+    def __init__(self, log_file_path):
+        self.ori_stout = sys.stdout
+        self.log_file = open(log_file_path, "w", encoding="utf-8", buffering=1)
+
+    def write(self, output_stream):
+        self.ori_stout.write(output_stream)
+        self.log_file.write(output_stream)
+
+    def flush(self):
+        self.ori_stout.flush()
+
+    def close_file(self):
+        self.log_file.close()
+
+
 def copytree(src, dst, ignore_dirs: list = None, ignore_files: list = None):
     """
     复制整个目录树

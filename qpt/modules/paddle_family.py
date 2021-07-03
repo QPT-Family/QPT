@@ -9,7 +9,10 @@ from qpt.modules.base import SubModuleOpt, GENERAL_LEVEL_REDUCE
 from qpt.modules.package import CustomPackage, DEFAULT_DEPLOY_MODE
 
 
-class SetPaddleFamilyEnvValue(SubModuleOpt):
+class SetPaddleFamilyEnvValueOpt(SubModuleOpt):
+    def __init__(self):
+        super(SetPaddleFamilyEnvValueOpt, self).__init__()
+
     def act(self) -> None:
         os.environ["HUB_HOME"] = os.path.join(self.module_path, "opt/HUB_HOME")
         os.environ["PPNLP_HOME"] = os.path.join(self.module_path, "opt/PPNLP_HOME")
@@ -22,7 +25,6 @@ class PaddlePaddlePackage(CustomPackage):
                  include_cuda=False,
                  deploy_mode=DEFAULT_DEPLOY_MODE):
         self.level = GENERAL_LEVEL_REDUCE
-        self.add_unpack_opt(SetPaddleFamilyEnvValue())
         if not include_cuda:
             super().__init__("paddlepaddle",
                              version=version,
@@ -37,6 +39,7 @@ class PaddlePaddlePackage(CustomPackage):
             # super(PaddlePaddle, self).__init__("paddlepaddle-gpu",
             #                                    version=version,
             #                                    deploy_mode=deploy_mode)
+        self.add_unpack_opt(SetPaddleFamilyEnvValueOpt())
 
 
 class PaddleHubPackage(CustomPackage):

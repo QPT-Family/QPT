@@ -7,8 +7,8 @@ import os
 import sys
 import shutil
 import importlib
-import datetime
 import base64
+import datetime
 
 from typing import List
 
@@ -16,12 +16,15 @@ import qpt
 from qpt._compatibility import com_configs
 from qpt.modules.base import SubModule
 from qpt.modules.python_env import BasePythonEnv, AutoPythonEnv
-from qpt.modules.package import AutoRequirementsPackage, QPTDependencyPackage, DEFAULT_DEPLOY_MODE, \
+from qpt.modules.package import QPTDependencyPackage, QPTGUIDependencyPackage, \
+    DEFAULT_DEPLOY_MODE, \
     set_default_deploy_mode, BatchInstallation
+from qpt.modules.auto_requirements import AutoRequirementsPackage
 
-from qpt.kernel.tools.log_op import Logging, TProgressBar
-from qpt.kernel.tools.os_op import clean_qpt_cache, copytree, check_chinese_char
+from qpt.kernel.tools.log_op import Logging, TProgressBar, set_logger_file
+from qpt.kernel.tools.os_op import clean_qpt_cache, copytree, check_chinese_char, StdOutLoggerWrapper
 from qpt.kernel.tools.terminal import AutoTerminal
+from qpt.sys_info import QPT_MODE
 
 __all__ = ["CreateExecutableModule", "RunExecutableModule"]
 
@@ -127,7 +130,9 @@ class CreateExecutableModule:
 
         # 放入增强包
         self.sub_module.append(BatchInstallation())
-        # ToDo 放入QT增强包 - 加判断
+        # 放入QT增强包
+        if self.hidden_terminal:
+            self.lazy_module.append(QPTGUIDependencyPackage())
 
         # 解析依赖
         if requirements_file == "auto":
@@ -227,15 +232,20 @@ class CreateExecutableModule:
                 with open(os.path.join(self.resources_path, self.launcher_py_path), "w", encoding="utf-8") as new_lf:
                     lf_codes[lf_code_id] = lf_code[:lf_code.index("if ")] + "if 'qpt':\n"
                     new_lf.writelines(lf_codes)
+
         # 创建配置文件
         os.makedirs(self.config_path, exist_ok=True)
         with open(self.config_file_path, "w", encoding="utf-8") as config_file:
             config_file.write(str(self.configs))
 
+        # 启动器相关
+        launcher_entry_path = os.path.join(os.path.split(qpt.__file__)[0], "ext/launcher_entry")
         # 复制Debug所需文件
         debug_ext_dir = os.path.join(os.path.split(qpt.__file__)[0], "ext/launcher_debug")
         copytree(debug_ext_dir, dst=self.debug_path)
         copytree(self.module_path, dst=self.debug_path)
+        shutil.copy(src=os.path.join(launcher_entry_path, "entry_debug.cmd"),
+                    dst=os.path.join(self.debug_path, "configs/entry.cmd"))
         # 生成Debug标识符
         unlock_file_path = os.path.join(self.debug_path, "configs/unlock.cache")
         with open(unlock_file_path, "w", encoding="utf-8") as unlock_file:
@@ -249,10 +259,15 @@ class CreateExecutableModule:
         # 复制Release启动器文件
         launcher_ext_dir = os.path.join(os.path.split(qpt.__file__)[0], "ext/launcher")
         launcher_ignore_file = None
-        if not self.hidden_terminal:
-            launcher_ignore_file = ["Main.exe", "entry.cmd"]
+        if self.hidden_terminal:
+            shutil.copy(src=os.path.join(launcher_entry_path, "entry_run_hidden.cmd"),
+                        dst=os.path.join(self.module_path, "configs/entry.cmd"))
+        else:
+            launcher_ignore_file = ["Main.exe"]
             shutil.copy(src=os.path.join(debug_ext_dir, "Debug.exe"), dst=os.path.join(self.module_path, "启动程序.exe"))
-            shutil.copy(src=os.path.join(debug_ext_dir, "entry.cmd"), dst=self.module_path)
+            shutil.copy(src=os.path.join(launcher_entry_path, "entry_run.cmd"),
+                        dst=os.path.join(self.module_path, "configs/entry.cmd"))
+
         copytree(launcher_ext_dir, dst=self.module_path, ignore_files=launcher_ignore_file)
         # 重命名兼容模式文件
         compatibility_mode_file = os.path.join(self.module_path, "compatibility_mode.cmd")
@@ -305,6 +320,16 @@ class RunExecutableModule:
         self.work_dir = os.path.join(self.base_dir, "resources")
         self.interpreter_path = os.path.join(self.base_dir, "Python")
 
+        # 初始化Log
+        log_name = str(datetime.datetime.now()).replace(" ", "_").replace(":", "-") + ".txt"
+        if not os.path.exists(os.path.join(self.config_path, "logs")):
+            log_name = "First-" + log_name
+            os.mkdir(os.path.join(self.config_path, "logs"))
+        if QPT_MODE == "Debug":
+            log_name = "#Debug#" + log_name
+        set_logger_file(os.path.join(self.config_path, "logs", "QPT-" + log_name))
+        sys.stdout = StdOutLoggerWrapper(os.path.join(self.config_path, "logs", "APP-" + log_name))
+
         # 检查路径是否非法
         check_path = __file__
         if check_chinese_char(check_path) or " " in check_path:
@@ -312,14 +337,17 @@ class RunExecutableModule:
                                       f"警告！当前路径中包含中文或空格，部分软件包将无法运行，强烈建议您修改相关的文件夹名，\n"
                                       f"---------------------------------------\n"
                                       f"不符合规范的路径如下：\n"
-                                      f"C:/GT真菜/xxx/yyy      -   ！带有中文！\n"
-                                      f"C:/GT真 菜/xxx/yyy     -   ！带有空格！\n"
+                                      f"C:/GT真菜/xxx/yyy      -   ！“GT真菜”带有中文！\n"
+                                      f"C:/zzz/GT真 菜/yyy     -   ！“GT真 菜”中带有空格！\n"
                                       f"---------------------------------------\n"
                                       f"符合规范的路径如下：\n"
                                       f"C:/hello/xxx/yyy\n"
                                       f"---------------------------------------\n"
-                                      f"当然，您也可将Windows系统的默认编码模式更改为UTF-8，这也可能让程序更好运行，但操作难度较高。",
+                                      f"当然，您也可将Windows系统的默认编码模式更改为UTF-8，这可以更好兼容中文，但操作难度较高。\n"
+                                      f"---------------------------------------\n"
+                                      f"请修改相关文件名后重新运行，谢谢！",
                                  force=True)
+            exit(1)
 
         with open(self.config_file_path, "r", encoding="utf-8") as config_file:
             self.configs = eval(config_file.read())
@@ -376,15 +404,16 @@ class RunExecutableModule:
         else:
             auto_terminal = AutoTerminal()
             terminal = auto_terminal.shell_func()
-            tp = TProgressBar("正在初始化程序", max_len=len(modules))
+            tp = TProgressBar("初始化进度", max_len=len(modules) + 1)
             for sub_module_id, sub_name in enumerate(modules):
+                tp.step(add_end_info=f"{sub_name}部署中...")
                 sub_module = SubModule(sub_name)
                 sub_module.prepare(work_dir=self.work_dir,
                                    interpreter_path=self.interpreter_path,
                                    module_path=self.base_dir,
                                    terminal=terminal)
-                tp.step(sub_name, "部署中...")
-            Logging.info("初始化完毕！")
+                sub_module.unpack()
+            tp.step(add_end_info=f"初始化完毕")
 
     def solve_work_dir(self):
         os.chdir(self.work_dir)
@@ -410,7 +439,7 @@ class RunExecutableModule:
                                                   f"---------------------------------------------------------------------------\n"
                                                   f"请问是否还要在该环境下继续执行？")
             if msg == 2:
-                exit(0)
+                exit(1)
         # prepare module - GUI组件需要在此之后才能进行
         self._solve_module()
 
@@ -423,6 +452,6 @@ class RunExecutableModule:
             replace(r"\\", "."). \
             replace("\\", "."). \
             replace("/", ".")
-        os.system('cls')
+        # os.system('cls')
         lib = importlib.import_module(main_lib_path)
         # input("QPT执行完毕，请按任意键退出")

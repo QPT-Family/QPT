@@ -9,6 +9,7 @@ import datetime
 
 from qpt.kernel.tools.os_op import download
 from qpt.kernel.tools.log_op import Logging
+from qpt.sys_info import QPT_MODE
 
 # 定义优先级 优先级越高执行顺序越考前，一般设置为GENERAL_LEVEL
 TOP_LEVEL = 5.  # 底层高优先级
@@ -163,7 +164,8 @@ class SubModule:
                                 module_path=self._module_path,
                                 terminal=self._terminal,
                                 work_dir=self._work_dir)
-                    Logging.debug(f"正在加载{self.name}-{opt.name}OP")
+                    if QPT_MODE != "Run":
+                        Logging.debug(f"正在加载{self.name}-{opt.name}OP")
                     opt.run(op_path)
 
     # ToDo:做序列化来保存

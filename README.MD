@@ -12,7 +12,11 @@
 QPT是一款可以“模拟”开发环境的多功能封装工具，一行命令即可将普通的Python脚本打包成EXE可执行程序，与此同时还可轻松引入CUDA等深度学习加速库，
 尽可能在用户使用时复现您的开发环境。  
 
-## EAP - The Early Access Program
+## 版本更新
+### 更新日志
+当前版本为V1.0a8版本，接下来的版本将会更换为V1.0Beta1。[更新日志](RELEASE.MD)
+
+### EAP - The Early Access Program
 EAP邀测版本：当前版本为尝鲜版本，仅具备基本功能和Win10兼容，而且可能会有未测试出的Bug  
 > 使用时如发现问题，强烈建议加QQ群1128826410与我们进行交流，当然也可联系QQ：ZhangAcer进行解决[感谢] 
 
@@ -23,7 +27,6 @@ EAP邀测版本：当前版本为尝鲜版本，仅具备基本功能和Win10兼
 
 ## 快速使用
 #### 安装QPT到当前环境
-> 当前版本号为 1.0a*
 
 `pip install qpt -U` or `pip install qpt -i https://pypi.tuna.tsinghua.edu.cn/simple -U`
 
@@ -91,6 +94,7 @@ Options:
 ## 进阶使用QPT
 - [x] [1. 更改QPT全局镜像源](examples/advanced/更换镜像源.md)
 - [x] [2. 隐藏运行时的终端窗口](examples/advanced/隐藏控制台窗口.md)
+- [x] [3. 能够更快定位用户问题的日志系统](examples/advanced/收集用于Debug的用户日志.md)
 
 完整进阶使用文档详见[examples/advanced](examples/advanced)
 ## 高阶开发手册

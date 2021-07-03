@@ -24,7 +24,7 @@ from qpt.modules.auto_requirements import AutoRequirementsPackage
 from qpt.kernel.tools.log_op import Logging, TProgressBar, set_logger_file
 from qpt.kernel.tools.os_op import clean_qpt_cache, copytree, check_chinese_char, StdOutLoggerWrapper
 from qpt.kernel.tools.terminal import AutoTerminal
-from qpt.sys_info import QPT_MODE
+from qpt.sys_info import QPT_MODE, check_all
 
 __all__ = ["CreateExecutableModule", "RunExecutableModule"]
 
@@ -67,6 +67,8 @@ class CreateExecutableModule:
         assert check_same_path not in os.path.abspath(save_path), \
             "打包后的保存路径不能在被打包的文件夹中，这样会打包了打包后的文件^n (,,•́ . •̀,,)"
         self.save_path = save_path
+        if not os.path.exists(self.save_path):
+            os.makedirs(self.save_path, exist_ok=True)
         self.module_path = os.path.join(save_path, "Release")
         self.debug_path = os.path.join(save_path, "Debug")
         self.interpreter_path = os.path.join(self.module_path, "Python")
@@ -329,6 +331,9 @@ class RunExecutableModule:
             log_name = "#Debug#" + log_name
         set_logger_file(os.path.join(self.config_path, "logs", "QPT-" + log_name))
         sys.stdout = StdOutLoggerWrapper(os.path.join(self.config_path, "logs", "APP-" + log_name))
+
+        # 系统信息
+        check_all()
 
         # 检查路径是否非法
         check_path = __file__

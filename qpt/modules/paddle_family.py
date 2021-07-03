@@ -5,6 +5,7 @@
 
 import os
 
+from qpt.sys_info import AVX_SUPPORT_FLAG
 from qpt.modules.base import SubModuleOpt, GENERAL_LEVEL_REDUCE
 from qpt.modules.package import CustomPackage, DEFAULT_DEPLOY_MODE
 
@@ -25,10 +26,14 @@ class PaddlePaddlePackage(CustomPackage):
                  include_cuda=False,
                  deploy_mode=DEFAULT_DEPLOY_MODE):
         self.level = GENERAL_LEVEL_REDUCE
+        opts = None
+        if not AVX_SUPPORT_FLAG:
+            opts = "-f http://www.paddlepaddle.org.cn/whl/mkl/stable/noavx/html --no-index"
         if not include_cuda:
             super().__init__("paddlepaddle",
                              version=version,
-                             deploy_mode=deploy_mode)
+                             deploy_mode=deploy_mode,
+                             opts=opts)
         else:
             # ToDo 增加Soft-CUDA
             raise Exception("暂不支持PaddlePaddle-GPU模式，请等待近期更新")

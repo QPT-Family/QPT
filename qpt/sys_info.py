@@ -84,10 +84,19 @@ def avx_supported():
 
 # QPT运行状态 Run/Debug
 QPT_MODE = os.getenv("QPT_MODE")
+AVX_SUPPORT_FLAG = "尚未检测"
 
-# 检查系统
-check_os()
-# 检查arc
-check_bit()
-# 检测AVX支持情况
-AVX_SUPPORT_FLAG = avx_supported()
+
+def check_all():
+    # 检查系统
+    check_os()
+    # 检查arc
+    check_bit()
+    # 检测AVX支持情况
+    global AVX_SUPPORT_FLAG
+    AVX_SUPPORT_FLAG = avx_supported()
+
+
+# Run则为定点触发，避免无法记录进日志
+if QPT_MODE != "Run":
+    check_all()

@@ -21,15 +21,15 @@ PYTHON_ENV_MODE_PACKAGE_VOLUME_FIRST = "[暂不支持]封装后保留压缩的Py
 PYTHON_ENV_MODE_ONLINE_INSTALLATION = "[暂不支持]不封装Python环境，用户使用时在线进行下载并部署"
 DEFINE_PYTHON_ENV_MODE = PYTHON_ENV_MODE_SPEED_FIRST
 
-RESOURCES_URLS = {"Python3.7Env": "https://bj.bcebos.com/v1/ai-studio-online/dc52a45bafec42d98b1ca8d69873d519b"
-                                  "64b4db82e1344988a196aad04af4767?responseContentDisposition=attachment%3B%20"
-                                  "filename%3DPython3.7.9.zip",
-                  "Python3.8Env": "https://bj.bcebos.com/v1/ai-studio-online/53e120f6b58e4e0daed8e7b02c15c55cc"
-                                  "6281d6a1a7640a2bb5bd635e8bef099?responseContentDisposition=attachment%3B%20"
-                                  "filename%3DPython3.8.10.zip",
-                  "Python3.9Env": "https://bj.bcebos.com/v1/ai-studio-online/2e41d9fbf0604a51bc385f3f89e7a0ab7"
-                                  "c8540ee4b3d437eb81fd140623fd0c3?responseContentDisposition=attachment%3B%20"
-                                  "filename%3DPython3.9.5.zip"}
+RESOURCES_URLS = {"Python3.7Env": "https://bj.bcebos.com/v1/ai-studio-online/90d3e6c134c5425394178839aed9b0351"
+                                  "586bf4dec46451d8e5e10ac54723064?responseContentDisposition=attachment%3B%20"
+                                  "filename%3DPython3.7.9-vc2019.zip",
+                  "Python3.8Env": "https://bj.bcebos.com/v1/ai-studio-online/f254c18b13654d3da11ddf855277812c3"
+                                  "b52aa55bd574b979d8a3999aa14a155?responseContentDisposition=attachment%3B%20"
+                                  "filename%3DPython3.8.10-vc2019.zip",
+                  "Python3.9Env": "https://bj.bcebos.com/v1/ai-studio-online/2fd4ef0f3432448f8da656434097d0861"
+                                  "308da335cf44da28c08a3f8ace766fe?responseContentDisposition=attachment%3B%20"
+                                  "filename%3DPython3.9.5-vc2019.zip"}
 
 DEFAULT_PYTHON_IMAGE_VERSION = "3.8"
 

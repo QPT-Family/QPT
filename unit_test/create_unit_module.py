@@ -8,5 +8,23 @@ from qpt.executor import CreateExecutableModule
 
 from qpt.kernel.tools.interpreter import set_default_pip_source
 
+
 # set_default_pip_source("https://mirror.baidu.com/pypi/simple")
 
+class LogTest(unittest.TestCase):
+    def test_module_m(self):
+        module = CreateExecutableModule(work_dir="./sandbox_m",
+                                        launcher_py_path="./sandbox_m/run.py",
+                                        save_path="./unit_out/m",
+                                        requirements_file="sandbox_m/requirements_with_opt.txt",
+                                        with_debug=True,
+                                        hidden_terminal=False)
+        module.make()
+
+    def test_module_paddle(self):
+        module = CreateExecutableModule(work_dir="./sandbox",
+                                        launcher_py_path="./sandbox/run.py",
+                                        save_path="./unit_out/paddle-cpu",
+                                        with_debug=True,
+                                        hidden_terminal=False)
+        module.make()

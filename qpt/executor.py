@@ -60,12 +60,13 @@ class CreateExecutableModule:
         self.work_dir = work_dir
         assert os.path.exists(os.path.join(self.work_dir, self.launcher_py_path)), \
             f"请检查{launcher_py_path}文件是否存在{self.work_dir}目录"
-        try:
-            check_same_path = os.path.abspath(os.path.relpath(save_path, work_dir))
-        except ValueError:
-            check_same_path = save_path + "-"
-        assert check_same_path not in os.path.abspath(save_path), \
-            "打包后的保存路径不能在被打包的文件夹中，这样会打包了打包后的文件^n (,,•́ . •̀,,)"
+        # try:
+        #     # 兼容不同盘符情况
+        #     check_same_path = os.path.abspath(os.path.relpath(save_path, work_dir))
+        # except ValueError:
+        #     check_same_path = save_path + "-"
+        # assert check_same_path not in os.path.abspath(save_path), \
+        #     "打包后的保存路径不能在被打包的文件夹中，这样会打包了打包后的文件^n (,,•́ . •̀,,)"
         self.save_path = save_path
         if not os.path.exists(self.save_path):
             os.makedirs(self.save_path, exist_ok=True)
@@ -213,6 +214,8 @@ class CreateExecutableModule:
         self._solve_module()
 
         # 复制资源文件
+        self.ignore_dirs.append(self.module_path)  # 避免打包自己
+        self.ignore_dirs.append(self.debug_path)
         assert os.path.exists(self.work_dir), f"{os.path.abspath(self.work_dir)}不存在，请检查该路径是否正确"
         copytree(self.work_dir, self.resources_path, ignore_dirs=self.ignore_dirs)
 

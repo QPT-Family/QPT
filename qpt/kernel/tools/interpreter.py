@@ -11,8 +11,8 @@ from qpt.kernel.tools.log_op import clean_stout, Logging
 TSINGHUA_PIP_SOURCE = "https://pypi.tuna.tsinghua.edu.cn/simple"
 BAIDU_PIP_SOURCE = "https://mirror.baidu.com/pypi/simple"
 DOUBAN_PIP_SOURCE = "https://pypi.douban.com/simple"
-
-DEFAULT_PIP_SOURCE = TSINGHUA_PIP_SOURCE
+BFSU_PIP_SOURCE = "https://mirrors.bfsu.edu.cn/pypi/web/simple"
+DEFAULT_PIP_SOURCE = BFSU_PIP_SOURCE
 
 
 class PipTools:

@@ -89,7 +89,9 @@ class CreateExecutableModule:
         self.configs["version"] = version
         self.configs["lazy_module"] = list()
         self.configs["sub_module"] = list()
-        self.configs["local_uid"] = base64.b64encode(os.path.abspath(os.path.abspath(launcher_py_path)).encode('utf-8'))
+        self.configs["local_uid"] = base64.b64encode((os.path.abspath(sys.executable) + "|" +
+                                                      os.path.abspath(qpt.__file__) + "|" +
+                                                      os.path.abspath(self.module_path)).encode('utf-8'))
 
         # 额外的成员变量
         self.resources_path = os.path.join(self.module_path, "resources")
@@ -202,20 +204,20 @@ class CreateExecutableModule:
         if os.path.exists(self.save_path):
             if os.path.exists(self.resources_path):
                 Logging.warning(f"{os.path.abspath(self.module_path)}已存在，已清空该目录")
+                self.ignore_dirs.append(self.module_path)
                 shutil.rmtree(self.module_path)
             if os.path.exists(self.debug_path):
                 Logging.warning(f"{os.path.abspath(self.debug_path)}已存在，已清空该目录")
+                self.ignore_dirs.append(self.debug_path)
                 shutil.rmtree(self.debug_path)
         else:
-            os.mkdir(self.save_path)
+            os.makedirs(self.save_path, exist_ok=True)
 
         # 解析子模块
         self._solve_module(lazy=True)
         self._solve_module()
 
         # 复制资源文件
-        self.ignore_dirs.append(self.module_path)  # 避免打包自己
-        self.ignore_dirs.append(self.debug_path)
         assert os.path.exists(self.work_dir), f"{os.path.abspath(self.work_dir)}不存在，请检查该路径是否正确"
         copytree(self.work_dir, self.resources_path, ignore_dirs=self.ignore_dirs)
 
@@ -355,6 +357,7 @@ class RunExecutableModule:
                                       f"---------------------------------------\n"
                                       f"请修改相关文件名后重新运行，谢谢！",
                                  force=True)
+            Logging.info("程序已停止")
             exit(1)
 
         with open(self.config_file_path, "r", encoding="utf-8") as config_file:
@@ -429,9 +432,9 @@ class RunExecutableModule:
 
     def run(self):
         # 获取启动信息 - 避免在Release下进行Debug
-        env_warning_flag = True
+        env_warning_flag = False
         local_uid = base64.b64decode(self.configs["local_uid"]).decode("utf-8")
-        if os.path.exists(local_uid):
+        if all([os.path.exists(uid) for uid in local_uid.split("|")]):
             env_warning_flag = True
         lock_file_path = os.path.join(self.config_path, "unlock.cache")
         if os.path.exists(lock_file_path):
@@ -446,7 +449,8 @@ class RunExecutableModule:
                                                   f"    文件或重新打包，以避免因执行“启动程序.exe”后丢失“一次性部署模块”，从而无法被他人使用。\n"
                                                   f"---------------------------------------------------------------------------\n"
                                                   f"请问是否还要在该环境下继续执行？")
-            if msg == 2:
+            if not msg:
+                Logging.info("程序已停止")
                 exit(1)
         # prepare module - GUI组件需要在此之后才能进行
         self._solve_module()
@@ -460,6 +464,7 @@ class RunExecutableModule:
             replace(r"\\", "."). \
             replace("\\", "."). \
             replace("/", ".")
+        # ToDo 等日志系统做好了再取消注释
         # os.system('cls')
         lib = importlib.import_module(main_lib_path)
         # input("QPT执行完毕，请按任意键退出")

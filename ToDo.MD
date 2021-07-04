@@ -3,6 +3,7 @@
 - [ ] 增加CUDA支持 cuda_home = os.environ.get('CUDA_HOME') or os.environ.get('CUDA_PATH')
 - [ ] 修一下这该死的日志系统吧
 - [ ] 问一下360为什么报毒，我可不想交保护费啊啊啊
+- [x] Release判断有问题，而且点取消还会继续
 ## 高优优先级
 - [ ] 增加图标支持
 - [ ] 增加TK支持

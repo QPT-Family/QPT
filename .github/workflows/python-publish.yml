@@ -11,11 +11,13 @@ name: Upload Python Package
 on:
   release:
     types: [published]
+  watch:
+    types: started
 
 jobs:
   deploy:
-
     runs-on: ubuntu-latest
+    if: github.event.repository.owner.id == github.event.sender.id
 
     steps:
     - uses: actions/checkout@v2

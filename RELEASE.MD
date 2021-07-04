@@ -23,7 +23,7 @@
 3. 修复了镜像源设置无效的问题。
 
 ### 不兼容更新
-1. 进度条部分可能会从PyQT（约150M）更换为TK（25M 需要编译）、CRL+WPF（10M 难度较大）、Win32+MFC（0M 资料较少）三种方案中任一种，在选择hidden_terminal接口为False后将会取消所有依赖
+1. 进度条部分可能会从PyQT（约150M）更换为TK（25M 需要编译）、CLR+WPF（10M 难度较大）、Win32+MFC（0M 资料较少）三种方案中任一种，在选择hidden_terminal接口为False后将会取消所有依赖
 2. 原none_gui接口更名为hidden_terminal，增加了可读性。
 3. 调整目录结构，只保留exe与调试文件在目录外。
 

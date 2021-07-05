@@ -28,7 +28,7 @@ class PaddlePaddlePackage(CustomPackage):
         self.level = GENERAL_LEVEL_REDUCE
         opts = None
         if not AVX_SUPPORT_FLAG:
-            opts = "-f http://www.paddlepaddle.org.cn/whl/mkl/stable/noavx/html --no-index"
+            opts = "-f https://www.paddlepaddle.org.cn/whl/mkl/stable/noavx.html"
             deploy_mode = ONLINE_DEPLOY_MODE
         if not include_cuda:
             super().__init__("paddlepaddle",

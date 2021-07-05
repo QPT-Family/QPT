@@ -28,3 +28,11 @@ class LogTest(unittest.TestCase):
                                         with_debug=True,
                                         hidden_terminal=False)
         module.make()
+
+    def test_module_tk(self):
+        module = CreateExecutableModule(work_dir="./sandbox_tk",
+                                        launcher_py_path="./sandbox_tk/run.py",
+                                        save_path="./unit_out/tk_m",
+                                        with_debug=True,
+                                        hidden_terminal=False)
+        module.make()

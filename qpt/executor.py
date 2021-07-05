@@ -429,6 +429,13 @@ class RunExecutableModule:
     def solve_work_dir(self):
         os.chdir(self.work_dir)
         sys.path.append(self.work_dir)
+        sys.path.append("./Python/Lib/site-packages")
+        sys.path.append("./Python/Lib/ext")
+        sys.path.append("./Python/Lib")
+        sys.path.append("./Python")
+        sys.path.append("./Python/Scripts")
+        path_env = os.environ.get("path")
+        os.environ["Path"] = path_env
 
     def run(self):
         # 获取启动信息 - 避免在Release下进行Debug

@@ -109,12 +109,24 @@ class SubModule:
         self.unpack_opts = list()
         self.ready_unpack_opt_count = 0
         self.details = {"Pack": [], "Unpack": []}
+        self._ext_module = list()
 
         # 占位out_dir，将会保存序列化文件到该目录，pack时需要被set
         self._module_path = "./"
         self._interpreter_path = "./"
         self._terminal = "./"
         self._work_dir = "./"
+
+    def add_ext_module(self, module):
+        """
+        额外的Module
+        :param module:额外的Module
+        """
+        Logging.info(f"{self.name}中自动添加了名为{module.name}的Ext Module")
+        self._ext_module.append(module)
+
+    def get_all_module(self) -> list:
+        return [self] + self._ext_module
 
     def prepare(self, work_dir=None, interpreter_path=None, module_path=None, terminal=None):
         self._work_dir = work_dir

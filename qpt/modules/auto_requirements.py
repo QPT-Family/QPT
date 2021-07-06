@@ -18,7 +18,6 @@ class AutoRequirementsPackage(_RequirementsPackage):
 
     def __init__(self,
                  path,
-                 module_list: list,
                  deploy_mode=DEFAULT_DEPLOY_MODE):
         """
         自动获取Requirements
@@ -32,7 +31,7 @@ class AutoRequirementsPackage(_RequirementsPackage):
             Logging.info(f"[Auto]正在分析{os.path.abspath(path)}下的依赖情况...")
             requirements = PIP.analyze_dependence(path, return_path=False)
 
-        module_name_list = [m.name for m in module_list]
+        # module_name_list = [m.name for m in module_list]
         # 对特殊包进行过滤和特殊化
         for requirement in dict(requirements):
             if requirement in SPECIAL_MODULE:
@@ -40,9 +39,10 @@ class AutoRequirementsPackage(_RequirementsPackage):
                 parameter["version"] = requirements[requirement]
                 parameter["deploy_mode"] = deploy_mode
                 module = special_module(**parameter)
-                # 如果开发者没有定义这个Module，那么则添加Module
-                if module.name not in module_name_list:
-                    module_list.append(module)
+                # # 如果开发者没有定义这个Module，那么则添加Module - ToDo 等自定义算子出了再考虑，可以在执行时候考虑
+                # if module.name not in module_name_list:
+                #     module_list.append(module)
+                self.add_ext_module(module)
                 requirements.pop(requirement)
 
         # 保存依赖至

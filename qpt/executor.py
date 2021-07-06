@@ -134,21 +134,19 @@ class CreateExecutableModule:
         self.sub_module = sub_modules if sub_modules is not None else list()
 
         # 放入增强包
-        self.sub_module.append(BatchInstallation())
+        self.sub_module += BatchInstallation().get_all_module()
         # 放入QT增强包
         if self.hidden_terminal:
-            self.lazy_module.append(QPTGUIDependencyPackage())
+            self.lazy_module += QPTGUIDependencyPackage().get_all_module()
 
         # 解析依赖
         if requirements_file == "auto":
             auto_dependency_module = AutoRequirementsPackage(path=self.work_dir,
-                                                             module_list=self.sub_module,
                                                              deploy_mode=deploy_mode)
         else:
             auto_dependency_module = AutoRequirementsPackage(path=requirements_file,
-                                                             module_list=self.sub_module,
                                                              deploy_mode=deploy_mode)
-        self.sub_module.append(auto_dependency_module)
+        self.sub_module += auto_dependency_module.get_all_module()
 
         # 初始化终端 - 占位 待lazy_module执行完毕后生成终端（依赖Qt lazy module）
         self.terminal = None
@@ -157,7 +155,7 @@ class CreateExecutableModule:
         """
         为Module添加子模块
         """
-        self.sub_module.append(sub_module)
+        self.sub_module += sub_module.get_all_module()
 
     def print_details(self):
         Logging.info("----------QPT执行使用了以下OP----------")

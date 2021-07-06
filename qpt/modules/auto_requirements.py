@@ -33,6 +33,7 @@ class AutoRequirementsPackage(_RequirementsPackage):
 
         # module_name_list = [m.name for m in module_list]
         # 对特殊包进行过滤和特殊化
+        pre_add_module = list()
         for requirement in dict(requirements):
             if requirement in SPECIAL_MODULE:
                 special_module, parameter = SPECIAL_MODULE[requirement]
@@ -42,7 +43,7 @@ class AutoRequirementsPackage(_RequirementsPackage):
                 # # 如果开发者没有定义这个Module，那么则添加Module - ToDo 等自定义算子出了再考虑，可以在执行时候考虑
                 # if module.name not in module_name_list:
                 #     module_list.append(module)
-                self.add_ext_module(module)
+                pre_add_module.append(module)
                 requirements.pop(requirement)
 
         # 保存依赖至
@@ -52,6 +53,8 @@ class AutoRequirementsPackage(_RequirementsPackage):
         # 执行常规的安装
         super().__init__(requirements_file_path=requirements_path,
                          deploy_mode=deploy_mode)
+        for pam in pre_add_module:
+            self.add_ext_module(pam)
 
 
 SPECIAL_MODULE = {"paddlepaddle": (PaddlePaddlePackage, {"version": None,

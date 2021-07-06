@@ -97,8 +97,8 @@ def check_all():
     AVX_SUPPORT_FLAG = avx_supported()
 
 
-# Run则为定点触发，避免无法记录进日志
+# 需考虑Run避免无法记录进日志的情况
 if QPT_MODE == "Run":
-    pass
+    check_all()
 elif QPT_MODE == "Debug":
     check_all()

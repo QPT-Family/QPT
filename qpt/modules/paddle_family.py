@@ -8,8 +8,8 @@ import os
 from qpt.kernel.tools.log_op import Logging
 from qpt.kernel.tools.interpreter import PIP
 from qpt.sys_info import AVX_SUPPORT_FLAG
-from qpt.modules.base import SubModuleOpt, GENERAL_LEVEL_REDUCE
-from qpt.modules.package import CustomPackage, DEFAULT_DEPLOY_MODE, ONLINE_DEPLOY_MODE
+from qpt.modules.base import SubModule, SubModuleOpt, GENERAL_LEVEL_REDUCE, LOW_LEVEL_REDUCE
+from qpt.modules.package import CustomPackage, DEFAULT_DEPLOY_MODE
 
 
 class SetPaddleFamilyEnvValueOpt(SubModuleOpt):
@@ -22,11 +22,27 @@ class SetPaddleFamilyEnvValueOpt(SubModuleOpt):
         os.environ["SEG_HOME"] = os.path.join(self.module_path, "opt/SEG_HOME")
 
 
-class NoAVXOpt(SubModuleOpt):
-    def __init__(self):
-        super(NoAVXOpt, self).__init__(disposable=True)
+class CheckAVXOpt(SubModuleOpt):
+    def __init__(self, version, use_cuda=False):
+        super(CheckAVXOpt, self).__init__(disposable=True)
+        self.version = version
+        # ToDo 做CUDA的视适配
+        self.use_cuda = use_cuda
 
-    pass
+    def act(self) -> None:
+        if not AVX_SUPPORT_FLAG:
+            Logging.warning("为保证可以成功在NoAVX平台执行PaddlePaddle，即将忽略小版本号进行安装PaddlePaddle-NoAVX")
+            new_v = self.version[:self.version.rindex(".")]
+            Logging.warning("当前CPU不支持AVX指令集，正在尝试在线下载noavx版本的PaddlePaddle")
+            PIP.pip_shell(
+                f"install paddlepaddle>={new_v} -f https://www.paddlepaddle.org.cn/whl/mkl/stable/noavx.html"
+                " --no-index --no-deps --force-reinstall")
+
+
+class PaddlePaddleCheckAVX(SubModule):
+    def __init__(self, version, use_cuda=False):
+        super(PaddlePaddleCheckAVX, self).__init__(level=LOW_LEVEL_REDUCE)
+        self.add_unpack_opt(CheckAVXOpt(version=version, use_cuda=use_cuda))
 
 
 # ToDO要不要重构SubModule，使其增加ExtModule
@@ -43,15 +59,6 @@ class PaddlePaddlePackage(CustomPackage):
                              version=version,
                              deploy_mode=deploy_mode,
                              opts=opts)
-            if not AVX_SUPPORT_FLAG:
-                # ToDO 变成Opt才会成功
-                new_v = version.split(".")[:-1]
-                Logging.warning("当前CPU不支持AVX指令集，正在尝试在线下载noavx版本的PaddlePaddle")
-                PIP.pip_shell("uninstall paddlepaddle --quiet")
-                PIP.pip_shell(
-                    f"install paddlepaddle>={new_v} -f https://www.paddlepaddle.org.cn/whl/mkl/stable/noavx.html"
-                    " --no-index --no-deps")
-
         else:
             # ToDo 增加Soft-CUDA
             raise Exception("暂不支持PaddlePaddle-GPU模式，请等待近期更新")
@@ -62,7 +69,9 @@ class PaddlePaddlePackage(CustomPackage):
             # super(PaddlePaddle, self).__init__("paddlepaddle-gpu",
             #                                    version=version,
             #                                    deploy_mode=deploy_mode)
+
         self.add_unpack_opt(SetPaddleFamilyEnvValueOpt())
+        self.add_ext_module(PaddlePaddleCheckAVX(version=version, use_cuda=include_cuda))
 
 
 class PaddleHubPackage(CustomPackage):

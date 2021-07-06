@@ -128,16 +128,16 @@ class CreateExecutableModule:
         # 初始化解释器Module
         if interpreter_module is None:
             interpreter_module = AutoPythonEnv()
-        # 获取SubModule列表
-        self.lazy_module = [interpreter_module, QPTDependencyPackage()]
+        # 获取SubModule列表 - 此处均无ExtModule
+        self.lazy_modules = [interpreter_module, QPTDependencyPackage()]
 
-        self.sub_module = sub_modules if sub_modules is not None else list()
+        self.sub_modules = sub_modules if sub_modules is not None else list()
 
         # 放入增强包
-        self.sub_module += BatchInstallation().get_all_module()
+        self.add_sub_module(BatchInstallation())
         # 放入QT增强包
         if self.hidden_terminal:
-            self.lazy_module += QPTGUIDependencyPackage().get_all_module()
+            self.add_sub_module(QPTGUIDependencyPackage())
 
         # 解析依赖
         if requirements_file == "auto":
@@ -146,34 +146,41 @@ class CreateExecutableModule:
         else:
             auto_dependency_module = AutoRequirementsPackage(path=requirements_file,
                                                              deploy_mode=deploy_mode)
-        self.sub_module += auto_dependency_module.get_all_module()
+        self.add_sub_module(auto_dependency_module)
 
         # 初始化终端 - 占位 待lazy_module执行完毕后生成终端（依赖Qt lazy module）
         self.terminal = None
 
-    def add_sub_module(self, sub_module: SubModule):
+    def add_sub_module(self, sub_module: SubModule, lazy=False):
         """
         为Module添加子模块
         """
-        self.sub_module += sub_module.get_all_module()
+        module = sub_module.get_all_module()
+        if len(module) > 1:
+            for em in module[1:]:
+                self.add_sub_module(em)
+        if lazy:
+            self.lazy_modules += [sub_module]
+        else:
+            self.sub_modules.append(sub_module)
 
     def print_details(self):
         Logging.info("----------QPT执行使用了以下OP----------")
-        for module in self.lazy_module:
-            Logging.info(module.__class__.__name__ + f"\t{module.details}")
+        for module in self.lazy_modules:
+            Logging.info(module.__class__.__name__ + f"执行优先级{module.level}" + f"\t{module.details}")
         Logging.info("----------程序执行使用了以下OP----------")
-        for module in self.sub_module:
-            Logging.info(module.__class__.__name__ + f"\t{module.details}")
+        for module in self.sub_modules:
+            Logging.info(module.__class__.__name__ + f"优先级{module.level}" + f"\t{module.details}")
         Logging.info("------------------------------------")
 
     def _solve_module(self, lazy=False):
         if lazy:
-            modules = self.lazy_module
+            modules = self.lazy_modules
             # lazy mode 不支持terminal
             terminal = None
         else:
             self.terminal = AutoTerminal()
-            modules = self.sub_module
+            modules = self.sub_modules
             terminal = self.terminal.shell_func()
         # 依靠优先级进行排序
         modules.sort(key=lambda m: m.level, reverse=True)
@@ -425,17 +432,35 @@ class RunExecutableModule:
             tp.step(add_end_info=f"初始化完毕")
 
     def solve_work_dir(self):
-        os.chdir(self.work_dir)
         sys.path.append(self.work_dir)
         sys.path.append("./Python/Lib/site-packages")
         sys.path.append("./Python/Lib/ext")
         sys.path.append("./Python/Lib")
         sys.path.append("./Python")
         sys.path.append("./Python/Scripts")
-        path_env = os.environ.get("path")
-        os.environ["Path"] = path_env
+        path_env = os.environ.get("path").split(";")
+        ignore_env_field = ["conda", "Python"]
+        pre_add_env = os.path.abspath("./Python/Lib/site-packages") + ";" + \
+                      os.path.abspath("./Python/Lib") + ";" + \
+                      os.path.abspath("./Python/Lib/ext") + ";" + \
+                      os.path.abspath("./Python") + ";" + \
+                      os.path.abspath("./Python/Scripts") + ";"
+
+        for pe in path_env:
+            if pe:
+                add_flag = True
+                for ief in ignore_env_field:
+                    if ief in pe:
+                        add_flag = False
+                        break
+                if add_flag:
+                    pre_add_env += pe + ";"
+        os.environ["PATH"] = pre_add_env
 
     def run(self):
+        # 设置工作目录
+        self.solve_work_dir()
+
         # 获取启动信息 - 避免在Release下进行Debug
         env_warning_flag = False
         local_uid = base64.b64decode(self.configs["local_uid"]).decode("utf-8")
@@ -460,8 +485,6 @@ class RunExecutableModule:
         # prepare module - GUI组件需要在此之后才能进行
         self._solve_module()
 
-        # 设置工作目录
-        self.solve_work_dir()
         # 执行主程
         main_lib_path = self.configs["launcher_py_path"].replace(".py", "")
         main_lib_path = main_lib_path. \

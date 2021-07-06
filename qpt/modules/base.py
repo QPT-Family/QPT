@@ -18,8 +18,8 @@ HIGH_LEVEL = 4.  # 高优先级
 HIGH_LEVEL_REDUCE = 3.5  # 紧随高优先级
 GENERAL_LEVEL = 3.  # 普通优先级
 GENERAL_LEVEL_REDUCE = 2.5  # 紧随普通优先级
-LOW_LEVEL = 2.  # 低优先级
-LOW_LEVEL_REDUCE = 1.5  # 紧随低优先级
+LOW_LEVEL = 2.  # 低优先级 - BatchInstallation
+LOW_LEVEL_REDUCE = 1.5  # 紧随低优先级 - PaddlePaddleCheckAVX
 BOTTOM_LEVEL = 1.  # 系统级低优先级
 BOTTOM_LEVEL_REDUCE = 0.5  # 底层低优先级
 
@@ -122,7 +122,8 @@ class SubModule:
         额外的Module
         :param module:额外的Module
         """
-        Logging.info(f"{self.name}中自动添加了名为{module.name}的Ext Module")
+        # ToDo 加个raise，避免没有完成__init__就开始add，针对super__init__的情况
+        Logging.info(f"{self.__class__.__name__}中自动添加了名为{module.name}的ExtModule")
         self._ext_module.append(module)
 
     def get_all_module(self) -> list:

@@ -1,6 +1,6 @@
 ## 当前ToDO
 - [x] 打包路径判断Bug
-- [ ] 增加CUDA支持 cuda_home = os.environ.get('CUDA_HOME') or os.environ.get('CUDA_PATH')
+- [ ] 增加CUDA支持 cuda_home = os.environ.get('CUDA_HOME') or os.environ.get('CUDA_PATH') 周末要赶紧上线啊
 - [ ] 修一下这该死的日志系统吧
 - [ ] 问一下360为什么报毒，我可不想交保护费啊啊啊
 - [x] Release判断有问题，而且点取消还会继续

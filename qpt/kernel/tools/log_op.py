@@ -3,7 +3,7 @@ import os
 
 __all__ = ["Logging", "clean_stout", "TProgressBar", "set_logger_file"]
 
-formatter = logging.Formatter('%(asctime)s %(levelname)s:   \t%(message)s')
+formatter = logging.Formatter('%(asctime)s %(levelname)s: %(message)s')
 logger = logging.getLogger("qpt_logger")
 handler = logging.StreamHandler()
 handler.setFormatter(formatter)

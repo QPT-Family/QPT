@@ -7,7 +7,6 @@ import os
 
 from qpt.kernel.tools.log_op import Logging
 from qpt.kernel.tools.interpreter import PIP
-from qpt.sys_info import AVX_SUPPORT_FLAG
 from qpt.modules.base import SubModule, SubModuleOpt, GENERAL_LEVEL_REDUCE, LOW_LEVEL_REDUCE
 from qpt.modules.package import CustomPackage, DEFAULT_DEPLOY_MODE
 
@@ -29,17 +28,31 @@ class CheckAVXOpt(SubModuleOpt):
         # ToDo 做CUDA的视适配
         self.use_cuda = use_cuda
 
+    @staticmethod
+    def _check_dll():
+        from qpt.modules.tools.check_paddle_noavx import SUPPORT_AVX
+        return SUPPORT_AVX
+
     def act(self) -> None:
-        if not AVX_SUPPORT_FLAG:
+        if not self._check_dll():
             Logging.warning("为保证可以成功在NoAVX平台执行PaddlePaddle，即将忽略小版本号进行安装PaddlePaddle-NoAVX")
             new_v = self.version[:self.version.rindex(".")]
             Logging.warning("当前CPU不支持AVX指令集，正在尝试在线下载noavx版本的PaddlePaddle")
             PIP.pip_shell(
                 f"install paddlepaddle>={new_v} -f https://www.paddlepaddle.org.cn/whl/mkl/stable/noavx.html"
                 " --no-index --no-deps --force-reinstall")
+        # if not self._check_dll():
+        #     Logging.warning("当前CPU不支持MKL加速库，正在尝试在线下载OpenBlas版本的PaddlePaddle")
+        #     new_v = self.version[:self.version.rindex(".")]
+        #     PIP.pip_shell(
+        #         f"install paddlepaddle>={new_v} -f https://www.paddlepaddle.org.cn/whl/openblas/stable/noavx.html"
+        #         " --no-index --no-deps --force-reinstall")
 
 
 class PaddlePaddleCheckAVX(SubModule):
+    """
+    解决AVX的适配，并且给予更低优先级
+    """
     def __init__(self, version, use_cuda=False):
         super(PaddlePaddleCheckAVX, self).__init__(level=LOW_LEVEL_REDUCE)
         self.add_unpack_opt(CheckAVXOpt(version=version, use_cuda=use_cuda))

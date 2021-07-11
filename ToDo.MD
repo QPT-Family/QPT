@@ -8,6 +8,8 @@
 - [ ] 找一下为什么Conda会报dll的问题，尽管这些不会影响到运行（可能是真得加环境变量？）
 - [x] SubModule增加ExtModule支持
 - [x] 修复可能来自Conda的冲突
+- [x] 增加多个Debug小工具
+- [x] 暂时移除QTerminal
 ## 高优优先级
 - [ ] 增加图标支持
 - [ ] 增加TK支持
@@ -15,9 +17,12 @@
 
 ## 一般优先级
 - [ ] 重写依赖搜索
+- [ ] Requirements类缺乏前瞻性考虑
+- [ ] 增加翻新脚本
 - [ ] 杀进程
 - [ ] 控制台程序
 - [ ] 要不要加个环境变量PYTHONPATH
 - [ ] 图标问题可参考
 - [ ] .Net在低版本的Win平台需要先请求保证4.0Net"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP
 - [ ] 增加MKL深度适配 https://blog.csdn.net/qq_35133971/article/details/100101397
+- [ ] EXE、txt、cmd加入QPT元素

@@ -4,11 +4,14 @@
 # Please indicate the source for reprinting.
 
 import os
+import sys
 
+import qpt
 from qpt.kernel.tools.log_op import Logging
 from qpt.kernel.tools.interpreter import PIP
 from qpt.modules.base import SubModule, SubModuleOpt, GENERAL_LEVEL_REDUCE, LOW_LEVEL_REDUCE
 from qpt.modules.package import CustomPackage, DEFAULT_DEPLOY_MODE
+from qpt.modules.cuda import CopyCUDAPackage
 
 
 class SetPaddleFamilyEnvValueOpt(SubModuleOpt):
@@ -49,16 +52,41 @@ class CheckAVXOpt(SubModuleOpt):
         #         " --no-index --no-deps --force-reinstall")
 
 
+def split_paddle_version(package_dist):
+    package_dist = package_dist.strip(".dist-info").strip("paddlepaddle_gpu-")
+    paddle_version, cuda_version = package_dist.split(".post")
+    cuda_version_a, cuda_version_b = cuda_version[:-1], cuda_version[-1]
+    return paddle_version, cuda_version_a + "." + cuda_version_b
+
+
+def search_paddle_cuda_version(package_dist=None):
+    if package_dist:
+        return split_paddle_version(package_dist)
+    else:
+        import pip
+        site_packages_path = os.path.dirname(os.path.dirname(pip.__file__))
+        packages_list = os.listdir(site_packages_path)
+        paddle_version, cuda_version = None, None
+        for package in packages_list:
+            if "paddlepaddle_gpu" in package and ".dist-info" in package:
+                paddle_version, cuda_version = split_paddle_version(package)
+                Logging.info(f"搜索到PaddlePaddle-GPU版本信息：{paddle_version}，所需CUDA版本：{cuda_version}")
+                return paddle_version, cuda_version
+        if paddle_version is None:
+            Logging.info(f"当前Python解释器路径为：{sys.executable}")
+            Logging.error(f"当前Python环境下没有PaddlePaddle程序包，请切换至含有PaddlePaddle-GPU的程序包下使用QPT")
+            exit(2)
+
+
 class PaddlePaddleCheckAVX(SubModule):
     """
     解决AVX的适配，并且给予更低优先级
     """
+
     def __init__(self, version, use_cuda=False):
         super(PaddlePaddleCheckAVX, self).__init__(level=LOW_LEVEL_REDUCE)
         self.add_unpack_opt(CheckAVXOpt(version=version, use_cuda=use_cuda))
 
-
-# ToDO要不要重构SubModule，使其增加ExtModule
 
 class PaddlePaddlePackage(CustomPackage):
     def __init__(self,
@@ -73,16 +101,18 @@ class PaddlePaddlePackage(CustomPackage):
                              deploy_mode=deploy_mode,
                              opts=opts)
         else:
-            # ToDo 增加Soft-CUDA
-            raise Exception("暂不支持PaddlePaddle-GPU模式，请等待近期更新")
-            # Logging.warning("正在为PaddlePaddle添加CUDA支持...\n"
-            #                 "请注意2.0版本的PaddlePaddle在添加CUDA支持后，即使用户没有合适的GPU设备，"
-            #                 "也将默认以GPU模式进行执行。若不添加判断/设备选择的代码，则可能会出现设备相关的报错！\n"
-            #                 "Tips:未来QPT将在ONLINE_DEPLOY_MODE(在线安装)模式中添加“自动选择”参数为用户环境进行自动判断")
-            # super(PaddlePaddle, self).__init__("paddlepaddle-gpu",
-            #                                    version=version,
-            #                                    deploy_mode=deploy_mode)
-
+            if version and ".post" in version:
+                package_dist = version
+            else:
+                package_dist = None
+            paddle_version, cuda_version = search_paddle_cuda_version(package_dist)
+            paddle_version += ".post" + cuda_version.replace(".", "")
+            super().__init__("paddlepaddle-gpu",
+                             version=paddle_version,
+                             deploy_mode=deploy_mode,
+                             find_links="https://paddlepaddle.org.cn/whl/mkl/stable.html")
+            self.add_ext_module(CopyCUDAPackage(cuda_version=cuda_version))
+        # ToDO 当前方案需要放置在init后
         self.add_unpack_opt(SetPaddleFamilyEnvValueOpt())
         self.add_ext_module(PaddlePaddleCheckAVX(version=version, use_cuda=include_cuda))
 

@@ -432,12 +432,15 @@ class RunExecutableModule:
             tp.step(add_end_info=f"初始化完毕")
 
     def solve_work_dir(self):
+        # Set Sys ENV
         sys.path.append(self.work_dir)
         sys.path.append("./Python/Lib/site-packages")
         sys.path.append("./Python/Lib/ext")
         sys.path.append("./Python/Lib")
         sys.path.append("./Python")
         sys.path.append("./Python/Scripts")
+
+        # Set PATH ENV
         path_env = os.environ.get("path").split(";")
         ignore_env_field = ["conda", "Python"]
         pre_add_env = os.path.abspath("./Python/Lib/site-packages") + ";" + \
@@ -456,6 +459,11 @@ class RunExecutableModule:
                 if add_flag:
                     pre_add_env += pe + ";"
         os.environ["PATH"] = pre_add_env
+
+        # Set PYTHON PATH ENV
+        os.environ["PYTHONPATH"] = os.path.abspath("./Python/Lib/site-packages") + ";" + \
+                                   self.work_dir + ";" + \
+                                   os.path.abspath("./Python")
 
     def run(self):
         # 设置工作目录

@@ -89,6 +89,7 @@ Options:
 - [x] [1. 更改QPT全局镜像源](examples/advanced/更换镜像源.md)
 - [x] [2. 隐藏运行时的终端窗口](examples/advanced/隐藏控制台窗口.md)
 - [x] [3. 能够更快定位用户问题的日志系统](examples/advanced/收集用于Debug的用户日志.md)
+- [x] [4. 添加无需用户手动安装的CUDA加速模块](examples/advanced/增加CUDA的支持.md)
 
 完整进阶使用文档详见[examples/advanced](examples/advanced)
 ## 高阶开发手册

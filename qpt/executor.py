@@ -22,8 +22,9 @@ from qpt.modules.package import QPTDependencyPackage, QPTGUIDependencyPackage, \
 from qpt.modules.auto_requirements import AutoRequirementsPackage
 
 from qpt.kernel.tools.log_op import Logging, TProgressBar, set_logger_file
-from qpt.kernel.tools.os_op import clean_qpt_cache, copytree, check_chinese_char, StdOutLoggerWrapper
+from qpt.kernel.tools.os_op import clean_qpt_cache, copytree, check_chinese_char, StdOutLoggerWrapper, add_ua
 from qpt.kernel.tools.terminal import AutoTerminal
+from qpt.kernel.tools.interpreter import set_default_pip_lib
 from qpt.sys_info import QPT_MODE, check_all
 
 __all__ = ["CreateExecutableModule", "RunExecutableModule"]
@@ -76,7 +77,9 @@ class CreateExecutableModule:
         if ignore_dirs is None:
             self.ignore_dirs = list()
 
+        # 配置操作参数
         set_default_deploy_mode(deploy_mode)
+        set_default_pip_lib(self.interpreter_path)
         self.with_debug = with_debug
         self.hidden_terminal = hidden_terminal
 
@@ -342,8 +345,14 @@ class RunExecutableModule:
         set_logger_file(os.path.join(self.config_path, "logs", "QPT-" + log_name))
         sys.stdout = StdOutLoggerWrapper(os.path.join(self.config_path, "logs", "APP-" + log_name))
 
+        # 向用户提出申请UA保护
+        add_ua()
+
         # 系统信息
         check_all()
+
+        # 强制本地PIP
+        set_default_pip_lib(self.interpreter_path)
 
         # 检查路径是否非法
         check_path = __file__
@@ -375,7 +384,7 @@ class RunExecutableModule:
         self.lazy_module = self.configs["lazy_module"]
         self.sub_module = self.configs["sub_module"]
 
-    def warning_msg_box(self, title="Warning", text="", force=False):
+    def warning_msg_box(self, title="Warning - QPT", text="", force=False):
         """
         发出警告框
         :param title: 标题
@@ -432,17 +441,18 @@ class RunExecutableModule:
             tp.step(add_end_info=f"初始化完毕")
 
     def solve_work_dir(self):
+        # ToDo 加个Lock 彻底去除非Python的环境变量
         # Set Sys ENV
         sys.path.append(self.work_dir)
-        sys.path.append("./Python/Lib/site-packages")
-        sys.path.append("./Python/Lib/ext")
-        sys.path.append("./Python/Lib")
-        sys.path.append("./Python")
-        sys.path.append("./Python/Scripts")
+        sys.path.append(os.path.abspath("./Python/Lib/site-packages"))
+        sys.path.append(os.path.abspath("./Python/Lib/ext"))
+        sys.path.append(os.path.abspath("./Python/Lib"))
+        sys.path.append(os.path.abspath("./Python"))
+        sys.path.append(os.path.abspath("./Python/Scripts"))
 
         # Set PATH ENV
         path_env = os.environ.get("path").split(";")
-        ignore_env_field = ["conda", "Python"]
+        ignore_env_field = ["conda", "Python", "python"]
         pre_add_env = os.path.abspath("./Python/Lib/site-packages") + ";" + \
                       os.path.abspath("./Python/Lib") + ";" + \
                       os.path.abspath("./Python/Lib/ext") + ";" + \

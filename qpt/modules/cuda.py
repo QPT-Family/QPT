@@ -24,7 +24,9 @@ class CopyCUDADLL(SubModuleOpt):
             assert len(version) == 2, "CUDA版本号需要为以下格式传入：主版本号.从版本号，例如11.0"
             base_path = os.environ.get(f"CUDA_PATH_V{version[0]}_{version[1]}")
             bin_path = os.path.join(base_path, "bin")
-            copytree(bin_path, os.path.join(self.module_path, "opt/CUDA"))
+            if not os.path.exists(bin_path):
+                raise FileNotFoundError(f"当前环境的{os.path.abspath(bin_path)}目录下无CUDA驱动，无法封装。")
+            copytree(bin_path, os.path.join(self.module_path, "opt/CUDA"), ignore_files=["compute-sanitizer.bat"])
 
 
 class SetCUDAEnv(SubModuleOpt):
@@ -32,12 +34,13 @@ class SetCUDAEnv(SubModuleOpt):
         super(SetCUDAEnv, self).__init__()
 
     def act(self) -> None:
-        os.environ["PATH"] = os.environ["PATH"] + ";" + os.path.join(self.module_path, "opt/CUDA")
-        sys.path.append(os.path.join(self.module_path, "opt/CUDA"))
+        cuda_path = os.path.join(os.path.abspath(self.module_path), "opt/CUDA")
+        os.environ["PATH"] += ";" + cuda_path
+        sys.path.append(cuda_path)
 
 
 class CopyCUDAPackage(SubModule):
     def __init__(self, cuda_version):
         super(CopyCUDAPackage, self).__init__()
         self.add_pack_opt(CopyCUDADLL(cuda_version=cuda_version))
-        self.add_pack_opt(SetCUDAEnv())
+        self.add_unpack_opt(SetCUDAEnv())

@@ -26,25 +26,19 @@ EAP邀测版本：当前版本为尝鲜版本，仅具备基本功能和Win10兼
 2. 景观健康效益辅助评估工具 - [JiehangXie/Landscape-Heath-Score](https://github.com/JiehangXie/Landscape-Heath-Score)
 
 ## 快速使用
-#### 安装QPT到当前环境
-
-`pip install qpt -U` or `pip install qpt -i https://pypi.tuna.tsinghua.edu.cn/simple -U`
-
-#### 目录结构
-首先介绍一下示例项目的目录结构，其中`sample_program`就是待打包的**项目文件夹**，里面的`run.py`就是用户点击EXE文件后需要执行的**主程序文件**，
-`sample.jpg`这个“配角”就简单充当一下项目中需要的静态文件好了。  
-
-```
-------------
-|-sample_sandbox
-   |-sample_program
-      |-run.py
-      |-sample.jpg
-```
-
+### 安装/更新QPT到当前环境
+#### 安装
+通用方式：`python -m pip install qpt`  
+国内推荐：`python -m pip install qpt -i https://pypi.tuna.tsinghua.edu.cn/simple`
+#### 更新 - 强烈建议先卸载后安装
+Step1 卸载`python -m pip uninstall qpt`  
+Step2 安装`python -m pip install qpt`
 #### 开始打包
 
 ##### 方式一、撰写打包脚本[推荐]
+首先介绍一下示例项目的目录结构，文件名不可使用__main__等Python关键字，除此之外可随意命名。  
+其中`sample_program`就是待打包的**项目文件夹**，里面的`run.py`就是用户点击EXE文件后需要执行的**主程序文件**，
+`sample.jpg`这个“配角”就简单充当一下项目中需要的静态文件好了。  
 在`sample_sandbox`目录下新建一个名为`create_sample_module.py`的py文件。
 ```
 ------------

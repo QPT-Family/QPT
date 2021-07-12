@@ -5,6 +5,7 @@
 # QPT Home:        https://github.com/GT-ZhangAcer/QPT
 # ---------------------------------------------------------------------
 # 
+paddlepaddle
 # appdirs
 # astor
 # Babel
@@ -52,7 +53,6 @@
 # paddlehub
 # paddlenlp
 # paddlepaddle
-# paddlepaddle-gpu
 # pandas
 # pefile
 # Pillow

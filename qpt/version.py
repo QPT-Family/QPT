@@ -1,1 +1,1 @@
-version = "1.0a8.dev2"
+version = "1.0a9"

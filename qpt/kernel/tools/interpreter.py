@@ -7,12 +7,33 @@ import sys
 
 from qpt.kernel.tools.os_op import StdOutWrapper, dynamic_load_package, get_qpt_tmp_path
 from qpt.kernel.tools.log_op import clean_stout, Logging
+from qpt.kernel.tools.terminal import PTerminal, TerminalCallback, LoggingTerminalCallback
 
 TSINGHUA_PIP_SOURCE = "https://pypi.tuna.tsinghua.edu.cn/simple"
 BAIDU_PIP_SOURCE = "https://mirror.baidu.com/pypi/simple"
 DOUBAN_PIP_SOURCE = "https://pypi.douban.com/simple"
 BFSU_PIP_SOURCE = "https://mirrors.bfsu.edu.cn/pypi/web/simple"
 DEFAULT_PIP_SOURCE = BFSU_PIP_SOURCE
+
+
+class PIPTerminal(PTerminal):
+    def __init__(self, python_path):
+        super(PIPTerminal, self).__init__()
+        self.head = os.path.abspath(python_path) + " -m pip"
+
+    def shell_func(self, callback: TerminalCallback = LoggingTerminalCallback()):
+        def closure(closure_shell):
+            if isinstance(closure_shell, list):
+                tmp = [" " + bit_shell for bit_shell in closure_shell]
+                closure_shell = "".join(tmp)
+            closure_shell = self.head + closure_shell
+            Logging.debug(f"SHELL: {closure_shell}")
+            closure_shell += "&&echo GACT:DONE!||echo GACT:ERROR!\n"
+            self.main_terminal.stdin.write(closure_shell.encode("gbk"))
+            self.main_terminal.stdin.flush()
+            callback.handle(self.main_terminal)
+
+        return closure
 
 
 class PipTools:
@@ -22,14 +43,15 @@ class PipTools:
 
     def __init__(self,
                  source: str = None,
-                 lib_packages_path=None):
+                 pip_path=None):
         if source is None:
             source = DEFAULT_PIP_SOURCE
-        if lib_packages_path:
-            pip_main = dynamic_load_package(packages_name="pip", lib_packages_path=lib_packages_path).main
+        if pip_path:
+            pip_main = dynamic_load_package(packages_name="pip", lib_packages_path=pip_path).main
         else:
             from pip._internal.cli.main import main as pip_main
         self.pip_main = pip_main
+        self.pip_local = pip_main
         self.source = source
 
         # 安静模式
@@ -41,6 +63,8 @@ class PipTools:
         pass
 
     def pip_shell(self, shell):
+        if not os.path.exists(get_qpt_tmp_path('pip_cache')):
+            os.makedirs(get_qpt_tmp_path('pip_cache'), exist_ok=True)
         shell += f" --isolated --disable-pip-version-check --cache-dir {get_qpt_tmp_path('pip_cache')}" \
                  f" --timeout 60"
         if self.quiet:
@@ -64,7 +88,7 @@ class PipTools:
             shell += " --no-deps"
 
         if find_links:
-            shell += " -f" + find_links
+            shell += " -f " + find_links
 
         if opts:
             shell += " " + opts
@@ -123,7 +147,7 @@ class PipTools:
         tmp_stout = StdOutWrapper(container=pip_freeze_out)
         ori_stdout = sys.stdout
         sys.stdout = tmp_stout
-        self.pip_shell("freeze")
+        self.pip_local(["freeze"])
         tmp_stout.flush()
         sys.stdout = ori_stdout
 
@@ -213,6 +237,14 @@ def set_default_pip_source(source: str):
     Logging.debug(f"已设置PIP镜像源为：{source}")
 
 
+def set_default_pip_lib(interpreter_path: str):
+    global PIP
+    if not os.path.splitext(interpreter_path)[1]:
+        interpreter_path = os.path.join(interpreter_path, "python.exe")
+    PIP.pip_main = PIPTerminal(interpreter_path).shell_func()
+    Logging.debug(f"已设置PIP跨版本编译模式，目标解释器路径为：{interpreter_path}")
+
+
 def set_pip_configs(lib_package_path=None,
                     source: str = DEFAULT_PIP_SOURCE):
     """
@@ -222,4 +254,4 @@ def set_pip_configs(lib_package_path=None,
     """
     # 存在Bug，建议开个set接口来替换
     global PIP
-    PIP = PipTools(lib_packages_path=lib_package_path, source=source)
+    PIP = PipTools(pip_path=lib_package_path, source=source)

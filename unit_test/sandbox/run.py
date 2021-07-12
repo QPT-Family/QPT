@@ -5,6 +5,10 @@
 
 import paddle
 
+from paddle.utils.install_check import run_check
+
+run_check()
+
 layer = paddle.nn.Linear(in_features=1, out_features=1)
 
 loss_func = paddle.nn.MSELoss()
@@ -20,4 +24,4 @@ for i in range(5):
         opt.clear_grad()
     print("Epoch:", i, "loss:", loss.numpy())
 
-input("PaddlePaddle测试成功！")
+print("PaddlePaddle测试成功！")

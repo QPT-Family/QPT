@@ -27,6 +27,7 @@ def add_ua():
     获取UA权限
     """
     ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
+    Logging.info("UA请求完毕")
 
 
 def set_qpt_env_var(path):

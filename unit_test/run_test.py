@@ -25,12 +25,13 @@ class LogTest(unittest.TestCase):
         module = CreateExecutableModule(work_dir="./sandbox",
                                         launcher_py_path="./sandbox/run.py",
                                         save_path="./unit_out/paddle-cpu",
+                                        requirements_file="./sandbox/requirements_with_opt.txt",
                                         with_debug=True,
                                         hidden_terminal=False)
         module.make()
 
     def test_module_paddle_gpu(self):
-        module = CreateExecutableModule(work_dir="./sandbox",
+        module = CreateExecutableModule(work_dir="./sandbox_paddle_gpu",
                                         launcher_py_path="./sandbox_paddle_gpu/run.py",
                                         save_path="./unit_out/paddle-gpu",
                                         requirements_file="sandbox_paddle_gpu/requirements_with_opt.txt",

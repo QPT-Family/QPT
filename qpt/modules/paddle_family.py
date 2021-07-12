@@ -28,7 +28,7 @@ class CheckAVXOpt(SubModuleOpt):
     def __init__(self, version, use_cuda=False):
         super(CheckAVXOpt, self).__init__(disposable=True)
         self.version = version
-        # ToDo 做CUDA的视适配
+        # ToDo 做CUDA的适配 + 去掉>=
         self.use_cuda = use_cuda
 
     @staticmethod
@@ -42,24 +42,32 @@ class CheckAVXOpt(SubModuleOpt):
             new_v = self.version[:self.version.rindex(".")]
             Logging.warning("当前CPU不支持AVX指令集，正在尝试在线下载noavx版本的PaddlePaddle")
             PIP.pip_shell(
-                f"install paddlepaddle>={new_v} -f https://www.paddlepaddle.org.cn/whl/mkl/stable/noavx.html"
+                f"install paddlepaddle=={new_v} -f https://www.paddlepaddle.org.cn/whl/mkl/stable/noavx.html"
                 " --no-index --no-deps --force-reinstall")
-        # if not self._check_dll():
-        #     Logging.warning("当前CPU不支持MKL加速库，正在尝试在线下载OpenBlas版本的PaddlePaddle")
-        #     new_v = self.version[:self.version.rindex(".")]
-        #     PIP.pip_shell(
-        #         f"install paddlepaddle>={new_v} -f https://www.paddlepaddle.org.cn/whl/openblas/stable/noavx.html"
-        #         " --no-index --no-deps --force-reinstall")
 
 
 def split_paddle_version(package_dist):
+    """
+    paddle_dist信息分割
+    :param package_dist: 形如paddlepaddle_gpu-xxx.postyyy.dist-info的版本信息
+    :return: xxx和yyy
+    """
     package_dist = package_dist.strip(".dist-info").strip("paddlepaddle_gpu-")
-    paddle_version, cuda_version = package_dist.split(".post")
-    cuda_version_a, cuda_version_b = cuda_version[:-1], cuda_version[-1]
+    if ".post" in package_dist:
+        paddle_version, cuda_version = package_dist.split(".post")
+        cuda_version_a, cuda_version_b = cuda_version[:-1], cuda_version[-1]
+    else:
+        paddle_version = package_dist
+        cuda_version_a, cuda_version_b = "10", "2"
     return paddle_version, cuda_version_a + "." + cuda_version_b
 
 
 def search_paddle_cuda_version(package_dist=None):
+    """
+    paddle_dist信息分割，若未提供package_dist则自动搜索
+    :param package_dist: 形如paddlepaddle_gpu-xxx.postyyy.dist-info的版本信息
+    :return: xxx和yyy
+    """
     if package_dist:
         return split_paddle_version(package_dist)
     else:
@@ -101,12 +109,9 @@ class PaddlePaddlePackage(CustomPackage):
                              deploy_mode=deploy_mode,
                              opts=opts)
         else:
-            if version and ".post" in version:
-                package_dist = version
-            else:
-                package_dist = None
-            paddle_version, cuda_version = search_paddle_cuda_version(package_dist)
+            paddle_version, cuda_version = search_paddle_cuda_version(version)
             paddle_version += ".post" + cuda_version.replace(".", "")
+
             super().__init__("paddlepaddle-gpu",
                              version=paddle_version,
                              deploy_mode=deploy_mode,

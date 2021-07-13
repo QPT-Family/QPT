@@ -30,3 +30,15 @@
 - [ ] .Net在低版本的Win平台需要先请求保证4.0Net"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP
 - [ ] 增加MKL深度适配 https://blog.csdn.net/qq_35133971/article/details/100101397
 - [ ] EXE、txt、cmd加入QPT元素
+
+- [x] 环境在线、离线部署能力 - 封装后包含基本的Python解释器并具备环境部署能力
+- [ ] CUDA环境支持 - 提供GPU版本的部署能力支持 - 预计V1.0 Beta版本加入
+- [ ] 支持EXE文件自定义图标
+- [ ] 支持封装为单个EXE文件
+- [ ] QPT拓展名支持
+- [ ] 超轻量级在线环境部署能力 - 环境部分完全在线部署，可轻松控制在1M文件大小
+- [ ] QPT图形化封装界面
+- [ ] 自定义封装算子 - 提供自定义封装OP支持
+- [ ] Module集市
+- [ ] 模型加密
+- [ ] 增加32位操作系统支持

@@ -227,6 +227,7 @@ class CreateExecutableModule:
 
         # 复制资源文件
         assert os.path.exists(self.work_dir), f"{os.path.abspath(self.work_dir)}不存在，请检查该路径是否正确"
+        Logging.info("正在复制相关文件，可能会耗时较长")
         copytree(self.work_dir, self.resources_path, ignore_dirs=self.ignore_dirs)
 
         # QPT的dev模式
@@ -256,6 +257,7 @@ class CreateExecutableModule:
         # 启动器相关
         launcher_entry_path = os.path.join(os.path.split(qpt.__file__)[0], "ext/launcher_entry")
         # 复制Debug所需文件
+        Logging.info("正在复制相关文件，可能会耗时较长")
         debug_ext_dir = os.path.join(os.path.split(qpt.__file__)[0], "ext/launcher_debug")
         copytree(debug_ext_dir, dst=self.debug_path)
         copytree(self.module_path, dst=self.debug_path)
@@ -442,6 +444,8 @@ class RunExecutableModule:
 
     def solve_work_dir(self):
         # ToDo 加个Lock 彻底去除非Python的环境变量
+        # change dir
+        os.chdir(self.work_dir)
         # Set Sys ENV
         sys.path.append(self.work_dir)
         sys.path.append(os.path.abspath("./Python/Lib/site-packages"))

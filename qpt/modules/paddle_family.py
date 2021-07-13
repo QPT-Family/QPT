@@ -39,11 +39,16 @@ class CheckAVXOpt(SubModuleOpt):
     def act(self) -> None:
         if not self._check_dll():
             Logging.warning("为保证可以成功在NoAVX平台执行PaddlePaddle，即将忽略小版本号进行安装PaddlePaddle-NoAVX")
-            new_v = self.version[:self.version.rindex(".")]
             Logging.warning("当前CPU不支持AVX指令集，正在尝试在线下载noavx版本的PaddlePaddle")
-            PIP.pip_shell(
-                f"install paddlepaddle=={new_v} -f https://www.paddlepaddle.org.cn/whl/mkl/stable/noavx.html"
-                " --no-index --no-deps --force-reinstall")
+            if self.version:
+                new_v = self.version[:self.version.rindex(".")]
+                PIP.pip_shell(
+                    f"install paddlepaddle=={new_v} -f https://www.paddlepaddle.org.cn/whl/mkl/stable/noavx.html"
+                    " --no-index --no-deps --force-reinstall")
+            else:
+                PIP.pip_shell(
+                    f"install paddlepaddle -f https://www.paddlepaddle.org.cn/whl/mkl/stable/noavx.html"
+                    " --no-index --no-deps --force-reinstall")
 
 
 def split_paddle_version(package_dist):

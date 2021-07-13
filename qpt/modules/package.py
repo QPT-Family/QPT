@@ -121,6 +121,9 @@ class OnlineInstallWhlOpt(SubModuleOpt):
             self.to_python_env_version = DEFAULT_PACKAGE_FOR_PYTHON_VERSION
 
     def act(self) -> None:
+        if "[FLAG-FileSerialize]" in self.package[:32]:
+            self.package = self.package.strip("[FLAG-FileSerialize]")
+            self.package = "-r " + FileSerialize.serialize2file(self.package)
         if self.to_module_env:
             if not self.opts:
                 self.opts = ""
@@ -159,11 +162,13 @@ class CustomPackage(SubModule):
     def __init__(self,
                  package,
                  version: str = None,
-                 deploy_mode=DEFAULT_DEPLOY_MODE,
+                 deploy_mode=None,
                  no_dependent=False,
                  find_links: str = None,
                  opts: str = None):
         super().__init__(name=None)
+        if deploy_mode is None:
+            deploy_mode = DEFAULT_DEPLOY_MODE
         if deploy_mode == LOCAL_DOWNLOAD_DEPLOY_MODE:
             self.add_pack_opt(DownloadWhlOpt(package=package,
                                              version=version,
@@ -191,8 +196,11 @@ class CustomPackage(SubModule):
 class _RequirementsPackage(SubModule):
     def __init__(self,
                  requirements_file_path,
-                 deploy_mode=DEFAULT_DEPLOY_MODE):
+                 deploy_mode=None):
         super().__init__(name=None)
+        if deploy_mode is None:
+            deploy_mode = DEFAULT_DEPLOY_MODE
+
         fs_data = ""
         # 部分情况需要序列化requirement.txt文件
         if deploy_mode != LOCAL_INSTALL_DEPLOY_MODE:

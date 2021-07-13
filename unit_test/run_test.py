@@ -5,6 +5,7 @@
 import unittest
 
 from qpt.executor import CreateExecutableModule
+from qpt.modules.package import ONLINE_DEPLOY_MODE
 
 from qpt.kernel.tools.interpreter import set_default_pip_source
 
@@ -54,4 +55,14 @@ class LogTest(unittest.TestCase):
                                         requirements_file="sandbox_qt/requirements_with_opt.txt",
                                         with_debug=True,
                                         hidden_terminal=True)
+        module.make()
+
+    def test_module_online_paddle(self):
+        module = CreateExecutableModule(work_dir="./sandbox",
+                                        launcher_py_path="./sandbox/run.py",
+                                        save_path="./unit_out/paddle-cpu-online",
+                                        requirements_file="./sandbox/requirements_with_opt.txt",
+                                        with_debug=True,
+                                        hidden_terminal=False,
+                                        deploy_mode=ONLINE_DEPLOY_MODE)
         module.make()

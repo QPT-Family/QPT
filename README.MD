@@ -14,7 +14,7 @@ QPT是一款可以“模拟”开发环境的多功能封装工具，开发者�
 
 > 感觉还可以的话，求求了，点个Star吧
 
-QPT优势
+用QPT打包EXE的优势
 1. 可定制兼容方案，在打包形如PaddlePaddle深度学习Python库时也可流畅打包。
 2. 支持命令式打包，同时也支持通过Python语句打包。
 3. 轻松引入CUDA库，用户使用时无需显式安装CUDA也可获得GPU加速能力。
@@ -89,13 +89,13 @@ Options:
 - [x] [1. 更改QPT全局镜像源](examples/advanced/更换镜像源.md)
 - [x] [2. 隐藏运行时的终端窗口](examples/advanced/隐藏控制台窗口.md)
 - [x] [3. 能够更快定位用户问题的日志系统](examples/advanced/收集用于Debug的用户日志.md)
-- [x] [4. 添加无需用户手动安装的CUDA加速模块](examples/advanced/增加CUDA的支持.md)
+- [x] [4. 增加CUDA加速模块](examples/advanced/增加CUDA的支持.md)
 
 完整进阶使用文档详见[examples/advanced](examples/advanced)
 ## 高阶开发手册
-还没写
+预计V1.0RC版本发布
 ## 设计思想  
-仍在编
+
 
 ### 发版安排 - 随时可能咕咕咕
 - [x] 2021.6上旬    QPT V1.0 Alpha版本发布  

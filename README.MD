@@ -22,6 +22,12 @@ QPT优势
 5. 提供大量Debug工具以及日志系统，使用出现问题也可更快追踪异常情况。
 6. 打包后体积较小，未来还将支持30M+大小的在线部署方案。
 
+## 相关案例
+以下为内测QPT提供支持的开源项目，在此非常感谢这些作者为QPT提供的宝贵建议以及多次的调试与沟通，这也是QPT走向成熟的关键，同时也要感谢各位大佬~~在面对Bug时的不杀之恩。~~  
+1. 交互式语义分割标注软件 - [PaddleCV-SIG/iann](https://github.com/PaddleCV-SIG/iann)
+2. 景观健康效益辅助评估工具 - [JiehangXie/Landscape-Heath-Score](https://github.com/JiehangXie/Landscape-Heath-Score)
+3. 团子翻译器-OCR部分 - [PantsuDango/Dango-Translator](https://github.com/PantsuDango/Dango-Translator)
+
 ## 版本更新
 ### 更新日志
 当前版本为V1.0a9版本，接下来的版本将会更换为V1.0Beta1。[更新日志](RELEASE.MD)
@@ -30,10 +36,6 @@ QPT优势
 EAP邀测版本：当前版本为尝鲜版本，仅具备基本功能和Win10兼容，而且可能会有未测试出的Bug  
 > 使用时如发现问题，强烈建议加QQ群1128826410与我们进行交流，当然也可联系QQ：ZhangAcer进行解决[感谢] 
 
-## 相关案例
-以下为内测QPT提供支持的开源项目，在此非常感谢这些作者为QPT提供的宝贵建议以及多次的调试与沟通，这也是QPT走向成熟的关键，同时也要感谢各位大佬~~在面对Bug时的不杀之恩。~~  
-1. 交互式语义分割标注软件 - [PaddleCV-SIG/iann](https://github.com/PaddleCV-SIG/iann)
-2. 景观健康效益辅助评估工具 - [JiehangXie/Landscape-Heath-Score](https://github.com/JiehangXie/Landscape-Heath-Score)
 
 ## 快速使用
 ### 安装/更新QPT到当前环境
@@ -41,8 +43,8 @@ EAP邀测版本：当前版本为尝鲜版本，仅具备基本功能和Win10兼
 通用方式：`python -m pip install qpt`  
 国内推荐：`python -m pip install qpt -i https://pypi.tuna.tsinghua.edu.cn/simple`
 #### 更新 - 强烈建议先卸载后安装
-Step1 卸载`python -m pip uninstall qpt`  
-Step2 安装`python -m pip install qpt`
+Step1 卸载：`python -m pip uninstall qpt`  
+Step2 安装：`python -m pip install qpt`
 #### 开始打包
 
 ##### 方式一、撰写打包脚本[推荐]

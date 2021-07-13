@@ -3,6 +3,7 @@
 # Copyright belongs to the author.
 # Please indicate the source for reprinting.
 import sys
+from qpt.kernel.tools.os_op import Logging
 
 SUPPORT_AVX = None
 try:
@@ -43,5 +44,6 @@ try:
         from paddle.fluid.core_avx import _cleanup_mmap_fds
         from paddle.fluid.core_avx import _remove_tensor_list_mmap_fds
     SUPPORT_AVX = True
-except ModuleNotFoundError:
+except Exception as e:
+    Logging.warning(str(e))
     SUPPORT_AVX = False

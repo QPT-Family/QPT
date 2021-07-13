@@ -10,7 +10,9 @@
 [GitHub主页](https://github.com/GT-ZhangAcer/QPT) | [Gitee主页](https://gitee.com/GT-zhangacer/QPT)
 
 QPT是一款可以“模拟”开发环境的多功能封装工具，开发者使用层面最短只需一行命令即可将普通的Python脚本打包成EXE可执行程序，并选择性添加CUDA和NoAVX的支持；用户层面无需手动安装CUDA也能调用相关能力，以此更好的加速深度学习框架推理性能。
-当然，这些EXE程序会在用户使用时模拟您搭建开发环境的步骤，尽可能在用户使用时复现您的开发环境。  
+当然，这些EXE程序会在用户使用时模拟您搭建开发环境的步骤，尽可能在用户使用时复现您的开发环境。 
+
+> 感觉还可以的话，求求了，点个Star吧
 
 QPT优势
 1. 可定制兼容方案，在打包形如PaddlePaddle深度学习Python库时也可流畅打包。

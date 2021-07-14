@@ -53,15 +53,14 @@ Step2 安装：`python -m pip install qpt`
 # 导入QPT
 from qpt.executor import CreateExecutableModule
 
-if __name__ == '__main__':
-    # 实例化Module - 关于路径的部分建议使用绝对路径
-    module = CreateExecutableModule(work_dir="./sample_program",                # [项目文件夹]待打包的目录，并且该目录下需要有↓下方提到的py文件
-                                    launcher_py_path="./sample_program/run.py", # [主程序文件]用户启动EXE文件后，QPT要执行的py文件
-                                    save_path="./out")                          # [输出目录]打包后相关文件的输出目录
-                                  # requirements_file="auto"                    # [依赖]此处可填入依赖文件路径，也可设置为auto自动搜索依赖
-                                  # hidden_terminal=False                       # [终端窗口]设置为True后，运行时将不会展示黑色终端窗口    
-    # 开始打包
-    module.make()
+# 实例化Module - 关于路径的部分建议使用绝对路径
+module = CreateExecutableModule(work_dir="./sample_program",                # [项目文件夹]待打包的目录，并且该目录下需要有↓下方提到的py文件
+                                launcher_py_path="./sample_program/run.py", # [主程序文件]用户启动EXE文件后，QPT要执行的py文件
+                                save_path="./out")                          # [输出目录]打包后相关文件的输出目录
+                              # requirements_file="auto"                    # [依赖]此处可填入依赖文件路径，也可设置为auto自动搜索依赖
+                              # hidden_terminal=False                       # [终端窗口]设置为True后，运行时将不会展示黑色终端窗口    
+# 开始打包
+module.make()
 ```
 ##### 方式二、使用命令打包[快捷]
 注意：使用命令打包的前提是当前**默认Python环境**中使用pip安装了`qpt`，否则可能存在形如`qpt不是内部或外部命令,也不是可运行的程序`的报错信息。此外，若需要自动搜索依赖，强烈建议将QPT安装在开发环境，并且在开发环境中执行QPT，因为QPT会在搜索文件的import和pip list进行比对来确保搜索结果精确。  

@@ -11,6 +11,25 @@ from qpt.kernel.tools.log_op import Logging
 from qpt.modules.base import SubModule, SubModuleOpt
 
 
+class SearchCUDA:
+    def __init__(self):
+        self.paths = dict()
+
+    def search_sys(self):
+        for a_v in range(9, 13):
+            for b_v in range(5):
+                path = os.environ.get(f"CUDA_PATH_V{a_v}_{b_v}")
+                if path:
+                    bin_path = os.path.join(path, "bin")
+                    self.paths[str(a_v) + "." + str(b_v)] = bin_path
+
+    def search_conda(self):
+        pass
+
+    def get_paths(self):
+        return self.paths
+
+
 class CopyCUDADLL(SubModuleOpt):
     def __init__(self, cuda_version):
         super(CopyCUDADLL, self).__init__()
@@ -23,9 +42,9 @@ class CopyCUDADLL(SubModuleOpt):
             version = self.cuda_version.split(".")
             assert len(version) == 2, "CUDA版本号需要为以下格式传入：主版本号.从版本号，例如11.0"
             base_path = os.environ.get(f"CUDA_PATH_V{version[0]}_{version[1]}")
+            if not os.path.exists(base_path):
+                raise FileNotFoundError(f"当前环境的{os.path.abspath(base_path)}目录下无CUDA驱动，无法封装。")
             bin_path = os.path.join(base_path, "bin")
-            if not os.path.exists(bin_path):
-                raise FileNotFoundError(f"当前环境的{os.path.abspath(bin_path)}目录下无CUDA驱动，无法封装。")
             copytree(bin_path, os.path.join(self.module_path, "opt/CUDA"), ignore_files=["compute-sanitizer.bat"])
 
 

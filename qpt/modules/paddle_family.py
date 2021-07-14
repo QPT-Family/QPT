@@ -115,7 +115,11 @@ class PaddlePaddlePackage(CustomPackage):
                              opts=opts)
         else:
             paddle_version, cuda_version = search_paddle_cuda_version(version)
-            paddle_version += ".post" + cuda_version.replace(".", "")
+            # ToDo 今天先凑合，下个版本得删了
+            if cuda_version == "10.2":
+                pass
+            else:
+                paddle_version += ".post" + cuda_version.replace(".", "")
 
             super().__init__("paddlepaddle-gpu",
                              version=paddle_version,

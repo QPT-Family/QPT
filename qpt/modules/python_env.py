@@ -29,7 +29,10 @@ RESOURCES_URLS = {"Python3.7Env": "https://bj.bcebos.com/v1/ai-studio-online/90d
                                   "filename%3DPython3.8.10-vc2019.zip",
                   "Python3.9Env": "https://bj.bcebos.com/v1/ai-studio-online/2fd4ef0f3432448f8da656434097d0861"
                                   "308da335cf44da28c08a3f8ace766fe?responseContentDisposition=attachment%3B%20"
-                                  "filename%3DPython3.9.5-vc2019.zip"}
+                                  "filename%3DPython3.9.5-vc2019.zip",
+                  "Python0.0Env": "https://bj.bcebos.com/v1/ai-studio-online/e399eff8de3544319bd19ce57ef399ca906d377adbbe46d"
+                                  "4842efebd2554f554?responseContentDisposition=attachment%3B%20"
+                                  "filename%3DPython3.8.10.full.zip"}
 
 DEFAULT_PYTHON_IMAGE_VERSION = "3.8"
 
@@ -117,10 +120,13 @@ class AutoPythonEnv(BasePythonEnv):
     def __init__(self, mode=DEFINE_PYTHON_ENV_MODE):
         import platform
         version = platform.python_version()
-        Logging.info(f"当前解释器版本为{version}，正在向QPT查询是否存在合适的Python镜像...")
-        # 截断版本号，只保留两位
-        version = "".join([v if version_index == 1 else v + "."
-                           for version_index, v in enumerate(version.split(".")[:2])])
+        # ToDo 此处仅1.0a9.dev2使用！
+        Logging.warning(f"当前正在使用内部测试版1.0a9.dev2的兼容Python解释器")
+        version = "0.0"
+        # Logging.info(f"当前解释器版本为{version}，正在向QPT查询是否存在合适的Python镜像...")
+        # # 截断版本号，只保留两位
+        # version = "".join([v if version_index == 1 else v + "."
+        #                    for version_index, v in enumerate(version.split(".")[:2])])
         super().__init__(name=None, url=None, mode=mode, version=version)
 
 

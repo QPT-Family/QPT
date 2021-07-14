@@ -8,6 +8,8 @@ from importlib import util
 
 from qpt.kernel.tools.log_op import Logging
 
+TMP_BASE_PATH = tempfile.gettempdir()
+
 
 def dynamic_load_package(packages_name, lib_packages_path):
     """
@@ -62,8 +64,7 @@ def get_qpt_tmp_path(dir_name="Cache", clean=False):
     :param clean: 是否强制清空目录
     :return: 目录路径
     """
-    base_path = tempfile.gettempdir()
-    dir_path = os.path.join(base_path, "QPT_Cache", dir_name)
+    dir_path = os.path.join(TMP_BASE_PATH, "QPT_Cache", dir_name)
     if os.path.exists(dir_path) and clean:
         shutil.rmtree(dir_path)
     else:
@@ -177,3 +178,10 @@ class FileSerialize:
         with open(file_path, "w", encoding="utf-8") as file:
             file.write(data)
         return file_path
+
+
+# Check User name is chinese
+tmp = get_qpt_tmp_path()
+if check_chinese_char(tmp):
+    TMP_BASE_PATH = "C:/q_tmp"
+    os.makedirs(TMP_BASE_PATH, exist_ok=True)

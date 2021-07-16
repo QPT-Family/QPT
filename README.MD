@@ -46,9 +46,9 @@ EAP邀测版本：当前版本为尝鲜版本，仅具备基本功能和Win10兼
 #### 更新 - 强烈建议先卸载后安装
 Step1 卸载：`python -m pip uninstall qpt`  
 Step2 安装：`python -m pip install qpt`
-#### 开始打包
+### 开始打包
 
-##### 方式一、撰写打包脚本[推荐]
+#### 方式一、撰写打包脚本[推荐]
 撰写以下代码即可完成打包：  
 ```python
 # 导入QPT
@@ -63,7 +63,7 @@ module = CreateExecutableModule(work_dir="./sample_program",                # [�
 # 开始打包
 module.make()
 ```
-##### 方式二、使用命令打包[快捷]
+#### 方式二、使用命令打包[快捷]
 注意：使用命令打包的前提是当前**默认Python环境**中使用pip安装了`qpt`，否则可能存在形如`qpt不是内部或外部命令,也不是可运行的程序`的报错信息。此外，若需要自动搜索依赖，强烈建议将QPT安装在开发环境，并且在开发环境中执行QPT，因为QPT会在搜索文件的import和pip list进行比对来确保搜索结果精确。  
 
 打开cmd/终端并输入以下命令即可完成打包：  

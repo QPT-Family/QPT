@@ -22,10 +22,12 @@ class AutoRequirementsPackage(_RequirementsPackage):
         """
         自动获取Requirements
         :param path: 待扫描的文件夹路径或requirements文件路径，若提供了requirements文件路径则不会自动分析依赖情况
-        :param module_list: Module callback
         :param deploy_mode: 部署模式
         """
+        if not os.path.exists(path):
+            Logging.info(f"当前路径{os.path.abspath(path)}中不存在Requirements文件，请优先检查路径是否提供正确，必要时使用绝对路径")
         if os.path.isfile(path):
+            Logging.info(f"正在读取{os.path.abspath(path)}下的依赖情况...")
             requirements = PIP.analyze_requirements_file(path)
         else:
             Logging.info(f"[Auto]正在分析{os.path.abspath(path)}下的依赖情况...")

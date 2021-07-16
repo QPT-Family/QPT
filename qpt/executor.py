@@ -61,13 +61,7 @@ class CreateExecutableModule:
         self.work_dir = work_dir
         assert os.path.exists(os.path.join(self.work_dir, self.launcher_py_path)), \
             f"请检查{launcher_py_path}文件是否存在{self.work_dir}目录"
-        # try:
-        #     # 兼容不同盘符情况
-        #     check_same_path = os.path.abspath(os.path.relpath(save_path, work_dir))
-        # except ValueError:
-        #     check_same_path = save_path + "-"
-        # assert check_same_path not in os.path.abspath(save_path), \
-        #     "打包后的保存路径不能在被打包的文件夹中，这样会打包了打包后的文件^n (,,•́ . •̀,,)"
+
         self.save_path = save_path
         if not os.path.exists(self.save_path):
             os.makedirs(self.save_path, exist_ok=True)
@@ -76,6 +70,19 @@ class CreateExecutableModule:
         self.interpreter_path = os.path.join(self.module_path, "Python")
         if ignore_dirs is None:
             self.ignore_dirs = list()
+
+        # 创建基本环境目录
+        if os.path.exists(self.save_path):
+            if os.path.exists(self.module_path):
+                Logging.warning(f"{os.path.abspath(self.module_path)}已存在，已清空该目录")
+                self.ignore_dirs.append(self.module_path)
+                shutil.rmtree(self.module_path)
+            if os.path.exists(self.debug_path):
+                Logging.warning(f"{os.path.abspath(self.debug_path)}已存在，已清空该目录")
+                self.ignore_dirs.append(self.debug_path)
+                shutil.rmtree(self.debug_path)
+        else:
+            os.makedirs(self.save_path, exist_ok=True)
 
         # 配置操作参数
         set_default_deploy_mode(deploy_mode)
@@ -207,19 +214,6 @@ class CreateExecutableModule:
     def make(self):
         # 打印sub module信息
         self.print_details()
-
-        # 创建基本环境目录
-        if os.path.exists(self.save_path):
-            if os.path.exists(self.resources_path):
-                Logging.warning(f"{os.path.abspath(self.module_path)}已存在，已清空该目录")
-                self.ignore_dirs.append(self.module_path)
-                shutil.rmtree(self.module_path)
-            if os.path.exists(self.debug_path):
-                Logging.warning(f"{os.path.abspath(self.debug_path)}已存在，已清空该目录")
-                self.ignore_dirs.append(self.debug_path)
-                shutil.rmtree(self.debug_path)
-        else:
-            os.makedirs(self.save_path, exist_ok=True)
 
         # 解析子模块
         self._solve_module(lazy=True)

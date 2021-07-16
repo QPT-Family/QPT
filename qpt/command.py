@@ -4,10 +4,13 @@
 # Please indicate the source for reprinting.
 import os
 
-from qpt.kernel.tools.os_op import Logging
+from qpt.kernel.tools.log_op import Logging, change_none_color
 from qpt.executor import CreateExecutableModule
 
 import click
+
+# 终端运行不采用颜色方案
+change_none_color()
 
 
 @click.command()

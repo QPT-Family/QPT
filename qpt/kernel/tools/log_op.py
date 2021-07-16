@@ -1,7 +1,7 @@
 import logging
 import os
 
-__all__ = ["Logging", "clean_stout", "TProgressBar", "set_logger_file"]
+__all__ = ["Logging", "change_none_color", "clean_stout", "TProgressBar", "set_logger_file"]
 
 formatter = logging.Formatter('%(asctime)s %(levelname)s: %(message)s')
 logger = logging.getLogger("qpt_logger")
@@ -73,11 +73,16 @@ class LoggingNoneColor:
         logger.error(msg)
 
 
+def change_none_color():
+    global Logging
+    Logging = LoggingNoneColor
+
+
 COLOR_VAR = os.getenv("QPT_COLOR")
 if COLOR_VAR == "True" or COLOR_VAR is None:
     Logging = LoggingColor
 else:
-    Logging = LoggingNoneColor
+    change_none_color()
 
 
 class TProgressBar:

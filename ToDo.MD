@@ -7,6 +7,7 @@
 - [ ] 加个CUDA版本选择
 - [x] 临时目录改名
 - [ ] 嵌入式版本-拜拜！
+- [ ] BatchInstall想办法优化
 ## 高优优先级
 - [ ] 增加图标支持
 - [x] 增加TK支持
@@ -15,6 +16,7 @@
 ## 一般优先级
 - [ ] 重写依赖搜索
 - [ ] Requirements类缺乏前瞻性考虑，或增加互斥Module概念
+- [ ] requirements里加QPT
 - [ ] 增加翻新脚本
 - [ ] 杀进程
 - [ ] 控制台程序
@@ -35,3 +37,6 @@
 - [ ] Module集市
 - [ ] 模型加密
 - [ ] 增加32位操作系统支持
+
+git config --global --unset url.https://hub.fastgit.org/.insteadof
+git config --global url."https://hub.fastgit.org/".insteadOf "https://github.com/"

@@ -4,13 +4,14 @@
 ![GitHub Repo stars](https://img.shields.io/github/stars/GT-ZhangAcer/QPT)
 [![Downloads](https://static.pepy.tech/personalized-badge/qpt?period=total&units=international_system&left_color=grey&right_color=orange&left_text=Pypi%20User)](https://pepy.tech/project/qpt)
 ![GitHub](https://img.shields.io/github/license/GT-ZhangAcer/QPT)
+![](https://img.shields.io/badge/%E6%B7%B1%E5%BA%A6%E9%80%82%E9%85%8D-Win10-9cf)
 [![Build](https://github.com/GT-ZhangAcer/QPT/actions/workflows/python-publish.yml/badge.svg)](https://github.com/GT-ZhangAcer/QPT/actions/workflows/python-publish.yml)
 [![QQGroup](https://img.shields.io/badge/QQ_Group-1128826410-52B6EF?style=social&logo=tencent-qq&logoColor=000&logoWidth=20)](https://jq.qq.com/?_wv=1027&k=49HB5ymm)
 
 [GitHub主页](https://github.com/GT-ZhangAcer/QPT) | [Gitee主页](https://gitee.com/GT-zhangacer/QPT)
 
-QPT是一款可以“模拟”开发环境的多功能封装工具，开发者使用层面最短只需一行命令即可将普通的Python脚本打包成EXE可执行程序，并选择性添加CUDA和NoAVX的支持；用户层面无需手动安装CUDA也能调用相关能力，以此更好的加速深度学习框架推理性能。
-当然，这些EXE程序会在用户使用时模拟您搭建开发环境的步骤，尽可能在用户使用时复现您的开发环境。 
+QPT是一款可以“模拟”开发环境的多功能封装工具，最短只需一行命令即可将普通的Python脚本打包成EXE可执行程序，并选择性添加CUDA和NoAVX的支持，尽可能兼容更多用户环境。    
+当然，由于QPT设计思想与其他打包工具有着较大差异，极力推荐您在使用时简略了解设计思想来更好使用QPT。 
 
 > 感觉还可以的话，求求了，点个Star吧
 
@@ -45,9 +46,9 @@ EAP邀测版本：当前版本为尝鲜版本，仅具备基本功能和Win10兼
 #### 更新 - 强烈建议先卸载后安装
 Step1 卸载：`python -m pip uninstall qpt`  
 Step2 安装：`python -m pip install qpt`
-#### 开始打包
+### 开始打包
 
-##### 方式一、撰写打包脚本[推荐]
+#### 方式一、撰写打包脚本[推荐]
 撰写以下代码即可完成打包：  
 ```python
 # 导入QPT
@@ -62,7 +63,7 @@ module = CreateExecutableModule(work_dir="./sample_program",                # [�
 # 开始打包
 module.make()
 ```
-##### 方式二、使用命令打包[快捷]
+#### 方式二、使用命令打包[快捷]
 注意：使用命令打包的前提是当前**默认Python环境**中使用pip安装了`qpt`，否则可能存在形如`qpt不是内部或外部命令,也不是可运行的程序`的报错信息。此外，若需要自动搜索依赖，强烈建议将QPT安装在开发环境，并且在开发环境中执行QPT，因为QPT会在搜索文件的import和pip list进行比对来确保搜索结果精确。  
 
 打开cmd/终端并输入以下命令即可完成打包：  

@@ -22,6 +22,14 @@ def check_os():
     assert "Windows" in p_os, "当前QPT只支持Windows系统"
 
 
+def req_site_packages_path():
+    import pip
+    site_package_path = os.path.dirname(os.path.dirname(pip.__file__))
+    return site_package_path
+
+
+SITE_PACKAGE_PATH = req_site_packages_path()
+
 # QPT运行状态 Run/Debug
 QPT_MODE = os.getenv("QPT_MODE")
 

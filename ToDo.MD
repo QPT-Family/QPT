@@ -45,3 +45,9 @@
 
 git config --global --unset url.https://hub.fastgit.org/.insteadof
 git config --global url."https://hub.fastgit.org/".insteadOf "https://github.com/"
+
+
+    NVIDIA Kepler (GTX 600 series) and above
+    AMD GCN 1st Gen (Radeon HD 7000 series) and above
+    Intel Haswell (4th-gen core) HD Integrated Graphics and above
+

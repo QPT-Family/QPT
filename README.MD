@@ -11,7 +11,8 @@
 [GitHub主页](https://github.com/GT-ZhangAcer/QPT) | [Gitee主页](https://gitee.com/GT-zhangacer/QPT)
 
 QPT是一款可以“模拟”开发环境的多功能封装工具，最短只需一行命令即可将普通的Python脚本打包成EXE可执行程序，并选择性添加CUDA和NoAVX的支持，尽可能兼容更多用户环境。    
-当然，由于QPT设计思想与其他打包工具有着较大差异，极力推荐您在使用时简略了解设计思想来更好使用QPT。 
+当然，由于QPT设计思想与其他打包工具有着较大差异，极力推荐您在使用时简略了解设计思想来更好使用QPT。  
+(当前版本仍未EAP版本，详见[版本更新](https://github.com/GT-ZhangAcer/QPT#eap---the-early-access-program)) 
 
 > 感觉还可以的话，求求了，点个Star吧
 
@@ -29,7 +30,7 @@ QPT是一款可以“模拟”开发环境的多功能封装工具，最短只�
 2. 景观健康效益辅助评估工具 - [JiehangXie/Landscape-Heath-Score](https://github.com/JiehangXie/Landscape-Heath-Score)
 3. 团子翻译器-OCR部分 - [PantsuDango/Dango-Translator](https://github.com/PantsuDango/Dango-Translator)
 
-## 版本更新
+## 版本说明
 ### EAP - The Early Access Program
 EAP邀测：当前版本为尝鲜版本，仅具备基本功能，而且可能会有未测试出的Bug，建议在指导下投入生产环境。  
 > 使用时如发现问题，强烈建议加QQ群1128826410与我们进行交流，当然也可联系QQ：ZhangAcer进行解决[感谢] 

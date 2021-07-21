@@ -54,7 +54,7 @@ Step2 安装：`python -m pip install qpt`
 # 导入QPT
 from qpt.executor import CreateExecutableModule as CEM
 
-# 实例化Module - 关于路径的部分建议使用绝对路径
+#                                                        -----关于路径的部分，强烈建议使用绝对路径避免出现问题-----
 module = CEM(work_dir="./sample_program",                # [项目文件夹]待打包的目录，并且该目录下需要有↓下方提到的py文件
              launcher_py_path="./sample_program/run.py", # [主程序文件]用户启动EXE文件后，QPT要执行的py文件
              save_path="./out")                          # [输出目录]打包后相关文件的输出目录

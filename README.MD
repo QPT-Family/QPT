@@ -5,7 +5,7 @@
 ![GitHub Repo stars](https://img.shields.io/github/stars/GT-ZhangAcer/QPT)
 ![GitHub](https://img.shields.io/github/license/GT-ZhangAcer/QPT)
 ![](https://img.shields.io/badge/%E6%B7%B1%E5%BA%A6%E9%80%82%E9%85%8D-Win7+-9cf)
-[![QQGroup](https://img.shields.io/badge/QQ群-1128826410+-9cf?logo=tencent-qq&logoColor=000&logoWidth=15)](https://jq.qq.com/?_wv=1027&k=49HB5ymm)
+[![QQGroup](https://img.shields.io/badge/QQ群-1128826410-9cf?logo=tencent-qq&logoColor=000&logoWidth=15)](https://jq.qq.com/?_wv=1027&k=49HB5ymm)
 [![Build](https://github.com/GT-ZhangAcer/QPT/actions/workflows/python-publish.yml/badge.svg)](https://github.com/GT-ZhangAcer/QPT/actions/workflows/python-publish.yml)
 
 [GitHub主页](https://github.com/GT-ZhangAcer/QPT) | [Gitee主页](https://gitee.com/GT-zhangacer/QPT)
@@ -30,12 +30,12 @@ QPT是一款可以“模拟”开发环境的多功能封装工具，最短只�
 3. 团子翻译器-OCR部分 - [PantsuDango/Dango-Translator](https://github.com/PantsuDango/Dango-Translator)
 
 ## 版本更新
-### 更新日志
-当前版本为V1.0a9版本，接下来的版本将会更换为V1.0Beta1。[更新日志](RELEASE.MD)
-
 ### EAP - The Early Access Program
 EAP邀测：当前版本为尝鲜版本，仅具备基本功能，而且可能会有未测试出的Bug，建议在指导下投入生产环境。  
 > 使用时如发现问题，强烈建议加QQ群1128826410与我们进行交流，当然也可联系QQ：ZhangAcer进行解决[感谢] 
+
+### 更新日志
+当前版本为V1.0a9版本，接下来的版本将会更换为V1.0Beta1。[更新日志](RELEASE.MD)
 
 
 ## 快速使用

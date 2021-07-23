@@ -14,6 +14,7 @@
 - [ ] Debug状态文件删除，借助环境变量统一在sys_info注册
 - [ ] SubModule对op文件加判断
 - [ ] 有必要对Win32的dll做个注册了
+- [ ] copytree增加freeze
 ## 高优优先级
 - [ ] 增加图标支持
 - [x] 增加TK支持

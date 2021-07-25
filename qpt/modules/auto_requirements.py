@@ -5,8 +5,8 @@
 import os
 
 from qpt.kernel.tools.interpreter import PIP
-from qpt.kernel.tools.log_op import Logging
-from qpt.kernel.tools.os_op import get_qpt_tmp_path
+from qpt.kernel.tools.qlog import Logging
+from qpt.kernel.tools.qos import get_qpt_tmp_path
 from qpt.modules.package import _RequirementsPackage, DEFAULT_DEPLOY_MODE
 from qpt.modules.paddle_family import PaddlePaddlePackage
 

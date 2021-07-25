@@ -3,7 +3,7 @@
 # Copyright belongs to the author.
 # Please indicate the source for reprinting.
 import sys
-from qpt.kernel.tools.os_op import Logging
+from qpt.kernel.tools.qos import Logging
 
 SUPPORT_AVX = None
 try:

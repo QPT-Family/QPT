@@ -5,8 +5,8 @@ __all__ = ["Logging", "change_none_color", "clean_stout", "TProgressBar", "set_l
 
 formatter = logging.Formatter('%(asctime)s %(levelname)s: %(message)s')
 logger = logging.getLogger("qpt_logger")
-handler = logging.StreamHandler()
-handler.setFormatter(formatter)
+st_handler = logging.StreamHandler()
+st_handler.setFormatter(formatter)
 
 DEBUG_VAR = os.getenv("QPT_MODE")
 if DEBUG_VAR == "Run":
@@ -17,10 +17,10 @@ else:
     LEVEL = logging.DEBUG
 
 logger.setLevel(LEVEL)
-handler.setLevel(LEVEL)
+st_handler.setLevel(LEVEL)
 
 # 设置标准输出流
-logger.addHandler(handler)
+logger.addHandler(st_handler)
 
 
 def set_logger_file(file_path):
@@ -37,7 +37,35 @@ def clean_stout(name_list: list):
             logging.root.removeHandler(header)
 
 
-class LoggingColor:
+WARNING_SUMMARY = list()
+ERROR_SUMMARY = list()
+
+
+class BaseLogging:
+    @staticmethod
+    def final():
+        """
+        用于打印当前收到的警告和报错情况
+        :return: 是否包含报错或警告
+        """
+        Logging.info("-" * 10 + "WARNING SUMMARY" + "-" * 10)
+        for msg in WARNING_SUMMARY:
+            Logging.info(msg)
+        Logging.info("-" * 10 + "ERROR SUMMARY  " + "-" * 10)
+        for msg in ERROR_SUMMARY:
+            Logging.info(msg)
+        Logging.info("-" * 10 + f"生成状态WARNING:{len(WARNING_SUMMARY)} ERROR:{len(ERROR_SUMMARY)}" + "-" * 10)
+        if WARNING_SUMMARY or ERROR_SUMMARY:
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def flush():
+        st_handler.flush()
+
+
+class LoggingColor(BaseLogging):
     @staticmethod
     def info(msg: str):
         logger.info("\033[34m" + msg + "\033[0m")
@@ -55,7 +83,7 @@ class LoggingColor:
         logger.error("\033[41m" + msg + "\033[0m")
 
 
-class LoggingNoneColor:
+class LoggingNoneColor(BaseLogging):
     @staticmethod
     def info(msg: str):
         logger.info(msg)
@@ -67,10 +95,12 @@ class LoggingNoneColor:
     @staticmethod
     def warning(msg: str):
         logger.warning(msg)
+        WARNING_SUMMARY.append(f"{len(WARNING_SUMMARY)}|{msg}\n")
 
     @staticmethod
     def error(msg: str):
         logger.error(msg)
+        ERROR_SUMMARY.append(f"{len(WARNING_SUMMARY)}|{msg}\n")
 
 
 def change_none_color():
@@ -88,11 +118,13 @@ else:
 class TProgressBar:
     def __init__(self,
                  msg: str = "",
-                 max_len: int = 100):
+                 max_len: int = 100,
+                 with_logging=True):
         self.count = 0
         self.msg = msg
         self.max_len = max_len
         self.block = 20
+        self.with_logging = True
         print("", flush=True)
 
     def step(self, add_start_info="", add_end_info=""):
@@ -101,9 +133,10 @@ class TProgressBar:
 
         block_str = "".join(['■'] * int(rate * self.block)).ljust(self.block, "□")
         block = f"{block_str}"
-
         print("\r" + self.msg +
               f"{self.count}/{self.max_len} {add_start_info} {block} {rate * 100:.2f}% " +
               add_end_info,
               end="",
               flush=True)
+        if self.count == self.max_len:
+            print("\n", end="", flush=True)

@@ -6,7 +6,7 @@ import tempfile
 import io
 from importlib import util
 
-from qpt.kernel.tools.log_op import Logging
+from qpt.kernel.tools.qlog import Logging, TProgressBar
 
 TMP_BASE_PATH = tempfile.gettempdir()
 
@@ -135,6 +135,7 @@ def copytree(src, dst, ignore_dirs: list = None, ignore_files: list = None):
     if not os.path.exists(dst):
         os.makedirs(dst)
 
+    copy_info = dict()
     if os.path.exists(src):
         dir_cache = "-%NONE-FLAG%-"
         for root, dirs, files in os.walk(src):
@@ -153,7 +154,12 @@ def copytree(src, dst, ignore_dirs: list = None, ignore_files: list = None):
                 dst_file = os.path.join(dst_root, file)
                 if not os.path.exists(dst_root):
                     os.makedirs(dst_root, exist_ok=True)
-                shutil.copy(src_file, dst_file)
+                copy_info[src_file] = dst_file
+
+        progressbar = TProgressBar(msg="正在拷贝文件", max_len=len(copy_info) + 1)
+        for k_id, k in enumerate(copy_info):
+            shutil.copy(k, copy_info[k])
+            progressbar.step()
 
 
 def check_chinese_char(text):

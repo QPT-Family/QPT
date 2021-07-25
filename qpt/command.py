@@ -4,7 +4,7 @@
 # Please indicate the source for reprinting.
 import os
 
-from qpt.kernel.tools.log_op import Logging, change_none_color
+from qpt.kernel.tools.qlog import Logging, change_none_color
 from qpt.executor import CreateExecutableModule
 
 import click

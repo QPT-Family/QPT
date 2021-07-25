@@ -9,6 +9,7 @@ import shutil
 import importlib
 import base64
 import datetime
+import tempfile
 
 from typing import List
 
@@ -21,11 +22,11 @@ from qpt.modules.package import QPTDependencyPackage, QPTGUIDependencyPackage, \
     set_default_deploy_mode, BatchInstallation
 from qpt.modules.auto_requirements import AutoRequirementsPackage
 
-from qpt.kernel.tools.log_op import Logging, TProgressBar, set_logger_file
-from qpt.kernel.tools.os_op import clean_qpt_cache, copytree, check_chinese_char, StdOutLoggerWrapper, add_ua
+from qpt.kernel.tools.qlog import Logging, TProgressBar, set_logger_file
+from qpt.kernel.tools.qos import clean_qpt_cache, copytree, check_chinese_char, StdOutLoggerWrapper, add_ua
 from qpt.kernel.tools.terminal import AutoTerminal
 from qpt.kernel.tools.interpreter import set_default_pip_lib
-from qpt.sys_info import QPT_MODE, check_all, get_env_vars
+from qpt.sys_info import QPT_MODE, check_all, get_env_vars, CheckRun
 
 __all__ = ["CreateExecutableModule", "RunExecutableModule"]
 
@@ -292,6 +293,12 @@ class CreateExecutableModule:
             os.rename(launcher_file,
                       os.path.join(self.module_path, "启动程序.exe"))
 
+        # Logging Summary
+        if Logging.final():
+            Logging.warning("SUMMARY结束，发现上述异常情况，请确认后按任意键继续！")
+            Logging.flush()
+            input()
+
         # 收尾工作
         Logging.info(f"\n制作完毕，保存位置为：{os.path.abspath(self.module_path)}，该目录下将会有以下文件夹\n"
                      f"| ----------------------------------------------------------------------------- |\n"
@@ -310,11 +317,13 @@ class CreateExecutableModule:
 
         sys.stdout.flush()
         Logging.info("是否需要保留QPT在打包时产生的缓存文件？若不清空则可能会在下次使用QPT时复用缓存以提升打包速度")
+        Logging.flush()
         clear_key = input("[保留(Y)/清空(N)]:_")
         sys.stdout.flush()
         if clear_key.lower() == "n":
             clean_qpt_cache()
             Logging.info("QPT缓存已全部清空")
+        os.startfile(os.path.abspath(self.save_path))
 
 
 class RunExecutableModule:
@@ -352,13 +361,17 @@ class RunExecutableModule:
 
         # 检查路径是否非法
         check_path = __file__
+        if os.path.abspath(tempfile.gettempdir()) in self.base_dir:
+            self.warning_msg_box(text=f"当前目录{self.base_dir}存在与系统的临时目录下，该情况可能会对程序运行造成影响\n"
+                                      f"1. 请勿在压缩软件中打开本程序，务必解压后再运行。"
+                                      f"2. 请在物理硬盘上执行本程序。")
         if check_chinese_char(check_path) or " " in check_path:
             self.warning_msg_box(text=f"{self.base_dir}\n"
-                                      f"警告！当前路径中包含中文或空格，部分软件包将无法运行，强烈建议您修改相关的文件夹名，\n"
+                                      f"警告！当前路径↑中包含中文或空格，部分软件包将无法运行，强烈建议您修改相关的文件夹名，\n"
                                       f"---------------------------------------\n"
                                       f"不符合规范的路径如下：\n"
-                                      f"C:/GT真菜/xxx/yyy      -   ！“GT真菜”带有中文！\n"
-                                      f"C:/zzz/GT真 菜/yyy     -   ！“GT真 菜”中带有空格！\n"
+                                      f"C:/GT真菜/xxx/yyy      -   ！“真菜”为中文\n"
+                                      f"C:/zzz/GT真 菜/yyy     -   ！“GT真 菜”中“真”字后带有空格\n"
                                       f"---------------------------------------\n"
                                       f"符合规范的路径如下：\n"
                                       f"C:/hello/xxx/yyy\n"
@@ -380,7 +393,7 @@ class RunExecutableModule:
         self.lazy_module = self.configs["lazy_module"]
         self.sub_module = self.configs["sub_module"]
 
-    def warning_msg_box(self, title="Warning - QPT", text="", force=False):
+    def warning_msg_box(self, title="Warning - GitHub:GT-ZhangAcer/QPT", text="", force=False):
         """
         发出警告框
         :param title: 标题
@@ -474,6 +487,7 @@ class RunExecutableModule:
                                                   f" 4. 若特殊情况必须在Release目录下进行测试，请制作Release目录的备份，在他人需要时提供该备份\n"
                                                   f"    文件或重新打包，以避免因执行“启动程序.exe”后丢失“一次性部署模块”，从而无法被他人使用。\n"
                                                   f"---------------------------------------------------------------------------\n"
+                                                  f"当然，这个警告框并不会在其它电脑上弹出，仅会在本计算机运行时提示"
                                                   f"请问是否还要在该环境下继续执行？")
             if not msg:
                 Logging.info("程序已停止")
@@ -481,7 +495,8 @@ class RunExecutableModule:
         # prepare module - GUI组件需要在此之后才能进行
         self._solve_module()
 
-        # 执行主程
+        CheckRun.make_run_file(self.config_path)
+        # 执行主程序
         main_lib_path = self.configs["launcher_py_path"].replace(".py", "")
         main_lib_path = main_lib_path. \
             replace(".py", ""). \

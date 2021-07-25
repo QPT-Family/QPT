@@ -1,36 +1,43 @@
-## 当前ToDO
-- [ ] 高兼容版本编译
+## b1 ToDO
 - [x] 增加Debug小工具的环境变量清除-测试案例Conda还不会给提示
-- [ ] 跨版本编译
-- [ ] 嵌入式版本-拜拜！
-- [ ] 增加图标支持
+- [x] 嵌入式版本-拜拜！
 - [x] 增加TK支持
-- [ ] 加个CUDA版本选择
+- [x] 加个CUDA版本选择
 - [x] 临时目录改名 - 中文、空格
-- [ ] BatchInstall - 手动加个check
-- [ ] 适配完整包Python
-- [ ] 修改依赖的文案
-- [ ] 修改Release警告的文案
-- [ ] 给Terminal加个环境变量
+- [x] BatchInstall - 手动加个check
+- [x] 修改Release警告的文案
+- [x] 给Terminal加个环境变量
+- [x] 通过ctypes判定是否需要修漏洞
+- [x] SubModule对op文件加判断
+- [x] copytree增加freeze
+- [x] Logging增加统计
+- [x] 打包结束后弹出资源管理器
+- [x] 为CallBack做准备
+- [x] 加个RAR判断
+- [x] 加个全局安装状态
+## dev版本
+- [ ] 支持Conda版本的CUDA
 - [ ] 重写依赖搜索
-
-- [x] 临时目录改名
-- [ ] 嵌入式版本-拜拜！
-- [ ] BatchInstall想办法优化
-- [ ] 检查一下完整包Python，是否能得到正确的Paddle版本
-- [ ] 注册/反注册dll
-- [ ] 增加跨平台需求
-- [ ] 通过ctypes判定是否需要修漏洞
-- [ ] 增加DML支持
-- [ ] Debug状态文件删除，借助环境变量统一在sys_info注册
-- [ ] SubModule对op文件加判断
-- [ ] 有必要对Win32的dll做个注册了
-- [ ] copytree增加freeze
-## 高优优先级
+- [ ] 修改依赖的文案
+- [ ] 使用TK进度条
+- [ ] 高兼容版本编译入口
+## 下版本ToDo
+- [ ] 该死的输出错误
 - [ ] 增加图标支持
-- [x] 增加TK支持
+- [ ] 增加DML支持
+- [ ] 关键部分增加Callback
+- [ ] 增加多程序入口
+- [ ] 修一下日志系统在GUI模式
+- [ ] 开发整体工具包迁移至smart_opt
+- [ ] sys_info增加warmup
+- [ ] Debug状态文件删除，借助环境变量统一在sys_info注册
+## 高优优先级
+- [ ] 增加跨应用CLI
+- [ ] 增加程序多入口支持
+- [ ] 增加图标支持
 - [ ] Pyd支持
 - [ ] 增加防修改部分 - 增加安装状态文件+状态文件增加GUID+哈希校验
+- [ ] 增加跨平台需求
 
 ## 一般优先级
 - [ ] Requirements类缺乏前瞻性考虑，或增加互斥Module概念
@@ -58,7 +65,6 @@
 
 git config --global --unset url.https://hub.fastgit.org/.insteadof
 git config --global url."https://hub.fastgit.org/".insteadOf "https://github.com/"
-
 
     NVIDIA Kepler (GTX 600 series) and above
     AMD GCN 1st Gen (Radeon HD 7000 series) and above

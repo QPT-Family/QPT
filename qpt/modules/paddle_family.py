@@ -7,7 +7,7 @@ import os
 import sys
 
 import qpt
-from qpt.kernel.tools.log_op import Logging
+from qpt.kernel.tools.qlog import Logging
 from qpt.kernel.tools.interpreter import PIP
 from qpt.modules.base import SubModule, SubModuleOpt, GENERAL_LEVEL_REDUCE, LOW_LEVEL_REDUCE
 from qpt.modules.package import CustomPackage, DEFAULT_DEPLOY_MODE
@@ -114,8 +114,15 @@ class PaddlePaddlePackage(CustomPackage):
                              deploy_mode=deploy_mode,
                              opts=opts)
         else:
-            paddle_version, cuda_version = search_paddle_cuda_version(version)
-            # ToDo 今天先凑合，下个版本得删了
+            if version:
+                paddle_version, cuda_version = search_paddle_cuda_version(version)
+            else:
+                Logging.flush()
+                Logging.info("Requirements文件中并未指定paddlepaddle-gpu所对应的CUDA版本，请输入例如10.0、11.2 的"
+                             "CUDA版本")
+                cuda_version = input()
+                paddle_version, _ = search_paddle_cuda_version()
+
             if cuda_version == "10.2":
                 pass
             else:

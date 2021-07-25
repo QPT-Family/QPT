@@ -8,7 +8,9 @@ import os
 from qpt.version import version as qpt_version
 from qpt.modules.base import SubModule, SubModuleOpt, TOP_LEVEL_REDUCE, LOW_LEVEL
 from qpt.kernel.tools.interpreter import PIP
-from qpt.kernel.tools.os_op import FileSerialize
+from qpt.kernel.tools.qos import FileSerialize
+from qpt.kernel.tools.qlog import Logging
+from qpt.kernel.tools.qcode import search_packages_dist_info
 from qpt._compatibility import com_configs
 
 DOWN_PACKAGES_RELATIVE_PATH = "opt/packages"
@@ -147,15 +149,13 @@ class BatchInstallationOpt(SubModuleOpt):
     def act(self) -> None:
         if self.path is None:
             self.path = os.path.join(self.module_path, DOWN_PACKAGES_RELATIVE_PATH)
-        whl_list = [whl.split("-")[0] for whl in os.listdir(self.path)]
-        # opts = "--target " + os.path.join(self.interpreter_path,
-        #                                   com_configs["RELATIVE_INTERPRETER_SITE_PACKAGES_PATH"])
-        opts = ""
+        ready_list = search_packages_dist_info()[0].keys()
+        whl_list = [whl.split("-")[0] for whl in os.listdir(self.path) if whl.split("-")[0] not in ready_list]
+        Logging.info(f"需要补充的安装包数量为：{len(whl_list)}")
         for whl_name in whl_list:
             PIP.install_local_package(whl_name,
                                       whl_dir=self.path,
-                                      no_dependent=True,
-                                      opts=opts)
+                                      no_dependent=True)
 
 
 class CustomPackage(SubModule):
@@ -259,7 +259,6 @@ class BatchInstallation(SubModule):
         self.level = LOW_LEVEL
         if DEFAULT_DEPLOY_MODE == LOCAL_DOWNLOAD_DEPLOY_MODE:
             self.add_unpack_opt(BatchInstallationOpt())
-
 
 # 自动推理依赖时需要特殊处理的Module配置列表 格式{包名: (Module, Module参数字典)}
 # version、deploy_mode 为必填字段

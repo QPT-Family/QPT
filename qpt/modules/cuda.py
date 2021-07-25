@@ -6,8 +6,8 @@
 import os
 import sys
 
-from qpt.kernel.tools.os_op import copytree
-from qpt.kernel.tools.log_op import Logging
+from qpt.kernel.tools.qos import copytree
+from qpt.kernel.tools.qlog import Logging
 from qpt.modules.base import SubModule, SubModuleOpt
 
 
@@ -42,7 +42,7 @@ class CopyCUDADLL(SubModuleOpt):
             version = self.cuda_version.split(".")
             assert len(version) == 2, "CUDA版本号需要为以下格式传入：主版本号.从版本号，例如11.0"
             base_path = os.environ.get(f"CUDA_PATH_V{version[0]}_{version[1]}")
-            if not os.path.exists(base_path):
+            if not base_path or not os.path.exists(base_path):
                 raise FileNotFoundError(f"当前环境的{os.path.abspath(base_path)}目录下无CUDA驱动，无法封装。")
             bin_path = os.path.join(base_path, "bin")
             copytree(bin_path, os.path.join(self.module_path, "opt/CUDA"), ignore_files=["compute-sanitizer.bat"])
@@ -60,6 +60,6 @@ class SetCUDAEnv(SubModuleOpt):
 
 class CopyCUDAPackage(SubModule):
     def __init__(self, cuda_version):
-        super(CopyCUDAPackage, self).__init__()
+        super().__init__()
         self.add_pack_opt(CopyCUDADLL(cuda_version=cuda_version))
         self.add_unpack_opt(SetCUDAEnv())

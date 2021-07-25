@@ -4,8 +4,8 @@ import zipfile
 
 from qpt.modules.base import SubModule, SubModuleOpt, TOP_LEVEL
 from qpt.modules.package import set_default_package_for_python_version
-from qpt.kernel.tools.log_op import Logging
-from qpt.kernel.tools.os_op import download, get_qpt_tmp_path
+from qpt.kernel.tools.qlog import Logging
+from qpt.kernel.tools.qos import download, get_qpt_tmp_path
 from qpt._compatibility import com_configs
 
 """

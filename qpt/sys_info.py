@@ -5,7 +5,7 @@
 
 import platform
 import os
-from qpt.kernel.tools.log_op import Logging
+from qpt.kernel.tools.qlog import Logging
 
 
 def check_bit():
@@ -66,6 +66,23 @@ SITE_PACKAGE_PATH = req_site_packages_path()
 
 # QPT运行状态 Run/Debug
 QPT_MODE = os.getenv("QPT_MODE")
+
+# QPT检测到的运行状态 Run/本地Run
+QPT_RUN_MODE = None
+
+
+class CheckRun:
+    @staticmethod
+    def make_run_file(configs_path):
+        with open(os.path.join(configs_path, "run_act.lock"), "w") as f:
+            f.write("Run Done")
+
+    @staticmethod
+    def check_run_file(configs_path):
+        global QPT_RUN_MODE
+        if QPT_RUN_MODE is None:
+            QPT_RUN_MODE = os.path.exists(os.path.join(configs_path, "run_act.lock"))
+        return QPT_RUN_MODE
 
 
 def check_all():

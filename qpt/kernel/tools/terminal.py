@@ -1,10 +1,11 @@
 import subprocess
-from qpt.kernel.tools.log_op import Logging
+from qpt.kernel.tools.qlog import Logging
 from qpt.sys_info import get_env_vars
 
 TERMINAL_NAME = "cmd.exe"
 TERMINAL_MSG_FITTER_TAG = ["Microsoft Windows [版本", "(c) Microsoft Corporation。保留所有权利。"]
 SHELL_ACT = "&&echo GACT:DONE!||echo GACT:ERROR!\n"
+
 
 # try:
 #     import PyQt5
@@ -88,19 +89,19 @@ class Terminal:
     def __init__(self):
         self.main_terminal = None
         self.init_terminal()
-        self._set_env_vars()
         Logging.debug(f"正在连接{self.__class__.__name__}")
 
     def init_terminal(self):
         raise NotImplementedError(f"{self.__class__.__name__}中未定义init_terminal方法")
 
-    def _set_env_vars(self):
+    @staticmethod
+    def _get_env_vars():
         """
         为Terminal设置环境变量
         """
         # ToDO 需考虑增加兼容性支持 - 当前只考虑Windows和完整Python环境
         path_vars = get_env_vars()["PATH"]
-        self.main_terminal.shell(f"set PATH={path_vars}")
+        return path_vars
 
     def reset_terminal(self):
         """
@@ -141,6 +142,8 @@ class PTerminal(Terminal):
                                               stderr=subprocess.STDOUT,
                                               stdin=subprocess.PIPE,
                                               shell=True)
+        self.main_terminal.stdin.write(("set PATH=" + self._get_env_vars()).encode("gbk"))
+        self.main_terminal.stdin.flush()
 
     def reset_terminal(self):
         self.close_terminal()

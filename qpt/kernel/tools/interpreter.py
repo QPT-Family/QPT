@@ -5,8 +5,8 @@
 import os
 import sys
 
-from qpt.kernel.tools.os_op import StdOutWrapper, dynamic_load_package, get_qpt_tmp_path
-from qpt.kernel.tools.log_op import clean_stout, Logging
+from qpt.kernel.tools.qos import StdOutWrapper, dynamic_load_package, get_qpt_tmp_path
+from qpt.kernel.tools.qlog import clean_stout, Logging
 from qpt.kernel.tools.terminal import PTerminal, TerminalCallback, LoggingTerminalCallback
 
 TSINGHUA_PIP_SOURCE = "https://pypi.tuna.tsinghua.edu.cn/simple"
@@ -30,7 +30,6 @@ class PIPTerminal(PTerminal):
             Logging.debug(f"SHELL: {closure_shell}")
             closure_shell += "&&echo GACT:DONE!||echo GACT:ERROR!\n"
             self.main_terminal.stdin.write(closure_shell.encode("gbk"))
-            self.main_terminal.stdin.write("set\n".encode("gbk"))
             self.main_terminal.stdin.flush()
             callback.handle(self.main_terminal)
 
@@ -184,6 +183,7 @@ class PipTools:
             req_file.write(requirements["non-existent"])
 
         # 供用户检查/修改
+        Logging.flush()
         input(f"依赖分析完毕!\n"
               f"已在\033[32m{os.path.abspath(save_file_path)}\033[0m 中创建了依赖列表\n"
               f"Tips 1: 查看文件后可能需要关闭查看该文件的文本查看器，这样可以有效避免文件被占用\n"

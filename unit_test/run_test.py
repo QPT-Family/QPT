@@ -16,10 +16,19 @@ class LogTest(unittest.TestCase):
     def test_module_m(self):
         module = CreateExecutableModule(work_dir="./sandbox_m",
                                         launcher_py_path="./sandbox_m/run.py",
-                                        save_path="./unit_out/m",
+                                        save_path="./unit_out/mini",
                                         requirements_file="sandbox_m/requirements_with_opt.txt",
                                         with_debug=True,
                                         hidden_terminal=False)
+        module.make()
+
+    def test_module_m_gui(self):
+        module = CreateExecutableModule(work_dir="./sandbox_m",
+                                        launcher_py_path="./sandbox_m/run.py",
+                                        save_path="./unit_out/mini_gui",
+                                        requirements_file="sandbox_m/requirements_with_opt.txt",
+                                        with_debug=True,
+                                        hidden_terminal=True)
         module.make()
 
     def test_module_paddle(self):

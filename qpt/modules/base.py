@@ -7,9 +7,9 @@ import os
 import pickle
 import datetime
 
-from qpt.kernel.tools.os_op import download
-from qpt.kernel.tools.log_op import Logging
-from qpt.sys_info import QPT_MODE
+from qpt.kernel.tools.qos import download
+from qpt.kernel.tools.qlog import Logging
+from qpt.sys_info import QPT_MODE, CheckRun
 
 # 定义优先级 优先级越高执行顺序越考前，一般设置为GENERAL_LEVEL
 TOP_LEVEL = 5.  # 底层高优先级
@@ -67,7 +67,7 @@ class SubModuleOpt:
 
     def run(self, op_path):
         inactive_file = op_path + ".inactive"
-        if self.disposable and os.path.exists(inactive_file):
+        if (self.disposable and os.path.exists(inactive_file)) and CheckRun.check_run_file(self.config_path):
             Logging.debug(f"找到该OP状态文件{self.name}.inactive，故跳过该OP")
         else:
             self.act()
@@ -86,6 +86,10 @@ class SubModuleOpt:
     @property
     def work_dir(self):
         return self._work_dir
+
+    @property
+    def config_path(self):
+        return os.path.join(self.module_path, "configs")
 
     def prepare(self, work_dir=None, interpreter_path=None, module_path=None, terminal=None):
         self._work_dir = work_dir
@@ -165,7 +169,13 @@ class SubModule:
         """
         用户使用该Module时，需要完成的操作
         """
-        ops = os.listdir(os.path.join(self._module_path, "opt", self.name))
+        files = os.listdir(os.path.join(self._module_path, "opt", self.name))
+        ops = list()
+        for file in files:
+            if file[:3].isdigit():
+                ops.append(file)
+            else:
+                Logging.warning(f"{self.name}-{file} op可能已损坏，建议重新解压并运行或联系软件提供者")
         ops.sort(key=lambda x: int(x[:3]))
         for op_name in ops:
             op_name = str(op_name)

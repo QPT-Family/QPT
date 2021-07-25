@@ -1,17 +1,18 @@
 # QPT - Quick packaging tool 快捷封装工具
+[![Downloads](https://static.pepy.tech/personalized-badge/qpt?period=total&units=international_system&left_color=grey&right_color=orange&left_text=Pypi%20User)](https://pepy.tech/project/qpt)
 ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/GT-ZhangAcer/QPT?include_prereleases)
 ![GitHub forks](https://img.shields.io/github/forks/GT-ZhangAcer/QPT)
 ![GitHub Repo stars](https://img.shields.io/github/stars/GT-ZhangAcer/QPT)
-[![Downloads](https://static.pepy.tech/personalized-badge/qpt?period=total&units=international_system&left_color=grey&right_color=orange&left_text=Pypi%20User)](https://pepy.tech/project/qpt)
 ![GitHub](https://img.shields.io/github/license/GT-ZhangAcer/QPT)
-![](https://img.shields.io/badge/%E6%B7%B1%E5%BA%A6%E9%80%82%E9%85%8D-Win10-9cf)
+![](https://img.shields.io/badge/%E6%B7%B1%E5%BA%A6%E9%80%82%E9%85%8D-Win7+-9cf)
+[![QQGroup](https://img.shields.io/badge/QQ群-1128826410-9cf?logo=tencent-qq&logoColor=000&logoWidth=15)](https://jq.qq.com/?_wv=1027&k=49HB5ymm)
 [![Build](https://github.com/GT-ZhangAcer/QPT/actions/workflows/python-publish.yml/badge.svg)](https://github.com/GT-ZhangAcer/QPT/actions/workflows/python-publish.yml)
-[![QQGroup](https://img.shields.io/badge/QQ_Group-1128826410-52B6EF?style=social&logo=tencent-qq&logoColor=000&logoWidth=20)](https://jq.qq.com/?_wv=1027&k=49HB5ymm)
 
 [GitHub主页](https://github.com/GT-ZhangAcer/QPT) | [Gitee主页](https://gitee.com/GT-zhangacer/QPT)
 
 QPT是一款可以“模拟”开发环境的多功能封装工具，最短只需一行命令即可将普通的Python脚本打包成EXE可执行程序，并选择性添加CUDA和NoAVX的支持，尽可能兼容更多用户环境。    
-当然，由于QPT设计思想与其他打包工具有着较大差异，极力推荐您在使用时简略了解设计思想来更好使用QPT。 
+当然，由于QPT设计思想与其他打包工具有着较大差异，极力推荐您在使用时简略了解设计思想来更好使用QPT。  
+(当前版本仍未EAP版本，详见[版本更新](https://github.com/GT-ZhangAcer/QPT#eap---the-early-access-program)) 
 
 > 感觉还可以的话，求求了，点个Star吧
 
@@ -29,13 +30,13 @@ QPT是一款可以“模拟”开发环境的多功能封装工具，最短只�
 2. 景观健康效益辅助评估工具 - [JiehangXie/Landscape-Heath-Score](https://github.com/JiehangXie/Landscape-Heath-Score)
 3. 团子翻译器-OCR部分 - [PantsuDango/Dango-Translator](https://github.com/PantsuDango/Dango-Translator)
 
-## 版本更新
+## 版本说明
+### EAP - The Early Access Program
+EAP邀测：当前版本为尝鲜版本，仅具备基本功能，而且可能会有未测试出的Bug，建议在指导下投入生产环境。  
+> 使用时如发现问题，强烈建议加QQ群1128826410与我们进行交流，当然也可联系QQ：ZhangAcer进行解决[感谢] 
+
 ### 更新日志
 当前版本为V1.0a9版本，接下来的版本将会更换为V1.0Beta1。[更新日志](RELEASE.MD)
-
-### EAP - The Early Access Program
-EAP邀测版本：当前版本为尝鲜版本，仅具备基本功能和Win10兼容，而且可能会有未测试出的Bug  
-> 使用时如发现问题，强烈建议加QQ群1128826410与我们进行交流，当然也可联系QQ：ZhangAcer进行解决[感谢] 
 
 
 ## 快速使用
@@ -52,14 +53,14 @@ Step2 安装：`python -m pip install qpt`
 撰写以下代码即可完成打包：  
 ```python
 # 导入QPT
-from qpt.executor import CreateExecutableModule
+from qpt.executor import CreateExecutableModule as CEM
 
-# 实例化Module - 关于路径的部分建议使用绝对路径
-module = CreateExecutableModule(work_dir="./sample_program",                # [项目文件夹]待打包的目录，并且该目录下需要有↓下方提到的py文件
-                                launcher_py_path="./sample_program/run.py", # [主程序文件]用户启动EXE文件后，QPT要执行的py文件
-                                save_path="./out")                          # [输出目录]打包后相关文件的输出目录
-                              # requirements_file="auto"                    # [依赖]此处可填入依赖文件路径，也可设置为auto自动搜索依赖
-                              # hidden_terminal=False                       # [终端窗口]设置为True后，运行时将不会展示黑色终端窗口    
+#                                                        -----关于路径的部分，强烈建议使用绝对路径避免出现问题-----
+module = CEM(work_dir="./sample_program",                # [项目文件夹]待打包的目录，并且该目录下需要有↓下方提到的py文件
+             launcher_py_path="./sample_program/run.py", # [主程序文件]用户启动EXE文件后，QPT要执行的py文件
+             save_path="./out")                          # [输出目录]打包后相关文件的输出目录
+           # requirements_file="auto"                    # [依赖]此处可填入依赖文件路径，也可设置为auto自动搜索依赖
+           # hidden_terminal=False                       # [终端窗口]设置为True后，运行时将不会展示黑色终端窗口    
 # 开始打包
 module.make()
 ```

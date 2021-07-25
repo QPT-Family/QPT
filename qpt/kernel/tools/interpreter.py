@@ -30,6 +30,7 @@ class PIPTerminal(PTerminal):
             Logging.debug(f"SHELL: {closure_shell}")
             closure_shell += "&&echo GACT:DONE!||echo GACT:ERROR!\n"
             self.main_terminal.stdin.write(closure_shell.encode("gbk"))
+            self.main_terminal.stdin.write("set\n".encode("gbk"))
             self.main_terminal.stdin.flush()
             callback.handle(self.main_terminal)
 

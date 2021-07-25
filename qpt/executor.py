@@ -25,7 +25,7 @@ from qpt.kernel.tools.log_op import Logging, TProgressBar, set_logger_file
 from qpt.kernel.tools.os_op import clean_qpt_cache, copytree, check_chinese_char, StdOutLoggerWrapper, add_ua
 from qpt.kernel.tools.terminal import AutoTerminal
 from qpt.kernel.tools.interpreter import set_default_pip_lib
-from qpt.sys_info import QPT_MODE, check_all
+from qpt.sys_info import QPT_MODE, check_all, get_env_vars
 
 __all__ = ["CreateExecutableModule", "RunExecutableModule"]
 
@@ -449,29 +449,9 @@ class RunExecutableModule:
         sys.path.append(os.path.abspath("./Python/Scripts"))
 
         # Set PATH ENV
-        path_env = os.environ.get("path").split(";")
-        ignore_env_field = ["conda", "Python", "python"]
-        pre_add_env = os.path.abspath("./Python/Lib/site-packages") + ";" + \
-                      os.path.abspath("./Python/Lib") + ";" + \
-                      os.path.abspath("./Python/Lib/ext") + ";" + \
-                      os.path.abspath("./Python") + ";" + \
-                      os.path.abspath("./Python/Scripts") + ";"
-
-        for pe in path_env:
-            if pe:
-                add_flag = True
-                for ief in ignore_env_field:
-                    if ief in pe:
-                        add_flag = False
-                        break
-                if add_flag:
-                    pre_add_env += pe + ";"
-        os.environ["PATH"] = pre_add_env
-
-        # Set PYTHON PATH ENV
-        os.environ["PYTHONPATH"] = os.path.abspath("./Python/Lib/site-packages") + ";" + \
-                                   self.work_dir + ";" + \
-                                   os.path.abspath("./Python")
+        env_vars = get_env_vars(self.work_dir)
+        for k, v in env_vars.items():
+            os.environ[k] = v
 
     def run(self):
         # 设置工作目录

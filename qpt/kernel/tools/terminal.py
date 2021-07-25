@@ -1,5 +1,6 @@
 import subprocess
 from qpt.kernel.tools.log_op import Logging
+from qpt.sys_info import get_env_vars
 
 TERMINAL_NAME = "cmd.exe"
 TERMINAL_MSG_FITTER_TAG = ["Microsoft Windows [版本", "(c) Microsoft Corporation。保留所有权利。"]
@@ -87,21 +88,46 @@ class Terminal:
     def __init__(self):
         self.main_terminal = None
         self.init_terminal()
+        self._set_env_vars()
         Logging.debug(f"正在连接{self.__class__.__name__}")
 
     def init_terminal(self):
         raise NotImplementedError(f"{self.__class__.__name__}中未定义init_terminal方法")
 
+    def _set_env_vars(self):
+        """
+        为Terminal设置环境变量
+        """
+        # ToDO 需考虑增加兼容性支持 - 当前只考虑Windows和完整Python环境
+        path_vars = get_env_vars()["PATH"]
+        self.main_terminal.shell(f"set PATH={path_vars}")
+
     def reset_terminal(self):
+        """
+        重启Terminal
+        """
         raise NotImplementedError(f"{self.__class__.__name__}中未定义reset_terminal方法")
 
     def close_terminal(self):
+        """
+        关闭Terminal
+        """
         raise NotImplementedError(f"{self.__class__.__name__}中未定义close_terminal方法")
 
     def shell(self, shell, callback: TerminalCallback = None):
+        """
+        执行shell语句
+        :param shell: shell语句
+        :param callback:
+        """
         raise NotImplementedError(f"{self.__class__.__name__}中未定义shell方法")
 
     def shell_func(self, callback: TerminalCallback = None):
+        """
+        获取shell函数
+        :param callback:
+        :return: shell函数
+        """
         raise NotImplementedError(f"{self.__class__.__name__}中未定义shell_func方法")
 
 

@@ -182,6 +182,7 @@ class FileSerialize:
 
 # Check User name is chinese
 tmp = get_qpt_tmp_path()
-if check_chinese_char(tmp):
+if check_chinese_char(tmp) or " " in tmp:
     TMP_BASE_PATH = "C:/q_tmp"
+    Logging.warning(f"当前系统的用户名中包含中文/空格等可能会对程序造成异常的字符，现已默认QPT临时目录为{TMP_BASE_PATH}")
     os.makedirs(TMP_BASE_PATH, exist_ok=True)

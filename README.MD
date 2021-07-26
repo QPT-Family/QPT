@@ -43,7 +43,7 @@ EAP邀测：当前版本为尝鲜版本，仅具备基本功能，而且可能�
 ### 安装/更新QPT到当前环境
 #### 安装
 通用方式：`python -m pip install qpt`  
-国内推荐：`python -m pip install qpt -i https://pypi.tuna.tsinghua.edu.cn/simple`
+国内推荐：`python -m pip install qpt -i https://mirrors.bfsu.edu.cn/pypi/web/simple`
 #### 更新 - 强烈建议先卸载后安装
 Step1 卸载：`python -m pip uninstall qpt`  
 Step2 安装：`python -m pip install qpt`

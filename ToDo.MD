@@ -1,26 +1,11 @@
 ## b1 ToDO
-- [x] 增加Debug小工具的环境变量清除-测试案例Conda还不会给提示
-- [x] 嵌入式版本-拜拜！
-- [x] 增加TK支持
-- [x] 加个CUDA版本选择
-- [x] 临时目录改名 - 中文、空格
-- [x] BatchInstall - 手动加个check
-- [x] 修改Release警告的文案
-- [x] 给Terminal加个环境变量
-- [x] 通过ctypes判定是否需要修漏洞
-- [x] SubModule对op文件加判断
-- [x] copytree增加freeze
-- [x] Logging增加统计
-- [x] 打包结束后弹出资源管理器
-- [x] 为CallBack做准备
-- [x] 加个RAR判断
-- [x] 加个全局安装状态
-## dev版本
 - [ ] 支持Conda版本的CUDA
 - [ ] 重写依赖搜索
 - [ ] 修改依赖的文案
 - [ ] 使用TK进度条
 - [ ] 高兼容版本编译入口
+- [ ] 增加37、39编译方案
+- [ ] 增加CUDA选择
 ## 下版本ToDo
 - [ ] 该死的输出错误
 - [ ] 增加图标支持

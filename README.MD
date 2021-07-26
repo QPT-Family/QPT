@@ -12,7 +12,7 @@
 
 QPT是一款可以“模拟”开发环境的多功能封装工具，最短只需一行命令即可将普通的Python脚本打包成EXE可执行程序，并选择性添加CUDA和NoAVX的支持，尽可能兼容更多用户环境。    
 当然，由于QPT设计思想与其他打包工具有着较大差异，极力推荐您在使用时简略了解设计思想来更好使用QPT。  
-(当前版本仍未EAP版本，详见[版本更新](https://github.com/GT-ZhangAcer/QPT#eap---the-early-access-program)) 
+(当前版本仍为EAP版本，详见[版本更新](https://github.com/GT-ZhangAcer/QPT#eap---the-early-access-program)和[版本计划](RELEASE.MD)) 
 
 > 感觉还可以的话，求求了，点个Star吧
 

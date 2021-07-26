@@ -24,7 +24,7 @@ QPT是一款可以“模拟”开发环境的多功能封装工具，最短只�
 5. 提供大量Debug工具以及日志系统，使用出现问题也可更快追踪异常情况。
 6. 打包后体积较小，未来还将支持30M+大小的在线部署方案。
 
-## 相关案例
+## 以下大佬也在用
 以下为内测QPT提供支持的开源项目，在此非常感谢这些作者为QPT提供的宝贵建议以及多次的调试与沟通，这也是QPT走向成熟的关键，同时也要感谢各位大佬~~在面对Bug时的不杀之恩。~~  
 1. 交互式语义分割标注软件 - [PaddleCV-SIG/iann](https://github.com/PaddleCV-SIG/iann)
 2. 景观健康效益辅助评估工具 - [JiehangXie/Landscape-Heath-Score](https://github.com/JiehangXie/Landscape-Heath-Score)
@@ -36,7 +36,7 @@ EAP邀测：当前版本为尝鲜版本，仅具备基本功能，而且可能�
 > 使用时如发现问题，强烈建议加QQ群1128826410与我们进行交流，当然也可联系QQ：ZhangAcer进行解决[感谢] 
 
 ### 更新日志
-当前版本为V1.0a9版本，接下来的版本将会更换为V1.0Beta1。[更新日志](RELEASE.MD)
+当前版本为V1.0b1版本。[更新日志](RELEASE.MD)
 
 
 ## 快速使用

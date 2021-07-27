@@ -6,7 +6,7 @@
 ![GitHub](https://img.shields.io/github/license/GT-ZhangAcer/QPT)
 ![](https://img.shields.io/badge/%E6%B7%B1%E5%BA%A6%E9%80%82%E9%85%8D-Win7+-9cf)
 [![QQGroup](https://img.shields.io/badge/QQ群-1128826410-9cf?logo=tencent-qq&logoColor=000&logoWidth=15)](https://jq.qq.com/?_wv=1027&k=49HB5ymm)
-[![Build](https://github.com/GT-ZhangAcer/QPT/actions/workflows/python-publish.yml/badge.svg)](https://github.com/GT-ZhangAcer/QPT/actions/workflows/python-publish.yml)
+[![Owner](https://img.shields.io/badge/负责人-GT_ZhangAcer-9cf)](https://github.com/GT-ZhangAcer)
 
 [GitHub主页](https://github.com/GT-ZhangAcer/QPT) | [Gitee主页](https://gitee.com/GT-zhangacer/QPT)
 

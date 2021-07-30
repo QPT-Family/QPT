@@ -36,6 +36,7 @@
 - [ ] Module集市
 - [ ] 模型加密
 - [ ] 增加32位操作系统支持
+- [ ] 用户测PIP增加测速，避开国内源无法在国外使用
 
 git config --global --unset url.https://hub.fastgit.org/.insteadof
 git config --global url."https://hub.fastgit.org/".insteadOf "https://github.com/"

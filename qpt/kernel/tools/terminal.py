@@ -142,7 +142,7 @@ class PTerminal(Terminal):
                                               stderr=subprocess.STDOUT,
                                               stdin=subprocess.PIPE,
                                               shell=True)
-        self.main_terminal.stdin.write(("set PATH=" + self._get_env_vars()).encode("gbk"))
+        self.main_terminal.stdin.write(("set PATH=" + self._get_env_vars() + "\n").encode("gbk"))
         self.main_terminal.stdin.flush()
 
     def reset_terminal(self):

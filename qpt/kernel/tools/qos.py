@@ -164,10 +164,7 @@ def copytree(src, dst, ignore_dirs: list = None, ignore_files: list = None):
 
 
 def check_chinese_char(text):
-    for t in text:
-        if u'\u4e00' <= t <= u'\u9fff':
-            return True
-    return False
+    return all(ord(char) < 128 for char in text)
 
 
 class FileSerialize:

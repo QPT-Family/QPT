@@ -3,6 +3,7 @@
 # Copyright belongs to the author.
 # Please indicate the source for reprinting.
 import unittest
+import sys
 
 from qpt.executor import CreateExecutableModule
 from qpt.modules.package import ONLINE_DEPLOY_MODE
@@ -16,7 +17,7 @@ class LogTest(unittest.TestCase):
     def test_module_m(self):
         module = CreateExecutableModule(work_dir="./sandbox_m",
                                         launcher_py_path="./sandbox_m/run.py",
-                                        save_path="./unit_out/mini",
+                                        save_path=f"./unit_out/{sys._getframe().f_code.co_name}",
                                         requirements_file="sandbox_m/requirements_with_opt.txt",
                                         with_debug=False,
                                         hidden_terminal=False)
@@ -25,7 +26,25 @@ class LogTest(unittest.TestCase):
     def test_module_m_gui(self):
         module = CreateExecutableModule(work_dir="./sandbox_m",
                                         launcher_py_path="./sandbox_m/run.py",
-                                        save_path="./unit_out/mini_gui",
+                                        save_path=f"./unit_out/{sys._getframe().f_code.co_name}",
+                                        requirements_file="sandbox_m/requirements_with_opt.txt",
+                                        with_debug=True,
+                                        hidden_terminal=True)
+        module.make()
+
+    def test_module_m_gui_python37(self):
+        module = CreateExecutableModule(work_dir="./sandbox_m",
+                                        launcher_py_path="./sandbox_m/run.py",
+                                        save_path=f"./unit_out/{sys._getframe().f_code.co_name}",
+                                        requirements_file="sandbox_m/requirements_with_opt.txt",
+                                        with_debug=True,
+                                        hidden_terminal=True)
+        module.make()
+
+    def test_module_m_gui_python39(self):
+        module = CreateExecutableModule(work_dir="./sandbox_m",
+                                        launcher_py_path="./sandbox_m/run.py",
+                                        save_path=f"./unit_out/{sys._getframe().f_code.co_name}",
                                         requirements_file="sandbox_m/requirements_with_opt.txt",
                                         with_debug=True,
                                         hidden_terminal=True)
@@ -34,7 +53,7 @@ class LogTest(unittest.TestCase):
     def test_module_paddle(self):
         module = CreateExecutableModule(work_dir="./sandbox",
                                         launcher_py_path="./sandbox/run.py",
-                                        save_path="./unit_out/paddle-cpu",
+                                        save_path=f"./unit_out/{sys._getframe().f_code.co_name}",
                                         requirements_file="./sandbox/requirements_with_opt.txt",
                                         with_debug=True,
                                         hidden_terminal=False)
@@ -43,7 +62,7 @@ class LogTest(unittest.TestCase):
     def test_module_paddle_gpu(self):
         module = CreateExecutableModule(work_dir="./sandbox_paddle_gpu",
                                         launcher_py_path="./sandbox_paddle_gpu/run.py",
-                                        save_path="./unit_out/paddle-gpu",
+                                        save_path=f"./unit_out/{sys._getframe().f_code.co_name}",
                                         requirements_file="sandbox_paddle_gpu/requirements_with_opt.txt",
                                         with_debug=True,
                                         hidden_terminal=False)
@@ -52,7 +71,7 @@ class LogTest(unittest.TestCase):
     def test_module_tk(self):
         module = CreateExecutableModule(work_dir="./sandbox_tk",
                                         launcher_py_path="./sandbox_tk/run.py",
-                                        save_path="./unit_out/tk_m",
+                                        save_path=f"./unit_out/{sys._getframe().f_code.co_name}",
                                         with_debug=True,
                                         hidden_terminal=False)
         module.make()
@@ -60,7 +79,7 @@ class LogTest(unittest.TestCase):
     def test_module_qt(self):
         module = CreateExecutableModule(work_dir="./sandbox_qt",
                                         launcher_py_path="./sandbox_qt/run.py",
-                                        save_path="./unit_out/qt_m",
+                                        save_path=f"./unit_out/{sys._getframe().f_code.co_name}",
                                         requirements_file="sandbox_qt/requirements_with_opt.txt",
                                         with_debug=True,
                                         hidden_terminal=True)
@@ -69,7 +88,7 @@ class LogTest(unittest.TestCase):
     def test_module_online_paddle(self):
         module = CreateExecutableModule(work_dir="./sandbox",
                                         launcher_py_path="./sandbox/run.py",
-                                        save_path="./unit_out/paddle-cpu-online",
+                                        save_path=f"./unit_out/{sys._getframe().f_code.co_name}",
                                         requirements_file="./sandbox/requirements_with_opt.txt",
                                         with_debug=True,
                                         hidden_terminal=False,

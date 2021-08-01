@@ -60,7 +60,9 @@ module = CEM(work_dir="./sample_program",                # [项目文件夹]待�
              launcher_py_path="./sample_program/run.py", # [主程序文件]用户启动EXE文件后，QPT要执行的py文件
              save_path="./out")                          # [输出目录]打包后相关文件的输出目录
            # requirements_file="auto"                    # [依赖]此处可填入依赖文件路径，也可设置为auto自动搜索依赖
-           # hidden_terminal=False                       # [终端窗口]设置为True后，运行时将不会展示黑色终端窗口    
+           # hidden_terminal=False                       # [终端窗口]设置为True后，运行时将不会展示黑色终端窗口  
+           # interpreter_module=Python37()               # [跨版本编译]需要预先from qpt.modules.python_env import Python37
+                                                         # 好奇什么时候需要跨版本编译？可参考"进阶使用QPT"一节的《打包兼容性更强的Python解释器》
 # 开始打包
 module.make()
 ```
@@ -91,6 +93,7 @@ Options:
 - [x] [2. 隐藏运行时的终端窗口](examples/advanced/隐藏控制台窗口.md)
 - [x] [3. 能够更快定位用户问题的日志系统](examples/advanced/收集用于Debug的用户日志.md)
 - [x] [4. 增加CUDA加速模块](examples/advanced/增加CUDA的支持.md)
+- [x] [5. 打包兼容性更强的Python解释器](examples/advanced/打包兼容性更强的Python解释器.md)
 
 完整进阶使用文档详见[examples/advanced](examples/advanced)
 ## 高阶开发手册

@@ -164,7 +164,12 @@ def copytree(src, dst, ignore_dirs: list = None, ignore_files: list = None):
 
 
 def check_chinese_char(text):
-    return all(ord(char) < 128 for char in text)
+    """
+    判断是否包含中文，避免来自部分内鬼C++底层的Python包无缘无故报错
+    :param text: 字符串
+    :return: 是否包含
+    """
+    return not all(ord(char) < 128 for char in text)
 
 
 class FileSerialize:

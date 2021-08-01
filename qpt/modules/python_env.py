@@ -11,8 +11,8 @@ from qpt._compatibility import com_configs
 """
 Python镜像打包指南
 1. 下载嵌入式版本Python
-2. 在Python文档或ext文件夹下获取get-pip.py
-3. 安装pip
+2. 删除__pycache__
+3. ADD 运行库
 4. 使用LZMA-64-64 zip的格式上传至文件床，必要时设置密码
 """
 
@@ -21,18 +21,18 @@ PYTHON_ENV_MODE_PACKAGE_VOLUME_FIRST = "[暂不支持]封装后保留压缩的Py
 PYTHON_ENV_MODE_ONLINE_INSTALLATION = "[暂不支持]不封装Python环境，用户使用时在线进行下载并部署"
 DEFINE_PYTHON_ENV_MODE = PYTHON_ENV_MODE_SPEED_FIRST
 
-RESOURCES_URLS = {"Python3.7Env": "https://bj.bcebos.com/v1/ai-studio-online/90d3e6c134c5425394178839aed9b0351"
-                                  "586bf4dec46451d8e5e10ac54723064?responseContentDisposition=attachment%3B%20"
-                                  "filename%3DPython3.7.9-vc2019.zip",
-                  "Python3.8Env": "https://bj.bcebos.com/v1/ai-studio-online/f254c18b13654d3da11ddf855277812c3"
-                                  "b52aa55bd574b979d8a3999aa14a155?responseContentDisposition=attachment%3B%20"
-                                  "filename%3DPython3.8.10-vc2019.zip",
-                  "Python3.9Env": "https://bj.bcebos.com/v1/ai-studio-online/2fd4ef0f3432448f8da656434097d0861"
-                                  "308da335cf44da28c08a3f8ace766fe?responseContentDisposition=attachment%3B%20"
-                                  "filename%3DPython3.9.5-vc2019.zip",
-                  "Python0.0Env": "https://bj.bcebos.com/v1/ai-studio-online/e399eff8de3544319bd19ce57ef399ca906d377adbbe46d"
-                                  "4842efebd2554f554?responseContentDisposition=attachment%3B%20"
-                                  "filename%3DPython3.8.10.full.zip"}
+RESOURCES_URLS = {"Python3.7Env-Win": "https://bj.bcebos.com/v1/ai-studio-online/ef4dc15e6b494630b499eb8346851212a"
+                                      "75164a1ac0444f794b7cf8166245bdc?responseContentDisposition=attachment%3B%20"
+                                      "filename%3DPython37_full.zip",
+                  "Python3.8Env-Win": "https://bj.bcebos.com/v1/ai-studio-online/e399eff8de3544319bd19ce57ef399ca9"
+                                      "06d377adbbe46d4842efebd2554f554?responseContentDisposition=attachment%3B%20"
+                                      "filename%3DPython3.8.10.full.zip",
+                  "Python3.9Env-Win": "https://bj.bcebos.com/v1/ai-studio-online/b56a0350ff404d919ce0606d474cfc643"
+                                      "4bcc8cf331447fbbee5f432b053bf41?responseContentDisposition=attachment%3B%20"
+                                      "filename%3DPython39_full.zip",
+                  "DEFAULT-Win": "https://bj.bcebos.com/v1/ai-studio-online/e399eff8de3544319bd19ce57ef399ca9"
+                                 "06d377adbbe46d4842efebd2554f554?responseContentDisposition=attachment%3B%20"
+                                 "filename%3DPython3.8.10.full.zip"}
 
 DEFAULT_PYTHON_IMAGE_VERSION = "3.8"
 
@@ -94,20 +94,24 @@ class UnPackPythonEnvOpt(SubModuleOpt):
 class BasePythonEnv(SubModule):
     def __init__(self, name, version=None, mode=DEFINE_PYTHON_ENV_MODE, url=None):
         if version:
-            resources_name = f"Python{version}Env"
+            resources_name = f"Python{version}Env-Win"
             if resources_name in RESOURCES_URLS:
                 Logging.info(f"已在QPT中找到{resources_name}镜像")
             else:
                 Logging.warning(f"----------------------------------------------------------------------\n"
                                 f"未在QPT中找到{resources_name}镜像，QPT目前提供的Python镜像版本有限，\n"
-                                f"请尽可能使用Python3.8/Python3.9等主流Python版本进行打包。\n"
+                                f"请尽可能使用Python3.7/Python3.8/Python3.9等主流Python版本进行打包，兼容性如下。\n"
                                 f"----------------------------------------------------------------------\n"
-                                f"已强制设置目标版本号为{DEFAULT_PYTHON_IMAGE_VERSION}，可能存在以下兼容性问题：\n"
-                                f"1. Pip只接受具备对应版本的Whl依赖安装包。\n"
-                                f"2. 如*.gz的非二进制依赖安装包等均可能无法直接通过当前环境下的Pip自动下载，可能需要手动下载对应包并使用pip安装至"
-                                f"“输出目录/Python/Lib/site-packages”目录下\n"
+                                f"Python版本|XP Win7 Win8.1 Win10+\n"
+                                f"Python37 | X   1     1      1  \n"
+                                f"Python38 | X   1     -      1  \n"
+                                f"Python39 | X   X     -      1  \n"
+                                f"----------------------------------------------------------------------\n"
+                                f"已强制设置目标版本号为{DEFAULT_PYTHON_IMAGE_VERSION}，请检查存在以下兼容性问题：\n"
+                                f"1. 需考虑待打包的代码是否兼容该Python版本\n"
+                                f"2. 该Python版本是否可以在目标用户操作系统上执行\n"
                                 f"----------------------------------------------------------------------\n")
-                set_default_package_for_python_version(DEFAULT_PYTHON_IMAGE_VERSION)
+                resources_name = "DEFAULT-Win"
             url = RESOURCES_URLS[resources_name]
         assert url and version, "请至少设置url和version中任一字段"
         super().__init__(name, level=TOP_LEVEL)
@@ -122,11 +126,10 @@ class AutoPythonEnv(BasePythonEnv):
         version = platform.python_version()
         # ToDo 此处仅1.0a9.dev2使用！
         Logging.warning(f"当前正在使用内部测试版1.0a9.dev2的兼容Python解释器")
-        version = "0.0"
-        # Logging.info(f"当前解释器版本为{version}，正在向QPT查询是否存在合适的Python镜像...")
-        # # 截断版本号，只保留两位
-        # version = "".join([v if version_index == 1 else v + "."
-        #                    for version_index, v in enumerate(version.split(".")[:2])])
+        Logging.info(f"当前解释器版本为{version}，正在向QPT查询是否存在合适的Python镜像...")
+        # 截断版本号，只保留两位
+        version = "".join([v if version_index == 1 else v + "."
+                           for version_index, v in enumerate(version.split(".")[:2])])
         super().__init__(name=None, url=None, mode=mode, version=version)
 
 

@@ -129,8 +129,9 @@ class OnlineInstallWhlOpt(SubModuleOpt):
         if self.to_module_env:
             if not self.opts:
                 self.opts = ""
-            self.opts += "--target " + os.path.join(self.interpreter_path,
-                                                    com_configs["RELATIVE_INTERPRETER_SITE_PACKAGES_PATH"])
+            self.opts += "--target " + os.path.abspath(os.path.join(self.interpreter_path,
+                                                                    com_configs[
+                                                                        "RELATIVE_INTERPRETER_SITE_PACKAGES_PATH"]))
             if self.to_python_env_version:
                 self.opts += f" --python-version {self.to_python_env_version} --only-binary :all:"
         PIP.pip_package_shell(self.package,
@@ -232,7 +233,12 @@ class QPTDependencyPackage(SubModule):
         lazy = "-r " + lazy_dependency_path
         self.add_pack_opt(OnlineInstallWhlOpt(package="qpt",
                                               version=qpt_version,
-                                              no_dependent=True))
+                                              no_dependent=True,
+                                              to_module_env_path=True))
+        self.add_pack_opt(OnlineInstallWhlOpt(package="qpt",
+                                              version=qpt_version,
+                                              no_dependent=True,
+                                              to_module_env_path=True))
         self.add_pack_opt(OnlineInstallWhlOpt(package=kernel,
                                               no_dependent=False,
                                               to_module_env_path=True))

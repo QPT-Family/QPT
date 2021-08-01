@@ -18,7 +18,7 @@ class LogTest(unittest.TestCase):
                                         launcher_py_path="./sandbox_m/run.py",
                                         save_path="./unit_out/mini",
                                         requirements_file="sandbox_m/requirements_with_opt.txt",
-                                        with_debug=True,
+                                        with_debug=False,
                                         hidden_terminal=False)
         module.make()
 

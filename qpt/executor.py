@@ -361,9 +361,11 @@ class RunExecutableModule:
 
         # 检查路径是否非法
         check_path = __file__
-        if os.path.abspath(tempfile.gettempdir()) in self.base_dir:
-            self.warning_msg_box(text=f"当前目录{self.base_dir}存在与系统的临时目录下，该情况可能会对程序运行造成影响\n"
-                                      f"1. 请勿在压缩软件中打开本程序，务必解压后再运行。"
+        if os.path.realpath(tempfile.gettempdir()) in os.path.realpath(self.base_dir):
+            self.warning_msg_box(text=f"{self.base_dir}\n"
+                                      f"上述目录存在于系统的临时目录下，该情况可能会对程序运行造成影响\n"
+                                      f"建议的解决方案如下：\n"
+                                      f"1. 请勿在压缩软件中打开本程序，务必解压后再运行。\n"
                                       f"2. 请在物理硬盘上执行本程序。")
         if check_chinese_char(check_path) or " " in check_path:
             self.warning_msg_box(text=f"{self.base_dir}\n"
@@ -393,7 +395,7 @@ class RunExecutableModule:
         self.lazy_module = self.configs["lazy_module"]
         self.sub_module = self.configs["sub_module"]
 
-    def warning_msg_box(self, title="Warning - GitHub:GT-ZhangAcer/QPT", text="", force=False):
+    def warning_msg_box(self, title="Warning - GitHub: QPT-Family/QPT", text="", force=False):
         """
         发出警告框
         :param title: 标题

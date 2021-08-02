@@ -10,34 +10,27 @@
 
 [GitHub主页](https://github.com/GT-ZhangAcer/QPT) | [Gitee主页](https://gitee.com/GT-zhangacer/QPT)
 
-QPT是一款可以“模拟”开发环境的多功能封装工具，最短只需一行命令即可将普通的Python脚本打包成EXE可执行程序，并选择性添加CUDA和NoAVX的支持，尽可能兼容更多用户环境。    
-当然，由于QPT设计思想与其他打包工具有着较大差异，极力推荐您在使用时简略了解设计思想来更好使用QPT。  
-(当前版本仍为EAP版本，详见[版本更新](https://github.com/GT-ZhangAcer/QPT#eap---the-early-access-program)和[版本计划](ToDo.MD)) 
+QPT是一款可以“模拟”开发环境的多功能封装工具，最短只需一行命令即可将普通的Python脚本打包成EXE可执行程序，并选择性添加CUDA和NoAVX的支持，尽可能兼容更多用户环境。 
 
 > 感觉还可以的话，求求了，点个Star吧
 
-### 用QPT打包EXE的优势
-1. 可定制兼容方案，在打包形如PaddlePaddle深度学习Python库时也可流畅打包。
-2. 支持命令式打包，同时也支持通过Python语句打包。
-3. 轻松引入CUDA库，用户使用时无需显式安装CUDA也可获得GPU加速能力。
-4. 兼容大部分NoAVX平台，10年前的台式机也有机会体验来自深度学习的乐趣。
-5. 提供大量Debug工具以及日志系统，使用出现问题也可更快追踪异常情况。
-6. 打包后体积较小，未来还将支持30M+大小的在线部署方案。
-
-### 这些项目也在用
-以下为内测QPT提供支持的开源项目，在此非常感谢这些作者为QPT提供的宝贵建议以及多次的调试与沟通，这也是QPT走向成熟的关键，同时也要感谢各位大佬~~在面对Bug时的不杀之恩。~~  
-1. 交互式语义分割标注软件 - [PaddleCV-SIG/iann](https://github.com/PaddleCV-SIG/iann)
-2. 景观健康效益辅助评估工具 - [JiehangXie/Landscape-Heath-Score](https://github.com/JiehangXie/Landscape-Heath-Score)
-3. 团子翻译器-OCR部分 - [PantsuDango/Dango-Translator](https://github.com/PantsuDango/Dango-Translator)
-
-## 版本说明
-### EAP - The Early Access Program
+### 版本说明
+#### EAP - The Early Access Program
 当前版本为尝鲜版本，仅具备基本功能，而且可能会有未测试出的Bug，建议在指导下投入生产环境。  
 > 使用时如发现问题，强烈建议加QQ群1128826410与我们进行交流，当然也可联系QQ：ZhangAcer进行解决[感谢] 
 
-### 更新日志
+#### 更新日志
 当前版本为V1.0b1版本。[更新日志](RELEASE.MD)
 
+### 用QPT打包EXE的优势
+- [x] 可定制兼容方案。在打包形如PaddlePaddle深度学习Python库时也可流畅打包，因为可以让QPT捕捉你的习惯。
+- [x] 解释/命令双模式。不喜欢用命令打包也木有问题，Python语句照样可以轻松打包。
+- [x] 轻松引入CUDA库。还担心用户不会安装CUDA吗？放心，这些QPT在打包时也考虑到了，无需用户安装也能用起CUDA。
+- [x] 兼容大部分NoAVX平台。没有AVX慢是慢了点，但10年前的台式机就没有机会体验来自深度学习的乐趣吗？
+- [x] 简单实用的Debug组件。QPT提供了几个实用的Debug工具以及日志系统，用户使用出现问题也可更快追踪异常情况。
+- [x] 简约不简单的EXE。支持三种打包方式：秒安装、首次安装、在线安装三种方式，对应了三种：普通、较小、Mini三种打包体积，未来还将支持1M+大小的在线部署模块。
+
+> *以上均以PaddlePaddle为基准，其他深度学习框架在测试版本中可能需要手动添加Module。
 
 ## 快速使用
 ### 安装/更新QPT到当前环境
@@ -121,9 +114,15 @@ Options:
 3. 除QPT外，更推荐Nuit\*来打包深度学习相关库，性能好且打包难度较低。
 4. NoAVX支持非常重要，当前仍有大量桌面级用户使用NoAVX平台。
 
+## 社区相关
+### 这些项目也在用
+以下为内测QPT提供支持的开源项目，在此非常感谢这些作者为QPT提供的宝贵建议以及多次的调试与沟通，这也是QPT走向成熟的关键，同时也要感谢各位大佬~~在面对Bug时的不杀之恩。~~  
+1. 交互式语义分割标注软件 - [PaddleCV-SIG/iann](https://github.com/PaddleCV-SIG/iann)
+2. 景观健康效益辅助评估工具 - [JiehangXie/Landscape-Heath-Score](https://github.com/JiehangXie/Landscape-Heath-Score)
+3. 团子翻译器-OCR部分 - [PantsuDango/Dango-Translator](https://github.com/PantsuDango/Dango-Translator)
 
-## 开源协议
+### 开源协议
 本项目使用GNU LESSER GENERAL PUBLIC LICENSE(LGPL)开源协议。  
-### Example：
+#### Example：
 1. 使用QPT简单打包了自己的“强化学习小游戏”，该情况无需申请QPT授权以及更换个人代码仓库完整的开源协议。   
 2. 对QPT源代码进行了修改，尽管这些代码非恶意代码，但为了保证开发者和使用者权益和安全，在未取得QPT授权的情况下需要开源完整的源代码等LGPL协议中所要求的内容。

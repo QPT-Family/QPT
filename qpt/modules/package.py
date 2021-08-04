@@ -235,6 +235,10 @@ class QPTDependencyPackage(SubModule):
                                               version=qpt_version,
                                               no_dependent=True,
                                               to_module_env_path=True))
+        self.add_pack_opt(OnlineInstallWhlOpt(package="qpt",
+                                              version=qpt_version,
+                                              no_dependent=True,
+                                              to_module_env_path=True))
         self.add_pack_opt(OnlineInstallWhlOpt(package=kernel,
                                               no_dependent=False,
                                               to_module_env_path=True))

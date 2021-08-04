@@ -125,7 +125,7 @@ Options:
 
 #### Jetbrains 全家桶支持
 本项目开发所使用的IDE由Jetbrains支持。
-<div align=center><img alt="https://jb.gg/OpenSource" src="ext/img/jetbrains.png" width="400" /></div>
+<div align=center><img alt="https://jb.gg/OpenSource" src="ext/img/jetbrains.png" width="80" /></div>
 
 
 ### 开源协议

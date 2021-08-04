@@ -55,7 +55,7 @@ module = CEM(work_dir="./sample_program",                # [项目文件夹]待�
            # requirements_file="auto"                    # [依赖]此处可填入依赖文件路径，也可设置为auto自动搜索依赖
            # hidden_terminal=False                       # [终端窗口]设置为True后，运行时将不会展示黑色终端窗口  
            # interpreter_module=Python37()               # [跨版本编译]需要预先from qpt.modules.python_env import Python37
-                                                         # 好奇什么时候需要跨版本编译？可参考"进阶使用QPT"一节的《打包兼容性更强的Python解释器》
+                                                         # 好奇什么时候需要跨版本编译？可参考下方"进阶使用QPT"一节的《打包兼容性更强的Python解释器》
 # 开始打包
 module.make()
 ```
@@ -120,6 +120,13 @@ Options:
 1. 交互式语义分割标注软件 - [PaddleCV-SIG/iann](https://github.com/PaddleCV-SIG/iann)
 2. 景观健康效益辅助评估工具 - [JiehangXie/Landscape-Heath-Score](https://github.com/JiehangXie/Landscape-Heath-Score)
 3. 团子翻译器-OCR部分 - [PantsuDango/Dango-Translator](https://github.com/PantsuDango/Dango-Translator)
+
+### 社区支持
+
+#### Jetbrains 全家桶支持
+本项目开发所使用的IDE由Jetbrains支持。
+<div align=center><img alt="https://jb.gg/OpenSource" src="ext/img/jetbrains.png" width="400" /></div>
+
 
 ### 开源协议
 本项目使用GNU LESSER GENERAL PUBLIC LICENSE(LGPL)开源协议。  

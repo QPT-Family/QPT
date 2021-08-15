@@ -18,6 +18,7 @@ else:
 
 logger.setLevel(LEVEL)
 st_handler.setLevel(LEVEL)
+st_handler.terminator = ""
 
 # 设置标准输出流
 logger.addHandler(st_handler)
@@ -27,6 +28,7 @@ def set_logger_file(file_path):
     f_handler = logging.FileHandler(file_path, "w", encoding="utf-8")
     f_handler.setLevel(logging.DEBUG)
     f_handler.setFormatter(formatter)
+    f_handler.terminator = ""
     logger.addHandler(f_handler)
 
 
@@ -55,7 +57,7 @@ class BaseLogging:
         for msg in ERROR_SUMMARY:
             Logging.info(msg)
         Logging.info("-" * 10 + f"生成状态WARNING:{len(WARNING_SUMMARY)} ERROR:{len(ERROR_SUMMARY)}" + "-" * 10)
-        if WARNING_SUMMARY or ERROR_SUMMARY:
+        if ERROR_SUMMARY:
             return True
         else:
             return False
@@ -67,38 +69,60 @@ class BaseLogging:
 
 class LoggingColor(BaseLogging):
     @staticmethod
-    def info(msg: str):
-        logger.info("\033[34m" + msg + "\033[0m")
+    def info(msg: str, line_feed=True):
+        msg = "\033[34m" + msg + "\033[0m"
+        if line_feed:
+            msg += "\n"
+        logger.info(msg)
 
     @staticmethod
-    def debug(msg: str):
-        logger.debug("\033[35m" + msg + "\033[0m")
+    def debug(msg: str, line_feed=True):
+        msg = "\033[35m" + msg + "\033[0m"
+        if line_feed:
+            msg += "\n"
+        logger.debug(msg)
 
     @staticmethod
-    def warning(msg: str):
-        logger.warning("\033[33m" + msg + "\033[0m")
+    def warning(msg: str, line_feed=True):
+        msg = "\033[33m" + msg + "\033[0m"
+        WARNING_SUMMARY.append(f"{len(WARNING_SUMMARY)}|{msg}")
+        if line_feed:
+            msg += "\n"
+        logger.warning(msg)
 
     @staticmethod
-    def error(msg: str):
-        logger.error("\033[41m" + msg + "\033[0m")
+    def error(msg: str, line_feed=True):
+        msg = "\033[41m" + msg + "\033[0m"
+        ERROR_SUMMARY.append(f"{len(WARNING_SUMMARY)}|{msg}")
+        if line_feed:
+            msg += "\n"
+        logger.error(msg)
 
 
 class LoggingNoneColor(BaseLogging):
     @staticmethod
-    def info(msg: str):
+    def info(msg: str, line_feed=True):
+        if line_feed:
+            msg += "\n"
         logger.info(msg)
 
     @staticmethod
-    def debug(msg: str):
+    def debug(msg: str, line_feed=True):
+        if line_feed:
+            msg += "\n"
         logger.debug(msg)
 
     @staticmethod
-    def warning(msg: str):
+    def warning(msg: str, line_feed=True):
+        if line_feed:
+            msg += "\n"
         logger.warning(msg)
         WARNING_SUMMARY.append(f"{len(WARNING_SUMMARY)}|{msg}\n")
 
     @staticmethod
-    def error(msg: str):
+    def error(msg: str, line_feed=True):
+        if line_feed:
+            msg += "\n"
         logger.error(msg)
         ERROR_SUMMARY.append(f"{len(WARNING_SUMMARY)}|{msg}\n")
 
@@ -118,14 +142,14 @@ else:
 class TProgressBar:
     def __init__(self,
                  msg: str = "",
-                 max_len: int = 100,
-                 with_logging=True):
+                 max_len: int = 100):
         self.count = 0
         self.msg = msg
-        self.max_len = max_len
+        self.max_len = max_len - 1
         self.block = 20
         self.with_logging = True
-        print("", flush=True)
+        Logging.info("", line_feed=False)
+        Logging.flush()
 
     def step(self, add_start_info="", add_end_info=""):
         self.count += 1
@@ -133,10 +157,12 @@ class TProgressBar:
 
         block_str = "".join(['■'] * int(rate * self.block)).ljust(self.block, "□")
         block = f"{block_str}"
-        print("\r" + self.msg +
-              f"{self.count}/{self.max_len} {add_start_info} {block} {rate * 100:.2f}% " +
-              add_end_info,
-              end="",
-              flush=True)
+        Logging.info("\r" +
+                     self.msg +
+                     f"\r{self.count}/{self.max_len} {add_start_info} {block} {rate * 100:.2f}% " +
+                     add_end_info,
+                     line_feed=False)
+        Logging.flush()
         if self.count == self.max_len:
-            print("\n", end="", flush=True)
+            Logging.info("", line_feed=True)
+            Logging.flush()

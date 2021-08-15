@@ -10,7 +10,7 @@ from qpt.modules.base import SubModule, SubModuleOpt, TOP_LEVEL_REDUCE, LOW_LEVE
 from qpt.kernel.tools.interpreter import PIP
 from qpt.kernel.tools.qos import FileSerialize
 from qpt.kernel.tools.qlog import Logging
-from qpt.kernel.tools.qcode import search_packages_dist_info
+from qpt.kernel.tools.qcode import PythonPackages
 from qpt._compatibility import com_configs
 
 DOWN_PACKAGES_RELATIVE_PATH = "opt/packages"
@@ -150,7 +150,7 @@ class BatchInstallationOpt(SubModuleOpt):
     def act(self) -> None:
         if self.path is None:
             self.path = os.path.join(self.module_path, DOWN_PACKAGES_RELATIVE_PATH)
-        ready_list = search_packages_dist_info()[0].keys()
+        ready_list = PythonPackages.search_packages_dist_info()[0].keys()
         whl_list = [whl.split("-")[0] for whl in os.listdir(self.path) if whl.split("-")[0] not in ready_list]
         Logging.info(f"需要补充的安装包数量为：{len(whl_list)}")
         for whl_name in whl_list:
@@ -235,10 +235,10 @@ class QPTDependencyPackage(SubModule):
                                               version=qpt_version,
                                               no_dependent=True,
                                               to_module_env_path=True))
-        self.add_pack_opt(OnlineInstallWhlOpt(package="qpt",
-                                              version=qpt_version,
-                                              no_dependent=True,
-                                              to_module_env_path=True))
+        # self.add_pack_opt(OnlineInstallWhlOpt(package="qpt",
+        #                                       version=qpt_version,
+        #                                       no_dependent=True,
+        #                                       to_module_env_path=True))
         self.add_pack_opt(OnlineInstallWhlOpt(package=kernel,
                                               no_dependent=False,
                                               to_module_env_path=True))

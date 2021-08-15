@@ -62,6 +62,10 @@ def get_env_vars(work_dir="."):
     return env_vars
 
 
+def get_ignore_dirs():
+    d = [".idea", ".git", ".github", "venv"]
+    return d
+
 SITE_PACKAGE_PATH = req_site_packages_path()
 
 # QPT运行状态 Run/Debug

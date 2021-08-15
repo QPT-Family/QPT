@@ -142,8 +142,8 @@ class PTerminal(Terminal):
                                               stderr=subprocess.STDOUT,
                                               stdin=subprocess.PIPE,
                                               shell=True)
-        self.main_terminal.stdin.write(("set PATH=" + self._get_env_vars() + "\n").encode("gbk"))
-        self.main_terminal.stdin.flush()
+        prepare = "set PATH=" + self._get_env_vars()
+        self._shell_func()(prepare)
 
     def reset_terminal(self):
         self.close_terminal()
@@ -152,20 +152,28 @@ class PTerminal(Terminal):
     def close_terminal(self):
         self.main_terminal.terminate()
 
-    def shell(self, shell, callback: TerminalCallback = LoggingTerminalCallback()):
-        self.shell_func(callback)(shell)
-
-    def shell_func(self, callback: TerminalCallback = LoggingTerminalCallback()):
+    def _shell_func(self, callback: TerminalCallback = LoggingTerminalCallback()):
         # ToDo 实现Callback
         def closure(closure_shell):
             Logging.debug(f"SHELL: {closure_shell}")
             closure_shell += "&&echo GACT:DONE!||echo GACT:ERROR!\n"
             # 发送指令
-            self.main_terminal.stdin.write(closure_shell.encode("gbk"))
+            try:
+                final_shell = closure_shell.encode("gbk")
+            except Exception as e:
+                Logging.error("执行该指令时遇到解码问题，目前将采用兼容模式进行，原始报错如下：\n" + str(e))
+                final_shell = closure_shell.encode("gbk", errors="ignore")
+            self.main_terminal.stdin.write(final_shell)
             self.main_terminal.stdin.flush()
             callback.handle(self.main_terminal)
 
         return closure
+
+    def shell_func(self, callback: TerminalCallback = None):
+        self._shell_func(callback)
+
+    def shell(self, shell, callback: TerminalCallback = LoggingTerminalCallback()):
+        self.shell_func(callback)(shell)
 
 
 # class QTerminal(Terminal):

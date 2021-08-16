@@ -7,8 +7,8 @@ import os
 import ast
 from pip._internal.utils.misc import get_installed_distributions
 
-from qpt.sys_info import SITE_PACKAGE_PATH
-from qpt.sys_info import get_ignore_dirs
+from qpt.sys_info import SITE_PACKAGE_PATH, get_ignore_dirs
+from qpt.kernel.tools.qlog import Logging, TProgressBar
 
 PACKAGE_FLAG = ".dist-info"
 
@@ -93,17 +93,23 @@ class PythonPackages:
     @staticmethod
     def search_import_in_dir(path, lower=True):
         import_modules = set()
+        file_path_list = list()
         for root, dirs, files in os.walk(path):
             if not (os.path.basename(root) in get_ignore_dirs() or "site-packages" in root):
                 for file in files:
                     if os.path.splitext(file)[-1] == ".py":
                         file_path = os.path.join(root, file)
-                        with open(file_path, "r", encoding="utf-8") as f:
-                            import_module = PythonPackages.search_import_in_text(f.read())
-                            if import_module:
-                                if lower:
-                                    import_module = set([ipm.lower() for ipm in import_module])
-                                import_modules = import_modules.union(import_module)
+                        file_path_list.append(file_path)
+
+        tpb = TProgressBar("正在搜索依赖", max_len=len(file_path_list))
+        for file_path in file_path_list:
+            with open(file_path, "r", encoding="utf-8") as f:
+                import_module = PythonPackages.search_import_in_text(f.read())
+                if import_module:
+                    if lower:
+                        import_module = set([ipm.lower() for ipm in import_module])
+                    import_modules = import_modules.union(import_module)
+                tpb.step(add_end_info=f"对应文件:{file_path}")
         return import_modules
 
     @staticmethod

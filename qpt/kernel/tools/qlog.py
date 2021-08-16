@@ -155,7 +155,7 @@ class TProgressBar:
         self.count += 1
         rate = self.count / self.max_len
 
-        block_str = "".join(['■'] * int(rate * self.block)).ljust(self.block, "□")
+        block_str = "".join(['█'] * int(rate * self.block)).ljust(self.block, "█")
         block = f"{block_str}"
         Logging.info("\r" +
                      self.msg +

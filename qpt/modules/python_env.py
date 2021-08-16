@@ -124,8 +124,6 @@ class AutoPythonEnv(BasePythonEnv):
     def __init__(self, mode=DEFINE_PYTHON_ENV_MODE):
         import platform
         version = platform.python_version()
-        # ToDo 此处仅1.0a9.dev2使用！
-        Logging.warning(f"当前正在使用内部测试版1.0a9.dev2的兼容Python解释器")
         Logging.info(f"当前解释器版本为{version}，正在向QPT查询是否存在合适的Python镜像...")
         # 截断版本号，只保留两位
         version = "".join([v if version_index == 1 else v + "."

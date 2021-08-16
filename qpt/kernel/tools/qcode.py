@@ -145,9 +145,9 @@ class PythonPackages:
                     # 上升为主依赖并得到当前安装的版本号
                     requires[top_d] = install_dict.get(top_d)
         if return_dep:
-            return requires
-        else:
             return requires, dep
+        else:
+            return requires
 
 
 if __name__ == '__main__':

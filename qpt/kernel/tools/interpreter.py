@@ -3,11 +3,11 @@
 # Copyright belongs to the author.
 # Please indicate the source for reprinting.
 import os
-import sys
 
 from qpt.kernel.tools.qos import StdOutWrapper, dynamic_load_package, get_qpt_tmp_path
 from qpt.kernel.tools.qlog import clean_stout, Logging
 from qpt.kernel.tools.terminal import PTerminal, TerminalCallback, LoggingTerminalCallback
+from qpt.kernel.tools.qcode import PythonPackages
 
 TSINGHUA_PIP_SOURCE = "https://pypi.tuna.tsinghua.edu.cn/simple"
 BAIDU_PIP_SOURCE = "https://mirror.baidu.com/pypi/simple"
@@ -137,37 +137,10 @@ class PipTools:
                                opts=i_opts)
 
     def analyze_dependence(self, analyze_path, save_file_path=None, return_path=False):
-        from qpt.kernel.tools.pipreqs.pipreqs import make_requirements
-
         if save_file_path is None:
             save_file_path = os.path.join(analyze_path, "requirements_with_opt.txt")
 
-        # 获取pip给出的包信息
-        pip_freeze_out = list()
-        tmp_stout = StdOutWrapper(container=pip_freeze_out)
-        ori_stdout = sys.stdout
-        sys.stdout = tmp_stout
-        self.pip_local(["freeze"])
-        tmp_stout.flush()
-        sys.stdout = ori_stdout
-
-        with open(save_file_path, "w", encoding="utf-8") as req_file:
-            req_file.writelines(pip_freeze_out)
-
-        # 搜索py文件中import的依赖项
-        requirements_dict_search = make_requirements(analyze_path)
-        # 读取pip给出的依赖项
-        requirements_dict_pip = self.analyze_requirements_file(save_file_path)
-
-        # 以pip为基准匹配版本号
-        requirements = {"existent": "", "non-existent": ""}
-        for package in requirements_dict_pip:
-            if package in requirements_dict_search:
-                requirements["existent"] += package + "==" + requirements_dict_pip[package] + "\n"
-            elif package.lower() in requirements_dict_search:
-                requirements["existent"] += package + "==" + requirements_dict_pip[package.lower()] + "\n"
-            else:
-                requirements["non-existent"] += "# " + package + "\n"
+        requires, dep = PythonPackages.intelligent_analysis(analyze_path, return_dep=True)
 
         with open(save_file_path, "w", encoding="utf-8") as req_file:
             req_file.write("# Here is the list of packages automatically derived by QPT\n"
@@ -178,21 +151,28 @@ class PipTools:
                            "# ---------------------------------------------------------------------\n"
                            "# QPT Home:        https://github.com/GT-ZhangAcer/QPT\n"
                            "# ---------------------------------------------------------------------\n"
-                           "# \n")
-            req_file.write(requirements["existent"])
-            req_file.write(requirements["non-existent"])
+                           "# \n"
+                           "# -------------Mainly depends on package analysis results--------------\n\n")
+            temp_write = "\n# ----------------------Ignored dependent packages---------------------\n"
+            for require_name, require_version in requires.items():
+                req_file.write(f"{require_name}=={require_version}\n")
+                if dep[require_name]:
+                    temp_write += f"\n# -----Dependencies of {require_name}\n"
+                    for dep_name, dep_version in dep[require_name].items():
+                        if not dep_version:
+                            dep_version = ""
+                        temp_write += f"#{dep_name}{dep_version}\n"
+            req_file.write(temp_write)
 
-        # 供用户检查/修改
-        Logging.flush()
-        input(f"依赖分析完毕!\n"
-              f"已在\033[32m{os.path.abspath(save_file_path)}\033[0m 中创建了依赖列表\n"
-              f"Tips 1: 查看文件后可能需要关闭查看该文件的文本查看器，这样可以有效避免文件被占用\n"
-              f"Tips 2: 请务必检查上方文件中所写入的依赖列表情况，因为自动分析并不能保证程序依赖均可以被检出\n"
-              f"        若在执行EXE时提示:ImportError: No module named xxx 报错信息，请在该依赖文件中加入xxx或取消xxx前的 # 符号\n"
-              f"---------------------------------------------------------------------\n"
-              f"\033[41m请在检查/修改依赖文件后\033[0m在此处按下回车键继续...\n"
-              f"请键入指令[回车键 - 一次不行可以试试按两次]:_")
-
+        Logging.info(f"依赖分析完毕!\n"
+                     f"已在\033[32m{os.path.abspath(save_file_path)}\033[0m 中创建了依赖列表\n"
+                     f"Tips 1: 查看文件后可能需要关闭查看该文件的文本查看器，这样可以有效避免文件被占用\n"
+                     f"Tips 2: 请务必检查上方文件中所写入的依赖列表情况，因为自动分析并不能保证程序依赖均可以被检出\n"
+                     f"        若在执行EXE时提示:ImportError: No module named xxx 报错信息，请在该依赖文件中加入xxx或取消xxx前的 # 符号\n"
+                     f"---------------------------------------------------------------------\n"
+                     f"\033[41m请在检查/修改依赖文件后\033[0m在此处按下回车键继续...\n"
+                     f"请键入指令[回车键 - 一次不行可以试试按两次]:_", line_feed=False)
+        input()
         if return_path:
             return save_file_path
         else:

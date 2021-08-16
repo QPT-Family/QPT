@@ -317,8 +317,8 @@ class CreateExecutableModule:
 
         sys.stdout.flush()
         Logging.info("是否需要保留QPT在打包时产生的缓存文件？若不清空则可能会在下次使用QPT时复用缓存以提升打包速度")
-        Logging.flush()
-        clear_key = input("[保留(Y)/清空(N)]:_")
+        Logging.info("[保留(Y)/清空(N)]:_", line_feed=False)
+        clear_key = input()
         sys.stdout.flush()
         if clear_key.lower() == "n":
             clean_qpt_cache()

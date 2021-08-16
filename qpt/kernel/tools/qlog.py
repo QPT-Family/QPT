@@ -50,13 +50,13 @@ class BaseLogging:
         用于打印当前收到的警告和报错情况
         :return: 是否包含报错或警告
         """
-        Logging.info("-" * 10 + "WARNING SUMMARY" + "-" * 10)
+        Logging.info("-" * 10 + "WARNING SUMMARY")
         for msg in WARNING_SUMMARY:
             Logging.info(msg)
-        Logging.info("-" * 10 + "ERROR SUMMARY  " + "-" * 10)
+        Logging.info("-" * 10 + "ERROR SUMMARY  ")
         for msg in ERROR_SUMMARY:
             Logging.info(msg)
-        Logging.info("-" * 10 + f"生成状态WARNING:{len(WARNING_SUMMARY)} ERROR:{len(ERROR_SUMMARY)}" + "-" * 10)
+        Logging.info("-" * 10 + f"生成状态WARNING:{len(WARNING_SUMMARY)} ERROR:{len(ERROR_SUMMARY)}")
         if ERROR_SUMMARY:
             return True
         else:
@@ -172,5 +172,6 @@ class TProgressBar:
                          line_feed=False)
         Logging.flush()
         if self.count == self.max_len:
+            Logging.info("", line_feed=True)
             Logging.info("", line_feed=True)
             Logging.flush()

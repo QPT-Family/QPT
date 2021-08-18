@@ -20,7 +20,7 @@ SHELL_ACT = "&&echo GACT:DONE!||echo GACT:ERROR!\n"
 
 class TerminalCallback:
     def __init__(self):
-        pass
+        self.cache = ""
 
     def handle(self, terminal=None):
         """
@@ -72,13 +72,14 @@ class LoggingTerminalCallback(TerminalCallback):
                 if tag in msg:
                     break
                 if tag_id == len(TERMINAL_MSG_FITTER_TAG) - 1:
+                    self.cache += msg
                     Logging.debug(msg)
 
     def normal_func(self):
         Logging.debug("终端命令执行成功！")
 
     def error_func(self):
-        Logging.error("终端命令执行失败！")
+        Logging.error(f"在执行终端命令时检测到了失败，完整信息如下：\n{self.cache}")
 
 
 class Terminal:

@@ -7,7 +7,7 @@ import os
 import ast
 from pip._internal.utils.misc import get_installed_distributions
 
-from qpt.sys_info import SITE_PACKAGE_PATH, get_ignore_dirs
+from qpt.sys_info import SITE_PACKAGE_PATH, PYTHON_IGNORE_DIRS, IGNORE_PACKAGES
 from qpt.kernel.tools.qlog import Logging, TProgressBar
 
 PACKAGE_FLAG = ".dist-info"
@@ -22,6 +22,11 @@ class PythonPackages:
 
     @staticmethod
     def search_packages_dist_info(site_package_path=None):
+        """
+        获取对应site_package_path下所有Python包的版本号以及TopName
+        :param site_package_path:检索的路径
+        :return:所有包名与包版本字典、所有包import名与包名字典、所有包与其依赖的包版本字典所构成的字典
+        """
         # 获取依赖列表
         dep_pkg_dict = PythonPackages.search_dep()
 
@@ -58,6 +63,10 @@ class PythonPackages:
 
     @staticmethod
     def search_dep():
+        """
+        获取当前已安装的包以及其依赖
+        :return: 所有包与其依赖的包版本字典所构成的字典
+        """
         pkgs = get_installed_distributions()
         pkg_dict = dict()
         for pkg in pkgs:
@@ -79,6 +88,11 @@ class PythonPackages:
 
     @staticmethod
     def search_import_in_text(contents):
+        """
+        搜索对应文本中有那些符合的Import名
+        :param contents: 文本
+        :return: 模块名集合
+        """
         import_module = set()
         tree = ast.parse(contents)
         for node in ast.walk(tree):
@@ -92,10 +106,16 @@ class PythonPackages:
 
     @staticmethod
     def search_import_in_dir(path, lower=True):
+        """
+        在对应目录中搜索所有导入的Python模块
+        :param path: 路径
+        :param lower: 统一小写模块搜索结果
+        :return: 模块名集合
+        """
         import_modules = set()
         file_path_list = list()
         for root, dirs, files in os.walk(path):
-            if not (os.path.basename(root) in get_ignore_dirs() or "site-packages" in root):
+            if not (os.path.basename(root) in PYTHON_IGNORE_DIRS or "site-packages" in root):
                 for file in files:
                     if os.path.splitext(file)[-1] == ".py":
                         file_path = os.path.join(root, file)
@@ -113,19 +133,22 @@ class PythonPackages:
         return import_modules
 
     @staticmethod
-    def intelligent_analysis(path, return_dep=False):
+    def intelligent_analysis(path, return_all_info=False):
+        """
+        分析对应目录下所使用的Python包情况
+        :param path: 对应目录
+        :param return_all_info: 是否返回所有信息，默认只返回包名与包版本字典，为True后返回包名与依赖名+版本号的字典以及被忽略的Top依赖包
+        """
         # ToDo 以后加个参数，兼容非当前环境下的智能分析
-        install_dict, package_dict, dep = PythonPackages.search_packages_dist_info()
+        install_dict, top_dict, dep = PythonPackages.search_packages_dist_info()
         package_import = PythonPackages.search_import_in_dir(path)
 
         # 提取显式的依赖项
         sub_requires = dict()
         for package in package_import:
-            if package in package_dict and package not in ["virtualenv", "pip", "setuptools"]:
-                p_name = package_dict[package]
-                if package in ["virtualenv", "pip", "setuptools", "cpython"]:
-                    continue
-                if package in package_dict:
+            if package in top_dict and package not in IGNORE_PACKAGES:
+                p_name = top_dict[package]
+                if package in top_dict:
                     p_v = dep[p_name] if isinstance(dep[p_name], str) else install_dict[p_name]
                 else:
                     p_v = install_dict[p_name]
@@ -144,8 +167,19 @@ class PythonPackages:
                     requires.pop(sub_require)
                     # 上升为主依赖并得到当前安装的版本号
                     requires[top_d] = install_dict.get(top_d)
-        if return_dep:
-            return requires, dep
+
+        if return_all_info:
+            # 搜索非子依赖且pip中有安装的Python包
+            ignore_packages = dict()
+            top_dep_flatten = set(IGNORE_PACKAGES)
+            for top_dep in top_deps.values():
+                top_dep_flatten = top_dep_flatten.union(top_dep)
+            for install_package in install_dict:
+                # 若安装的Python包不在搜索结果中，且不属于子依赖，则加入返回列表
+                if install_package not in requires and install_package not in top_dep_flatten:
+                    ignore_packages[install_package] = install_dict[install_package]
+
+            return requires, dep, ignore_packages
         else:
             return requires
 
@@ -155,4 +189,5 @@ if __name__ == '__main__':
     print("当前环境下包安装情况以及对应表", PythonPackages.search_packages_dist_info())
     print("当前环境下包依赖情况", PythonPackages.search_dep())
     print("测试场景的依赖搜索情况", PythonPackages.search_import_in_dir(_test_dir))
-    print("最终搜索到的依赖情况：", PythonPackages.intelligent_analysis(_test_dir))
+    for _i in PythonPackages.intelligent_analysis(_test_dir, True):
+        print("分析情况：", _i)

@@ -62,9 +62,10 @@ def get_env_vars(work_dir="."):
     return env_vars
 
 
-def get_ignore_dirs():
-    d = [".idea", ".git", ".github", "venv"]
-    return d
+PYTHON_IGNORE_DIRS = [".idea", ".git", ".github", "venv"]
+
+# 被忽略的Python包
+IGNORE_PACKAGES = ["virtualenv", "pip", "setuptools", "cpython"]
 
 SITE_PACKAGE_PATH = req_site_packages_path()
 

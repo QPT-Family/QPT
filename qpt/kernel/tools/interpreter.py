@@ -140,7 +140,7 @@ class PipTools:
         if save_file_path is None:
             save_file_path = os.path.join(analyze_path, "requirements_with_opt.txt")
 
-        requires, dep = PythonPackages.intelligent_analysis(analyze_path, return_dep=True)
+        requires, dep, ignore_requires = PythonPackages.intelligent_analysis(analyze_path, return_all_info=True)
 
         with open(save_file_path, "w", encoding="utf-8") as req_file:
             req_file.write("# Here is the list of packages automatically derived by QPT\n"
@@ -153,7 +153,7 @@ class PipTools:
                            "# ---------------------------------------------------------------------\n"
                            "# \n"
                            "# -------------Mainly depends on package analysis results--------------\n\n")
-            temp_write = "\n# ----------------------Ignored dependent packages---------------------\n"
+            temp_write = "\n# ----------------------Ignored sub dependent packages---------------------\n"
             for require_name, require_version in requires.items():
                 req_file.write(f"{require_name}=={require_version}\n")
                 if dep[require_name]:
@@ -162,6 +162,10 @@ class PipTools:
                         if not dep_version:
                             dep_version = ""
                         temp_write += f"#{dep_name}{dep_version}\n"
+
+            req_file.write("# ----------------------Ignored dependent packages---------------------\n")
+            for ignore_require_name, ignore_require_version in ignore_requires.items():
+                req_file.write(f"#{ignore_require_name}=={ignore_require_version}\n")
             req_file.write(temp_write)
 
         Logging.info(f"依赖分析完毕!\n"

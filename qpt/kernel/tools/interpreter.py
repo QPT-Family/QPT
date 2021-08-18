@@ -163,7 +163,7 @@ class PipTools:
                             dep_version = ""
                         temp_write += f"#{dep_name}{dep_version}\n"
 
-            req_file.write("# ----------------------Ignored dependent packages---------------------\n")
+            req_file.write("\n# ----------------------Ignored dependent packages---------------------\n")
             for ignore_require_name, ignore_require_version in ignore_requires.items():
                 req_file.write(f"#{ignore_require_name}=={ignore_require_version}\n")
             req_file.write(temp_write)

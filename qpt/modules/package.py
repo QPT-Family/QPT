@@ -151,7 +151,9 @@ class BatchInstallationOpt(SubModuleOpt):
         if self.path is None:
             self.path = os.path.join(self.module_path, DOWN_PACKAGES_RELATIVE_PATH)
         ready_list = PythonPackages.search_packages_dist_info()[0].keys()
-        whl_list = [whl.split("-")[0] for whl in os.listdir(self.path) if whl.split("-")[0] not in ready_list]
+        whl_list = [whl.split("-")[0] for whl in os.listdir(self.path)
+                    if whl.split("-")[0] not in ready_list and
+                    whl.split("-")[0].lower().replace("_", "-") not in ready_list]
         Logging.info(f"需要补充的安装包数量为：{len(whl_list)}")
         for whl_name in whl_list:
             PIP.install_local_package(whl_name,

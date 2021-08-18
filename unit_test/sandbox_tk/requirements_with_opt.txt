@@ -5,22 +5,14 @@
 # QPT Home:        https://github.com/GT-ZhangAcer/QPT
 # ---------------------------------------------------------------------
 # 
-# astor
-# certifi
-# charset-normalizer
-# decorator
-# gast
-# idna
-# numpy
-# paddlepaddle
-# paddlepaddle-gpu
-# Pillow
-# protobuf
-# PyQt5
-# PyQt5-Qt5
-# PyQt5-sip
-# pywin32
-# requests
-# six
-# urllib3
-# wget
+# -------------Mainly depends on package analysis results--------------
+
+
+# ----------------------Ignored dependent packages---------------------
+#paddlepaddle==2.1.1
+#pyqt5==5.15.4
+#pyqt5-stubs==5.15.2.0
+#pywin32==301
+#wget==3.2
+
+# ----------------------Ignored sub dependent packages---------------------

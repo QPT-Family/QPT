@@ -23,8 +23,8 @@ def check_os():
 
 
 def req_site_packages_path():
-    import pip
-    site_package_path = os.path.dirname(os.path.dirname(pip.__file__))
+    import qpt
+    site_package_path = os.path.dirname(os.path.dirname(qpt.__file__))
     return site_package_path
 
 

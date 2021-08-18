@@ -432,7 +432,7 @@ class RunExecutableModule:
                                    module_path=self.base_dir,
                                    terminal=terminal)
                 sub_module.unpack()
-                unzip_bar.update_value(min((sub_module_id + 1) / len(modules) * 100, 99))
+                unzip_bar.update_value(min(sub_module_id / len(modules) * 100, 99))
                 unzip_bar.update_title(f"正在初始化：{sub_name}")
                 app.processEvents()
             unzip_bar.close()
@@ -440,7 +440,7 @@ class RunExecutableModule:
         else:
             auto_terminal = AutoTerminal()
             terminal = auto_terminal.shell_func()
-            tp = TProgressBar("初始化进度", max_len=len(modules) + 1)
+            tp = TProgressBar("初始化进度", max_len=len(modules) + 2)
             for sub_module_id, sub_name in enumerate(modules):
                 tp.step(add_end_info=f"{sub_name}部署中...")
                 sub_module = SubModule(sub_name)
@@ -453,8 +453,6 @@ class RunExecutableModule:
 
     def solve_work_dir(self):
         # ToDo 加个Lock 彻底去除非Python的环境变量
-        # change dir
-        os.chdir(self.work_dir)
         # Set Sys ENV
         sys.path.append(self.work_dir)
         sys.path.append(os.path.abspath("./Python/Lib/site-packages"))
@@ -467,6 +465,9 @@ class RunExecutableModule:
         env_vars = get_env_vars(self.work_dir)
         for k, v in env_vars.items():
             os.environ[k] = v
+
+        # change dir
+        os.chdir(self.work_dir)
 
     def run(self):
         # 设置工作目录

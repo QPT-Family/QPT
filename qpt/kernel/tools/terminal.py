@@ -158,7 +158,7 @@ class PTerminal(Terminal):
         # ToDo 实现Callback
         def closure(closure_shell):
             Logging.debug(f"SHELL: {closure_shell}")
-            closure_shell += "&&echo GACT:DONE!||echo GACT:ERROR!\n"
+            closure_shell += "&&echo GACT:DONE!||echo GACT:ERROR!\r\n"
             # 发送指令
             try:
                 final_shell = closure_shell.encode("gb18030")

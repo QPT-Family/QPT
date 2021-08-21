@@ -28,7 +28,7 @@ class PIPTerminal(PTerminal):
                 closure_shell = "".join(tmp)
             closure_shell = self.head + closure_shell
             Logging.debug(f"SHELL: {closure_shell}")
-            closure_shell += "&&echo GACT:DONE!||echo GACT:ERROR!\n"
+            closure_shell += "&&echo GACT:DONE!||echo GACT:ERROR!\r\n"
             # 发送指令
             try:
                 final_shell = closure_shell.encode("gb18030")

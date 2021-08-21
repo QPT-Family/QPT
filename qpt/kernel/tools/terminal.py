@@ -64,7 +64,7 @@ class LoggingTerminalCallback(TerminalCallback):
             elif line == b'GACT:ERROR!\r\n':
                 self.error_func()
                 break
-            msg = line.decode('gbk').strip("b'").strip("\n").strip(SHELL_ACT)
+            msg = line.decode('gb18030', errors="ignore").strip("b'").strip("\n").strip(SHELL_ACT)
             if msg == "\r":
                 continue
 
@@ -80,6 +80,7 @@ class LoggingTerminalCallback(TerminalCallback):
 
     def error_func(self):
         Logging.error(f"在执行终端命令时检测到了失败，完整信息如下：\n{self.cache}")
+        self.cache = ""
 
 
 class Terminal:
@@ -160,12 +161,15 @@ class PTerminal(Terminal):
             closure_shell += "&&echo GACT:DONE!||echo GACT:ERROR!\n"
             # 发送指令
             try:
-                final_shell = closure_shell.encode("gbk")
+                final_shell = closure_shell.encode("gb18030")
             except Exception as e:
                 Logging.error("执行该指令时遇到解码问题，目前将采用兼容模式进行，原始报错如下：\n" + str(e))
-                final_shell = closure_shell.encode("gbk", errors="ignore")
+                final_shell = closure_shell.encode("gb18030", errors="ignore")
             self.main_terminal.stdin.write(final_shell)
-            self.main_terminal.stdin.flush()
+            try:
+                self.main_terminal.stdin.flush()
+            except Exception as e:
+                Logging.error(str(e))
             callback.handle(self.main_terminal)
 
         return closure

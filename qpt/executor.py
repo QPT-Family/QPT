@@ -14,6 +14,7 @@ import tempfile
 from typing import List
 
 import qpt
+from qpt.version import version as qpt_v
 from qpt._compatibility import com_configs
 from qpt.modules.base import SubModule
 from qpt.modules.python_env import BasePythonEnv, AutoPythonEnv
@@ -107,8 +108,7 @@ class CreateExecutableModule:
         # 额外的成员变量
         self.resources_path = os.path.join(self.module_path, "resources")
         self.config_path = os.path.join(self.module_path, "configs")
-        self.config_file_path = os.path.join(self.module_path, "configs", "configs.gt")
-        self.dependent_file_path = os.path.join(self.module_path, "configs", "dependent.gt")
+        self.config_file_path = os.path.join(self.config_path, "configs.gt")
         self.lib_package_path = os.path.join(self.interpreter_path,
                                              com_configs["RELATIVE_INTERPRETER_SITE_PACKAGES_PATH"])
 
@@ -336,7 +336,6 @@ class RunExecutableModule:
         self.base_dir = os.path.abspath(module_path)
         self.config_path = os.path.join(self.base_dir, "configs")
         self.config_file_path = os.path.join(self.base_dir, "configs", "configs.gt")
-        self.dependent_file_path = os.path.join(self.base_dir, "configs", "dependent.gt")
         self.work_dir = os.path.join(self.base_dir, "resources")
         self.interpreter_path = os.path.join(self.base_dir, "Python")
 
@@ -355,6 +354,9 @@ class RunExecutableModule:
 
         # 系统信息
         check_all()
+
+        # 软件信息
+        Logging.info(f"QPT Runtime版本号为{qpt_v}，若无法使用该程序，可向程序发布者或GitHub: QPT-Family/QPT提交issue寻求帮助")
 
         # 强制本地PIP
         set_default_pip_lib(self.interpreter_path)
@@ -385,8 +387,11 @@ class RunExecutableModule:
             Logging.info("程序已停止")
             exit(1)
 
-        with open(self.config_file_path, "r", encoding="utf-8") as config_file:
-            self.configs = eval(config_file.read())
+        try:
+            with open(self.config_file_path, "r", encoding="utf-8") as config_file:
+                self.configs = eval(config_file.read())
+        except Exception as e:
+            Logging.error("请检查杀毒软件、防火墙等限制策略，当前程序无法正常访问Config.gt文件，完整报错如下：\n" + str(e))
 
         # 获取GUI选项
         self.hidden_terminal = self.configs["hidden_terminal"]

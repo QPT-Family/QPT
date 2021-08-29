@@ -193,8 +193,6 @@ class CreateExecutableModule:
             self.terminal = AutoTerminal()
             modules = self.sub_modules
             terminal = self.terminal.shell_func()
-        # 依靠优先级进行排序
-        modules.sort(key=lambda m: m.level, reverse=True)
         for sub in modules:
             # ToDO设置序列化路径
             sub._module_path = self.module_path
@@ -214,6 +212,9 @@ class CreateExecutableModule:
 
     def make(self):
         # 打印sub module信息
+        # 依靠优先级进行排序
+        self.lazy_modules.sort(key=lambda m: m.level, reverse=True)
+        self.sub_modules.sort(key=lambda m: m.level, reverse=True)
         self.print_details()
 
         # 解析子模块

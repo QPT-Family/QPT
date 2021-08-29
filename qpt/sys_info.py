@@ -5,6 +5,8 @@
 
 import platform
 import os
+from distutils.sysconfig import get_python_lib
+
 from qpt.kernel.tools.qlog import Logging
 
 
@@ -23,8 +25,7 @@ def check_os():
 
 
 def req_site_packages_path():
-    import qpt
-    site_package_path = os.path.dirname(os.path.dirname(qpt.__file__))
+    site_package_path = os.path.abspath(get_python_lib())
     return site_package_path
 
 

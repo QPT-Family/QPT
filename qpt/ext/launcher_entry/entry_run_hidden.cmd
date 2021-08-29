@@ -1,3 +1,4 @@
+chcp 65001
 set QPT_COLOR=False
 set QPT_MODE=Run
 cls

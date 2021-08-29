@@ -91,8 +91,8 @@ class LocalInstallWhlOpt(SubModuleOpt):
             self.package = "-r " + FileSerialize.serialize2file(self.package)
         if self.opts is None:
             self.opts = ""
-        # self.opts += "--target " + os.path.join(self.interpreter_path,
-        #                                         com_configs["RELATIVE_INTERPRETER_SITE_PACKAGES_PATH"])
+        self.opts += "--target " + os.path.join(self.interpreter_path,
+                                                com_configs["RELATIVE_INTERPRETER_SITE_PACKAGES_PATH"])
         PIP.install_local_package(self.package,
                                   version=self.version,
                                   whl_dir=os.path.join(self.module_path, DOWN_PACKAGES_RELATIVE_PATH),

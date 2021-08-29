@@ -57,6 +57,9 @@ class PythonPackages:
                         # 兼容Linux
                         if "/" in top:
                             top = top.split("/")[-1]
+                        if "~" in top:
+                            Logging.warning(f"依赖搜索时遇到阻碍，当前系统限制了文件名长度，失败的包：{top}")
+                            continue
                         tops_dist[top.strip("\n").lower()] = name
                 packages_dist[name] = version
         return packages_dist, tops_dist, dep_pkg_dict
@@ -149,9 +152,9 @@ class PythonPackages:
             if package in top_dict and package not in IGNORE_PACKAGES:
                 p_name = top_dict[package]
                 if package in top_dict:
-                    p_v = dep[p_name] if isinstance(dep[p_name], str) else install_dict[p_name]
+                    p_v = dep.get(p_name) if isinstance(dep.get(p_name), str) else install_dict.get(p_name)
                 else:
-                    p_v = install_dict[p_name]
+                    p_v = install_dict.get(p_name)
                 sub_requires[p_name] = p_v
 
         # 向顶部依赖进化

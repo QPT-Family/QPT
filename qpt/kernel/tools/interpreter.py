@@ -28,9 +28,18 @@ class PIPTerminal(PTerminal):
                 closure_shell = "".join(tmp)
             closure_shell = self.head + closure_shell
             Logging.debug(f"SHELL: {closure_shell}")
-            closure_shell += "&&echo GACT:DONE!||echo GACT:ERROR!\n"
-            self.main_terminal.stdin.write(closure_shell.encode("gbk"))
-            self.main_terminal.stdin.flush()
+            closure_shell += "&&echo GACT:DONE!||echo GACT:ERROR!\r\n"
+            # 发送指令
+            try:
+                final_shell = closure_shell.encode("utf-8")
+            except Exception as e:
+                Logging.error("执行该指令时遇到解码问题，目前将采用兼容模式进行，原始报错如下：\n" + str(e))
+                final_shell = closure_shell.encode("utf-8", errors="ignore")
+            self.main_terminal.stdin.write(final_shell)
+            try:
+                self.main_terminal.stdin.flush()
+            except Exception as e:
+                Logging.error(str(e))
             callback.handle(self.main_terminal)
 
         return closure

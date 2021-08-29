@@ -9,9 +9,8 @@ from qpt.executor import CreateExecutableModule
 from qpt.modules.package import ONLINE_DEPLOY_MODE
 from qpt.modules.python_env import Python37, Python38, Python39
 
-from qpt.kernel.tools.interpreter import set_default_pip_source
 
-
+# from qpt.kernel.tools.interpreter import set_default_pip_source
 # set_default_pip_source("https://mirror.baidu.com/pypi/simple")
 
 class LogTest(unittest.TestCase):

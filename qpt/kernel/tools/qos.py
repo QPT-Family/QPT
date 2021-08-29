@@ -7,8 +7,24 @@ import io
 from importlib import util
 
 from qpt.kernel.tools.qlog import Logging, TProgressBar
+from qpt.version import version
 
-TMP_BASE_PATH = tempfile.gettempdir()
+
+def check_chinese_char(text):
+    """
+    判断是否包含中文，避免来自部分内鬼C++底层的Python包无缘无故报错
+    :param text: 字符串
+    :return: 是否包含
+    """
+    return not all(ord(char) < 128 for char in text)
+
+
+TMP_BASE_PATH = os.path.join(tempfile.gettempdir(), f"QPT_Cache_V/{version}")
+# Check User name is chinese
+if check_chinese_char(TMP_BASE_PATH) or " " in TMP_BASE_PATH:
+    TMP_BASE_PATH = "C:/q_tmp"
+    Logging.warning(f"当前系统的用户名中包含中文/空格等可能会对程序造成异常的字符，现已默认QPT临时目录为{TMP_BASE_PATH}")
+    os.makedirs(TMP_BASE_PATH, exist_ok=True)
 
 
 def dynamic_load_package(packages_name, lib_packages_path):
@@ -42,6 +58,14 @@ def set_qpt_env_var(path):
 
 
 def download(url, file_name, path=None, clean=False):
+    """
+    下载指定文件至目录
+    :param url: 下载的URL
+    :param file_name: 保存的文件名
+    :param path: 保存路径
+    :param clean: 是否情况旧的下载数据
+    :return: 1代表全新数据，0代表使用缓存
+    """
     import wget
     if not os.path.exists(path):
         os.makedirs(path)
@@ -49,12 +73,15 @@ def download(url, file_name, path=None, clean=False):
     if not os.path.exists(file_path) or clean:
         try:
             wget.download(url, file_path)
+            return 1
         except Exception as e:
             Logging.error(f"无法下载文件，请检查网络是否可以连接以下链接\n"
                           f"{url}\n"
                           f"若该文件由QPT提供，请升级QPT版本，若版本升级后仍未解决可在以下地址提交issue反馈该情况\n"
                           f"https://github.com/GT-ZhangAcer/QPT/issues")
             raise Exception("文件下载失败，报错如下：" + str(e))
+    else:
+        return 0
 
 
 def get_qpt_tmp_path(dir_name="Cache", clean=False):
@@ -64,7 +91,7 @@ def get_qpt_tmp_path(dir_name="Cache", clean=False):
     :param clean: 是否强制清空目录
     :return: 目录路径
     """
-    dir_path = os.path.join(TMP_BASE_PATH, "QPT_Cache", dir_name)
+    dir_path = os.path.join(TMP_BASE_PATH, dir_name)
     if os.path.exists(dir_path) and clean:
         shutil.rmtree(dir_path)
         os.makedirs(dir_path, exist_ok=True)
@@ -74,8 +101,7 @@ def get_qpt_tmp_path(dir_name="Cache", clean=False):
 
 
 def clean_qpt_cache():
-    base_path = tempfile.gettempdir()
-    dir_path = os.path.join(base_path, "QPT_Cache")
+    dir_path = TMP_BASE_PATH
     shutil.rmtree(dir_path)
 
 
@@ -128,7 +154,12 @@ def copytree(src, dst, ignore_dirs: list = None, ignore_files: list = None):
     if ignore_dirs is None:
         rel_ignore_dirs = list()
     else:
-        rel_ignore_dirs = [os.path.relpath(os.path.abspath(d), src) for d in ignore_dirs]
+        rel_ignore_dirs = list()
+        for d in ignore_dirs:
+            try:
+                rel_ignore_dirs.append(os.path.relpath(os.path.abspath(d), src))
+            except ValueError:
+                continue
     if ignore_files is None:
         ignore_files = list()
     else:
@@ -163,18 +194,9 @@ def copytree(src, dst, ignore_dirs: list = None, ignore_files: list = None):
             progressbar.step()
 
 
-def check_chinese_char(text):
-    """
-    判断是否包含中文，避免来自部分内鬼C++底层的Python包无缘无故报错
-    :param text: 字符串
-    :return: 是否包含
-    """
-    return not all(ord(char) < 128 for char in text)
-
-
 class FileSerialize:
     def __init__(self, file_path):
-        with open(file_path, "r", encoding="utf-8")as file:
+        with open(file_path, "r", encoding="utf-8") as file:
             self._data = file.read()
 
     def get_serialize_data(self):
@@ -187,11 +209,3 @@ class FileSerialize:
         with open(file_path, "w", encoding="utf-8") as file:
             file.write(data)
         return file_path
-
-
-# Check User name is chinese
-tmp = get_qpt_tmp_path()
-if check_chinese_char(tmp) or " " in tmp:
-    TMP_BASE_PATH = "C:/q_tmp"
-    Logging.warning(f"当前系统的用户名中包含中文/空格等可能会对程序造成异常的字符，现已默认QPT临时目录为{TMP_BASE_PATH}")
-    os.makedirs(TMP_BASE_PATH, exist_ok=True)

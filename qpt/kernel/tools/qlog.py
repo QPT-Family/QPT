@@ -45,7 +45,7 @@ ERROR_SUMMARY = list()
 
 class BaseLogging:
     @staticmethod
-    def final():
+    def final(clear=True):
         """
         用于打印当前收到的警告和报错情况
         :return: 是否包含报错或警告
@@ -57,6 +57,9 @@ class BaseLogging:
         for msg in ERROR_SUMMARY:
             Logging.info(msg)
         Logging.info("-" * 10 + f"生成状态WARNING:{len(WARNING_SUMMARY)} ERROR:{len(ERROR_SUMMARY)}")
+        if clear:
+            WARNING_SUMMARY.clear()
+            ERROR_SUMMARY.clear()
         if ERROR_SUMMARY:
             return True
         else:

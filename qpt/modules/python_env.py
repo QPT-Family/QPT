@@ -3,9 +3,8 @@ import sys
 import zipfile
 
 from qpt.modules.base import SubModule, SubModuleOpt, TOP_LEVEL
-from qpt.modules.package import set_default_package_for_python_version
 from qpt.kernel.tools.qlog import Logging
-from qpt.kernel.tools.qos import download, get_qpt_tmp_path
+from qpt.kernel.tools.qos import download, get_qpt_tmp_path, copytree
 from qpt._compatibility import com_configs
 
 """
@@ -46,12 +45,19 @@ class PackPythonEnvOpt(SubModuleOpt):
     def act(self) -> None:
         if self.mode == PYTHON_ENV_MODE_SPEED_FIRST:
             dir_name = get_qpt_tmp_path(os.path.join("Python", "".join(list(filter(str.isdigit, self.url)))[-10:]))
+            cache_path = get_qpt_tmp_path(
+                os.path.join("Python", "".join(list(filter(str.isdigit, self.url)))[-10:]
+                             , "unzip"))
             Logging.info(f"正在加载Python解释器原文件至{dir_name}")
-            download(self.url, "Python.zip", dir_name)
-            zip_path = os.path.join(dir_name, "Python.zip")
-            # 解压至输出文件夹
-            with zipfile.ZipFile(zip_path) as zip_obj:
-                zip_obj.extractall(os.path.join(self.module_path, "Python"), pwd="gt_qpt".encode("utf-8"))
+            d_result = download(self.url, "Python.zip", dir_name)
+            if d_result:
+                zip_path = os.path.join(dir_name, "Python.zip")
+                # 解压至输出文件夹
+                with zipfile.ZipFile(zip_path) as zip_obj:
+                    zip_obj.extractall(cache_path, pwd="gt_qpt".encode("utf-8"))
+            copytree(cache_path, os.path.join(self.module_path, "Python"))
+
+        # ToDo 后续支持
         elif self.mode == PYTHON_ENV_MODE_PACKAGE_VOLUME_FIRST:
             Logging.info(f"正在加载Python解释器原文件")
             download(self.url, "Python.zip", self.module_path)

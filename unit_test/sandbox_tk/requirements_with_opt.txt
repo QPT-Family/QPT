@@ -9,10 +9,12 @@
 
 
 # ----------------------Ignored dependent packages---------------------
-#paddlepaddle==2.1.1
+#coverage==5.5
+#paddlepaddle==2.1.2
+#pyinstaller==4.5.1
 #pyqt5==5.15.4
 #pyqt5-stubs==5.15.2.0
 #pywin32==301
-#wget==3.2
+#qpt==1.0b1.dev4
 
 # ----------------------Ignored sub dependent packages---------------------

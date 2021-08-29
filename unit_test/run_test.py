@@ -15,6 +15,7 @@ from qpt.modules.python_env import Python37, Python38, Python39
 
 class LogTest(unittest.TestCase):
     def test_module_m(self):
+        # 流程验证
         module = CreateExecutableModule(work_dir="./sandbox_m",
                                         launcher_py_path="./sandbox_m/run.py",
                                         save_path=f"./unit_out/{sys._getframe().f_code.co_name}",
@@ -23,6 +24,7 @@ class LogTest(unittest.TestCase):
                                         hidden_terminal=False)
         module.make()
 
+    # 验证no debug
     def test_module_m_not_debug(self):
         module = CreateExecutableModule(work_dir="./sandbox_m",
                                         launcher_py_path="./sandbox_m/run.py",
@@ -33,6 +35,7 @@ class LogTest(unittest.TestCase):
         module.make()
 
     def test_module_m_gui(self):
+        # GUI流程验证
         module = CreateExecutableModule(work_dir="./sandbox_m",
                                         launcher_py_path="./sandbox_m/run.py",
                                         save_path=f"./unit_out/{sys._getframe().f_code.co_name}",

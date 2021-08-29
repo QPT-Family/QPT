@@ -19,6 +19,15 @@ class LogTest(unittest.TestCase):
                                         launcher_py_path="./sandbox_m/run.py",
                                         save_path=f"./unit_out/{sys._getframe().f_code.co_name}",
                                         requirements_file="sandbox_m/requirements_with_opt.txt",
+                                        with_debug=True,
+                                        hidden_terminal=False)
+        module.make()
+
+    def test_module_m_not_debug(self):
+        module = CreateExecutableModule(work_dir="./sandbox_m",
+                                        launcher_py_path="./sandbox_m/run.py",
+                                        save_path=f"./unit_out/{sys._getframe().f_code.co_name}",
+                                        requirements_file="sandbox_m/requirements_with_opt.txt",
                                         with_debug=False,
                                         hidden_terminal=False)
         module.make()

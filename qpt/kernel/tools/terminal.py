@@ -64,7 +64,7 @@ class LoggingTerminalCallback(TerminalCallback):
             elif line == b'GACT:ERROR!\r\n':
                 self.error_func()
                 break
-            msg = line.decode('gb18030', errors="ignore").strip("b'").strip("\n").strip(SHELL_ACT)
+            msg = line.decode('utf-8', errors="ignore").strip("b'").strip("\n").strip(SHELL_ACT)
             if msg == "\r":
                 continue
 

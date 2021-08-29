@@ -91,7 +91,7 @@ class LocalInstallWhlOpt(SubModuleOpt):
             self.package = "-r " + FileSerialize.serialize2file(self.package)
         if self.opts is None:
             self.opts = ""
-        self.opts += "--target " + SITE_PACKAGE_PATH
+        # self.opts += "--target " + SITE_PACKAGE_PATH
         PIP.install_local_package(self.package,
                                   version=self.version,
                                   whl_dir=os.path.join(self.module_path, DOWN_PACKAGES_RELATIVE_PATH),
@@ -128,7 +128,7 @@ class OnlineInstallWhlOpt(SubModuleOpt):
         if self.to_module_env:
             if not self.opts:
                 self.opts = ""
-            self.opts += "--target " + SITE_PACKAGE_PATH
+            # self.opts += "--target " + SITE_PACKAGE_PATH
             if self.to_python_env_version:
                 self.opts += f" --python-version {self.to_python_env_version} --only-binary :all:"
         PIP.pip_package_shell(self.package,

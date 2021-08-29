@@ -25,7 +25,7 @@
 - [ ] sys_info更改为sys_swap并增加warmup和mem
 - [ ] Debug状态文件删除，借助环境变量统一在sys_info注册
 - [ ] 增加进程锁
-
+- [ ] 加个网络链接测试，增加链接池
 ## Other
 - [ ] 增加跨应用CLI
 - [ ] Pyd支持

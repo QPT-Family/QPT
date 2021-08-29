@@ -6,12 +6,12 @@
 import os
 
 from qpt.version import version as qpt_version
+from qpt.sys_info import SITE_PACKAGE_PATH
 from qpt.modules.base import SubModule, SubModuleOpt, TOP_LEVEL_REDUCE, LOW_LEVEL
 from qpt.kernel.tools.interpreter import PIP
 from qpt.kernel.tools.qos import FileSerialize
 from qpt.kernel.tools.qlog import Logging
 from qpt.kernel.tools.qcode import PythonPackages
-from qpt._compatibility import com_configs
 
 DOWN_PACKAGES_RELATIVE_PATH = "opt/packages"
 
@@ -91,8 +91,7 @@ class LocalInstallWhlOpt(SubModuleOpt):
             self.package = "-r " + FileSerialize.serialize2file(self.package)
         if self.opts is None:
             self.opts = ""
-        # self.opts += "--target " + os.path.join(self.interpreter_path,
-        #                                         com_configs["RELATIVE_INTERPRETER_SITE_PACKAGES_PATH"])
+        self.opts += "--target " + SITE_PACKAGE_PATH
         PIP.install_local_package(self.package,
                                   version=self.version,
                                   whl_dir=os.path.join(self.module_path, DOWN_PACKAGES_RELATIVE_PATH),
@@ -129,9 +128,7 @@ class OnlineInstallWhlOpt(SubModuleOpt):
         if self.to_module_env:
             if not self.opts:
                 self.opts = ""
-            self.opts += "--target " + os.path.abspath(os.path.join(self.interpreter_path,
-                                                                    com_configs[
-                                                                        "RELATIVE_INTERPRETER_SITE_PACKAGES_PATH"]))
+            self.opts += "--target " + SITE_PACKAGE_PATH
             if self.to_python_env_version:
                 self.opts += f" --python-version {self.to_python_env_version} --only-binary :all:"
         PIP.pip_package_shell(self.package,

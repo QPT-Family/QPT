@@ -25,9 +25,10 @@ from qpt.modules.auto_requirements import AutoRequirementsPackage
 
 from qpt.kernel.tools.qlog import Logging, TProgressBar, set_logger_file
 from qpt.kernel.tools.qos import clean_qpt_cache, copytree, check_chinese_char, StdOutLoggerWrapper, add_ua
-from qpt.kernel.tools.terminal import AutoTerminal
-from qpt.kernel.tools.interpreter import set_default_pip_lib
+from qpt.kernel.tools.qterminal import AutoTerminal
+from qpt.kernel.tools.qinterpreter import set_default_pip_lib
 from qpt.sys_info import QPT_MODE, check_all, get_env_vars, CheckRun
+from qpt.kernel.tools.qpe import make_icon
 
 __all__ = ["CreateExecutableModule", "RunExecutableModule"]
 
@@ -39,12 +40,10 @@ class CreateExecutableModule:
                  save_path,
                  ignore_dirs: list = None,
                  requirements_file="auto",
+                 icon=None,
                  deploy_mode=DEFAULT_DEPLOY_MODE,
                  sub_modules: List[SubModule] = None,
                  interpreter_module: BasePythonEnv = None,
-                 module_name="未命名模型",
-                 version="未知版本号",
-                 author="未知作者",
                  hidden_terminal: bool = False,
                  with_debug: bool = False):
         self.with_debug = with_debug
@@ -73,6 +72,8 @@ class CreateExecutableModule:
         if ignore_dirs is None:
             self.ignore_dirs = list()
 
+        self.icon_path = icon
+
         # 创建基本环境目录
         if os.path.exists(self.save_path):
             if os.path.exists(self.module_path):
@@ -96,9 +97,6 @@ class CreateExecutableModule:
         self.configs = dict()
         self.configs["launcher_py_path"] = self.launcher_py_path
         self.configs["hidden_terminal"] = hidden_terminal
-        self.configs["module_name"] = module_name
-        self.configs["author"] = author
-        self.configs["version"] = version
         self.configs["lazy_module"] = list()
         self.configs["sub_module"] = list()
         self.configs["local_uid"] = base64.b64encode((os.path.abspath(sys.executable) + "|" +
@@ -287,6 +285,10 @@ class CreateExecutableModule:
         if os.path.exists(compatibility_mode_file):
             os.rename(compatibility_mode_file,
                       os.path.join(self.module_path, "使用兼容模式运行.cmd"))
+        # 修改icon
+        if self.icon_path:
+            make_icon(self.icon_path, os.path.join(self.module_path, "启动程序.exe"))
+            make_icon(self.icon_path, os.path.join(self.debug_path, "Debug.exe"))
 
         # 重命名启动器文件
         launcher_file = os.path.join(self.module_path, "Main.exe")
@@ -375,8 +377,8 @@ class RunExecutableModule:
                                       f"警告！当前路径↑中包含中文或空格，部分软件包将无法运行，强烈建议您修改相关的文件夹名，\n"
                                       f"---------------------------------------\n"
                                       f"不符合规范的路径如下：\n"
-                                      f"C:/GT真菜/xxx/yyy      -   ！“真菜”为中文\n"
-                                      f"C:/zzz/GT真 菜/yyy     -   ！“GT真 菜”中“真”字后带有空格\n"
+                                      f"C:/GT真菜/xxx/yyy\r\r！“真菜”为中文\n"
+                                      f"C:/zzz/GT真 菜/yyy\r\r！“GT真 菜”中“真”字后带有空格\n"
                                       f"---------------------------------------\n"
                                       f"符合规范的路径如下：\n"
                                       f"C:/hello/xxx/yyy\n"

@@ -52,10 +52,11 @@ from qpt.executor import CreateExecutableModule as CEM
 module = CEM(work_dir="./sample_program",                # [项目文件夹]待打包的目录，并且该目录下需要有↓下方提到的py文件
              launcher_py_path="./sample_program/run.py", # [主程序文件]用户启动EXE文件后，QPT要执行的py文件
              save_path="./out")                          # [输出目录]打包后相关文件的输出目录
-           # requirements_file="auto"                    # [依赖]此处可填入依赖文件路径，也可设置为auto自动搜索依赖
+           # requirements_file="auto"                    # [Python依赖]此处可填入依赖文件路径，也可设置为auto自动搜索依赖
            # hidden_terminal=False                       # [终端窗口]设置为True后，运行时将不会展示黑色终端窗口  
            # interpreter_module=Python37()               # [跨版本编译]需要预先from qpt.modules.python_env import Python37
                                                          # 好奇什么时候需要跨版本编译？可参考下方"进阶使用QPT"一节的《打包兼容性更强的Python解释器》
+           # icon="your_ico.ico"                         # [自定义图标文件]支持将exe文件设置为ico/JPG/PNG等格式的自定义图标
 # 开始打包
 module.make()
 ```
@@ -68,16 +69,17 @@ module.make()
 完整命令列表可使用`qpt --help`获取：
 ```bash
 Options:
-  -f, --folder TEXT     待打包的文件夹路径，该目录也应当为整个项目的根目录或工作目录，否则可能会导致出现找不到模块等Python基础
-                        报错。  [required]
-  -p, --py TEXT         待打包的主要Py脚本文件所在的路径，例如要yyy/xxx.py中xxx.py是需要打包的主要Python文件
-                        ，那么该处填写xxx.py即可。  [required]
-  -s, --save TEXT       打包后文件保存的路径。  [required]
-  -r, --require TEXT    自动检测软件包依赖，填写auto后将会自动查找待打包的文件夹路径中所有py文件的import使用情况，最终生
-                        成requirements文件
+  -f, --folder TEXT     [项目文件夹]待打包的文件夹路径，该目录也应当为整个项目的根目录或工作目录，否则可能会导致出现找不到模块等P
+                        ython基础报错。  [required]
+  -p, --py TEXT         [主程序文件]待打包的主要Py脚本文件所在的路径，例如要yyy/xxx.py中xxx.py是需要打包的主要P
+                        ython文件，那么该处填写xxx.py即可。  [required]
+  -s, --save TEXT       [输出目录]打包后文件保存的路径。  [required]
+  -r, --require TEXT    [Python依赖]自动检测软件包依赖，填写auto后将会自动查找待打包的文件夹路径中所有py文件的impo
+                        rt使用情况，最终生成requirements文件
                         当然，也可传入requirements.txt文件路径，这样即可指定依赖列表进行安装。
-  -h, --hidden BOOLEAN  是否隐藏全部终端窗口，若输入true或判定为真则隐藏全部Terminal窗口（适用于使用了PyQT、TK等桌
-                        面级可视化程序），输入false或判定为否则不隐藏（适用于Console & 终端程序）。
+  -h, --hidden BOOLEAN  [终端窗口]是否隐藏全部终端窗口，若输入true或判定为真则隐藏全部Terminal窗口（适用于使用了PyQ
+                        T、TK等桌面级可视化程序），输入false或判定为否则不隐藏（适用于Console & 终端程序）。
+  -i, --icon TEXT       [自定义图标文件]传入自定义图标文件路径，为EXE设置属于你的图标样式。
   --help                Show this message and exit.
 ```
 

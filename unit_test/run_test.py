@@ -21,12 +21,23 @@ os.makedirs(OUT_DIR_ROOT, exist_ok=True)
 
 class LogTest(unittest.TestCase):
     def test_module_m(self):
-        # 流程验证
+        # 最小流程验证
         module = CreateExecutableModule(work_dir="./sandbox_m",
                                         launcher_py_path="./sandbox_m/run.py",
                                         save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),
                                         requirements_file="sandbox_m/requirements_with_opt.txt",
                                         with_debug=True,
+                                        hidden_terminal=False)
+        module.make()
+
+    def test_module_m_opt(self):
+        # 临时流程验证
+        module = CreateExecutableModule(work_dir="./sandbox_m",
+                                        launcher_py_path="./sandbox_m/run.py",
+                                        save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),
+                                        requirements_file="sandbox_m/requirements_with_opt.txt",
+                                        with_debug=True,
+                                        icon=r"M:\ICON\i.ico",
                                         hidden_terminal=False)
         module.make()
 
@@ -58,7 +69,7 @@ class LogTest(unittest.TestCase):
                                         requirements_file="sandbox_m/requirements_with_opt.txt",
                                         interpreter_module=Python37(),
                                         with_debug=True,
-                                        hidden_terminal=True)
+                                        hidden_terminal=False)
         module.make()
 
     def test_module_m_gui_python38(self):
@@ -69,7 +80,7 @@ class LogTest(unittest.TestCase):
                                         requirements_file="sandbox_m/requirements_with_opt.txt",
                                         interpreter_module=Python38(),
                                         with_debug=True,
-                                        hidden_terminal=True)
+                                        hidden_terminal=False)
         module.make()
 
     def test_module_m_gui_python39(self):
@@ -80,7 +91,7 @@ class LogTest(unittest.TestCase):
                                         requirements_file="sandbox_m/requirements_with_opt.txt",
                                         interpreter_module=Python39(),
                                         with_debug=True,
-                                        hidden_terminal=True)
+                                        hidden_terminal=False)
         module.make()
 
     def test_module_paddle(self):

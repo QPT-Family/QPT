@@ -6,7 +6,7 @@ import os
 
 from qpt.kernel.tools.qos import StdOutWrapper, dynamic_load_package, get_qpt_tmp_path
 from qpt.kernel.tools.qlog import clean_stout, Logging
-from qpt.kernel.tools.terminal import PTerminal, TerminalCallback, LoggingTerminalCallback
+from qpt.kernel.tools.qterminal import PTerminal, TerminalCallback, LoggingTerminalCallback
 from qpt.kernel.tools.qcode import PythonPackages
 
 TSINGHUA_PIP_SOURCE = "https://pypi.tuna.tsinghua.edu.cn/simple"

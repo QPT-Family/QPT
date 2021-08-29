@@ -1,6 +1,6 @@
 from qpt.executor import CreateExecutableModule
 
-from qpt.kernel.tools.interpreter import set_default_pip_source
+from qpt.kernel.tools.qinterpreter import set_default_pip_source
 
 set_default_pip_source("https://mirror.baidu.com/pypi/simple")
 

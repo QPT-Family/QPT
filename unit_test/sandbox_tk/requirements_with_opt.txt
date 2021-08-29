@@ -9,6 +9,7 @@
 
 
 # ----------------------Ignored dependent packages---------------------
+#colorama==0.4.4
 #coverage==5.5
 #paddlepaddle==2.1.2
 #pyinstaller==4.5.1

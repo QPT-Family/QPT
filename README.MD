@@ -64,7 +64,7 @@ module.make()
 注意：使用命令打包的前提是当前**默认Python环境**中使用pip安装了`qpt`，否则可能存在形如`qpt不是内部或外部命令,也不是可运行的程序`的报错信息。此外，若需要自动搜索依赖，强烈建议将QPT安装在开发环境，并且在开发环境中执行QPT，因为QPT会在搜索文件的import和pip list进行比对来确保搜索结果精确。  
 
 打开cmd/终端并输入以下命令即可完成打包：  
-`qpt -f ./sample_program -p ./sample_program/run.py -s ./out -h False`  
+`qpt.exe -f ./sample_program -p ./sample_program/run.py -s ./out -h False`  
 
 完整命令列表可使用`qpt --help`获取：
 ```bash

@@ -20,7 +20,7 @@ QPT是一款可以“模拟”开发环境的多功能封装工具，最短只�
 > 使用时如发现问题，强烈建议加QQ群1128826410与我们进行交流，当然也可联系QQ：ZhangAcer进行解决[感谢] 
 
 #### 更新日志
-当前版本为V1.0b1版本。[更新日志](RELEASE.MD)
+* 当前版本为V1.0b1版本。[更新日志](RELEASE.MD)
 
 ### 用QPT打包EXE的优势
 - [x] 可定制兼容方案。在打包形如PaddlePaddle深度学习Python库时也可流畅打包，让QPT来捕捉你的习惯。
@@ -35,55 +35,56 @@ QPT是一款可以“模拟”开发环境的多功能封装工具，最短只�
 ## 快速使用
 ### 安装/更新QPT到当前环境
 #### 安装
-通用方式：`python -m pip install qpt`  
-国内推荐：`python -m pip install qpt -i https://mirrors.bfsu.edu.cn/pypi/web/simple`
+* 通用方式：`python -m pip install qpt`  
+* 国内推荐：`python -m pip install qpt -i https://mirrors.bfsu.edu.cn/pypi/web/simple`
 #### 更新 - 强烈建议先卸载后安装
-Step1 卸载：`python -m pip uninstall qpt`  
-Step2 安装：`python -m pip install qpt`
+* Step1 卸载：`python -m pip uninstall qpt`  
+* Step2 安装：`python -m pip install qpt`
 ### 开始打包
 
 #### 方式一、撰写打包脚本[推荐]
-撰写以下代码即可完成打包：  
-```python
-# 导入QPT
-from qpt.executor import CreateExecutableModule as CEM
+* 撰写以下代码即可完成打包：  
 
-#                                                        -----关于路径的部分，强烈建议使用绝对路径避免出现问题-----
-module = CEM(work_dir="./sample_program",                # [项目文件夹]待打包的目录，并且该目录下需要有↓下方提到的py文件
-             launcher_py_path="./sample_program/run.py", # [主程序文件]用户启动EXE文件后，QPT要执行的py文件
-             save_path="./out")                          # [输出目录]打包后相关文件的输出目录
-           # requirements_file="auto"                    # [Python依赖]此处可填入依赖文件路径，也可设置为auto自动搜索依赖
-           # hidden_terminal=False                       # [终端窗口]设置为True后，运行时将不会展示黑色终端窗口  
-           # interpreter_module=Python37()               # [跨版本编译]需要预先from qpt.modules.python_env import Python37
-                                                         # 好奇什么时候需要跨版本编译？可参考下方"进阶使用QPT"一节的《打包兼容性更强的Python解释器》
-           # icon="your_ico.ico"                         # [自定义图标文件]支持将exe文件设置为ico/JPG/PNG等格式的自定义图标
-# 开始打包
-module.make()
-```
+  ```python
+  # 导入QPT
+  from qpt.executor import CreateExecutableModule as CEM
+
+  #                                                        -----关于路径的部分，强烈建议使用绝对路径避免出现问题-----
+  module = CEM(work_dir="./sample_program",                # [项目文件夹]待打包的目录，并且该目录下需要有↓下方提到的py文件
+               launcher_py_path="./sample_program/run.py", # [主程序文件]用户启动EXE文件后，QPT要执行的py文件
+               save_path="./out")                          # [输出目录]打包后相关文件的输出目录
+             # requirements_file="auto"                    # [Python依赖]此处可填入依赖文件路径，也可设置为auto自动搜索依赖
+             # hidden_terminal=False                       # [终端窗口]设置为True后，运行时将不会展示黑色终端窗口  
+             # interpreter_module=Python37()               # [跨版本编译]需要预先from qpt.modules.python_env import Python37
+                                                           # 好奇什么时候需要跨版本编译？可参考下方"进阶使用QPT"一节的《打包兼容性更强的Python解释器》
+             # icon="your_ico.ico"                         # [自定义图标文件]支持将exe文件设置为ico/JPG/PNG等格式的自定义图标
+  # 开始打包
+  module.make()
+  ```
 #### 方式二、使用命令打包[快捷]
 注意：使用命令打包的前提是当前**默认Python环境**中使用pip安装了`qpt`，否则可能存在形如`qpt不是内部或外部命令,也不是可运行的程序`的报错信息。此外，若需要自动搜索依赖，强烈建议将QPT安装在开发环境，并且在开发环境中执行QPT，因为QPT会在搜索文件的import和pip list进行比对来确保搜索结果精确。  
 
-打开cmd/终端并输入以下命令即可完成打包：  
-```python
-qpt.exe -f ./sample_program -p ./sample_program/run.py -s ./out -h False
-``` 
+* 打开cmd/终端并输入以下命令即可完成打包：  
+  ```python
+  qpt.exe -f ./sample_program -p ./sample_program/run.py -s ./out -h False
+  ``` 
 
-完整命令列表可使用`qpt --help`获取：
-```python
-Options:
-  -f, --folder TEXT     [项目文件夹]待打包的文件夹路径，该目录也应当为整个项目的根目录或工作目录，否则可能会导致出现找不到模块等P
-                        ython基础报错。  [required]
-  -p, --py TEXT         [主程序文件]待打包的主要Py脚本文件所在的路径，例如要yyy/xxx.py中xxx.py是需要打包的主要P
-                        ython文件，那么该处填写xxx.py即可。  [required]
-  -s, --save TEXT       [输出目录]打包后文件保存的路径。  [required]
-  -r, --require TEXT    [Python依赖]自动检测软件包依赖，填写auto后将会自动查找待打包的文件夹路径中所有py文件的impo
-                        rt使用情况，最终生成requirements文件
-                        当然，也可传入requirements.txt文件路径，这样即可指定依赖列表进行安装。
-  -h, --hidden BOOLEAN  [终端窗口]是否隐藏全部终端窗口，若输入true或判定为真则隐藏全部Terminal窗口（适用于使用了PyQ
-                        T、TK等桌面级可视化程序），输入false或判定为否则不隐藏（适用于Console & 终端程序）。
-  -i, --icon TEXT       [自定义图标文件]传入自定义图标文件路径，为EXE设置属于你的图标样式。
-  --help                Show this message and exit.
-```
+* 完整命令列表可使用`qpt --help`获取：
+  ```python
+  Options:
+    -f, --folder TEXT     [项目文件夹]待打包的文件夹路径，该目录也应当为整个项目的根目录或工作目录，否则可能会导致出现找不到模块等P
+                          ython基础报错。  [required]
+    -p, --py TEXT         [主程序文件]待打包的主要Py脚本文件所在的路径，例如要yyy/xxx.py中xxx.py是需要打包的主要P
+                          ython文件，那么该处填写xxx.py即可。  [required]
+    -s, --save TEXT       [输出目录]打包后文件保存的路径。  [required]
+    -r, --require TEXT    [Python依赖]自动检测软件包依赖，填写auto后将会自动查找待打包的文件夹路径中所有py文件的impo
+                          rt使用情况，最终生成requirements文件
+                          当然，也可传入requirements.txt文件路径，这样即可指定依赖列表进行安装。
+    -h, --hidden BOOLEAN  [终端窗口]是否隐藏全部终端窗口，若输入true或判定为真则隐藏全部Terminal窗口（适用于使用了PyQ
+                          T、TK等桌面级可视化程序），输入false或判定为否则不隐藏（适用于Console & 终端程序）。
+    -i, --icon TEXT       [自定义图标文件]传入自定义图标文件路径，为EXE设置属于你的图标样式。
+    --help                Show this message and exit.
+  ```
 
 ## 进阶使用QPT
 - [x] [1. 更改QPT全局镜像源](examples/advanced/更换镜像源.md)

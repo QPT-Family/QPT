@@ -446,6 +446,7 @@ class RunExecutableModule:
             unzip_bar.close()
             # app.exit()
         else:
+            Logging.info("初次使用将会适应本地环境，可能需要几分钟时间，请耐心等待...")
             auto_terminal = AutoTerminal()
             terminal = auto_terminal.shell_func()
             tp = TProgressBar("初始化进度", max_len=len(modules) + 2)

@@ -90,7 +90,7 @@ QPT是一款可以“模拟”开发环境的多功能封装工具，最短只�
                           当然，也可传入requirements.txt文件路径，这样即可指定依赖列表进行安装。
     -h, --hidden BOOLEAN  [终端窗口]是否隐藏全部终端窗口，若输入true或判定为真则隐藏全部Terminal窗口（适用于使用了PyQ
                           T、TK等桌面级可视化程序），输入false或判定为否则不隐藏（适用于Console & 终端程序）。
-    -i, --icon TEXT       [自定义图标文件]传入自定义图标文件路径，为EXE设置属于你的图标样式。
+    -i, --icon TEXT       [自定义图标文件]传入自定义图标文件路径，为EXE设置属于你的图标样式，支持将exe文件设置为ico/JPG/PNG等格式的自定义图标。
     --help                Show this message and exit.
   ```
 

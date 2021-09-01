@@ -44,7 +44,7 @@ change_none_color()
               "--icon",
               default=None,
               type=str,
-              help="[自定义图标文件]传入自定义图标文件路径，为EXE设置属于你的图标样式。")
+              help="[自定义图标文件]传入自定义图标文件路径，为EXE设置属于你的图标样式，支持将exe文件设置为ico/JPG/PNG等格式的自定义图标。")
 def cli(folder,
         py,
         save,

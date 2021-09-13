@@ -76,6 +76,7 @@ class LoggingTerminalCallback(TerminalCallback):
                     Logging.debug(msg)
 
     def normal_func(self):
+        self.cache = ""
         Logging.debug("终端命令执行成功！")
 
     def error_func(self):

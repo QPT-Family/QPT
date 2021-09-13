@@ -3,7 +3,7 @@ from qpt.kernel.tools.qlog import Logging
 from qpt.sys_info import get_env_vars
 
 TERMINAL_NAME = "cmd.exe"
-TERMINAL_MSG_FITTER_TAG = ["Microsoft Windows [版本", "(c) Microsoft Corporation。保留所有权利。"]
+# TERMINAL_MSG_FITTER_TAG = ["Microsoft Windows [版本", "(c) Microsoft Corporation。保留所有权利。"]
 SHELL_ACT = "&&echo GACT:DONE!||echo GACT:ERROR!\n"
 
 
@@ -68,12 +68,14 @@ class LoggingTerminalCallback(TerminalCallback):
             if msg == "\r":
                 continue
 
-            for tag_id, tag in enumerate(TERMINAL_MSG_FITTER_TAG):
-                if tag in msg:
-                    break
-                if tag_id == len(TERMINAL_MSG_FITTER_TAG) - 1:
-                    self.cache += msg
-                    Logging.debug(msg)
+#             for tag_id, tag in enumerate(TERMINAL_MSG_FITTER_TAG):
+#                 if tag in msg:
+#                     break
+#                 if tag_id == len(TERMINAL_MSG_FITTER_TAG) - 1:
+#                     self.cache += msg
+#                     Logging.debug(msg)
+            self.cache += msg
+            Logging.debug(msg)
 
     def normal_func(self):
         self.cache = ""

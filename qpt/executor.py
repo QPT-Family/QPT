@@ -285,16 +285,15 @@ class CreateExecutableModule:
         if os.path.exists(compatibility_mode_file):
             os.rename(compatibility_mode_file,
                       os.path.join(self.module_path, "使用兼容模式运行.cmd"))
-        # 修改icon
-        if self.icon_path:
-            make_icon(self.icon_path, os.path.join(self.module_path, "启动程序.exe"))
-            make_icon(self.icon_path, os.path.join(self.debug_path, "Debug.exe"))
-
         # 重命名启动器文件
         launcher_file = os.path.join(self.module_path, "Main.exe")
         if os.path.exists(launcher_file):
             os.rename(launcher_file,
                       os.path.join(self.module_path, "启动程序.exe"))
+        # 修改icon
+        if self.icon_path:
+            make_icon(self.icon_path, os.path.join(self.module_path, "启动程序.exe"))
+            make_icon(self.icon_path, os.path.join(self.debug_path, "Debug.exe"))
 
         # Logging Summary
         if Logging.final():

@@ -133,15 +133,6 @@ class LogTest(unittest.TestCase):
                                         hidden_terminal=True)
         module.make()
 
-    def test_module_qt_paddle(self):
-        # 验证自动依赖搜索
-        module = CreateExecutableModule(work_dir="./sandbox_qt_paddle",
-                                        launcher_py_path="./sandbox_qt_paddle/run.py",
-                                        save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),
-                                        with_debug=True,
-                                        hidden_terminal=True)
-        module.make()
-
     def test_module_online_paddle(self):
         # 验证在线安装
         module = CreateExecutableModule(work_dir="./sandbox",

@@ -43,6 +43,15 @@ class PythonPackages:
                 # 对name修复可能的下划线情况
                 if name.replace("_", "-") in dep_pkg_dict:
                     name = name.replace("_", "-")
+                # 修复~的情况
+                if "~" == name[:1]:
+                    metadata = os.path.join(site_package_path, package_dist, "METADATA")
+                    if os.path.exists(metadata):
+                        with open(metadata, "r", encoding="utf-8") as metadata:
+                            for metadata_line in metadata.readlines():
+                                if "Name: " == metadata_line[:6]:
+                                    name = metadata_line.strip("Name: ").strip("\n")
+                                    break
 
                 version = package[package.rfind("-") + 1:]
                 top_file_path = os.path.join(site_package_path, package_dist, "top_level.txt")
@@ -57,9 +66,6 @@ class PythonPackages:
                         # 兼容Linux
                         if "/" in top:
                             top = top.split("/")[-1]
-                        if "~" in top:
-                            Logging.warning(f"依赖搜索时遇到阻碍，当前系统限制了文件名长度，失败的包：{top}")
-                            continue
                         tops_dist[top.strip("\n").lower()] = name
                 packages_dist[name] = version
         return packages_dist, tops_dist, dep_pkg_dict
@@ -145,6 +151,22 @@ class PythonPackages:
         # ToDo 以后加个参数，兼容非当前环境下的智能分析
         install_dict, top_dict, dep = PythonPackages.search_packages_dist_info()
         package_import = PythonPackages.search_import_in_dir(path)
+
+        # 整合包名，避免~的情况
+        for inp_name, package_name in top_dict.copy().items():
+            if "~" == inp_name[:1]:
+                for package in package_import:
+                    if inp_name[1:] in package:
+                        top_dict.pop(inp_name)
+                        top_dict[package] = package_name
+                        break
+        for inp_name, package_name in top_dict.copy().items():
+            if "~" == inp_name[:1]:
+                for package in package_import:
+                    if inp_name[1:] in package:
+                        top_dict.pop(inp_name)
+                        top_dict[package] = package_name
+                        break
 
         # 提取显式的依赖项
         sub_requires = dict()

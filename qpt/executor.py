@@ -6,7 +6,6 @@
 import os
 import sys
 import shutil
-import importlib
 import base64
 import datetime
 import tempfile
@@ -24,11 +23,12 @@ from qpt.modules.package import QPTDependencyPackage, QPTGUIDependencyPackage, \
 from qpt.modules.auto_requirements import AutoRequirementsPackage
 
 from qpt.kernel.tools.qlog import Logging, TProgressBar, set_logger_file
-from qpt.kernel.tools.qos import clean_qpt_cache, copytree, check_chinese_char, StdOutLoggerWrapper, add_ua
+from qpt.kernel.tools.qos import clean_qpt_cache, copytree, check_chinese_char, StdOutLoggerWrapper
 from qpt.kernel.tools.qterminal import AutoTerminal
 from qpt.kernel.tools.qinterpreter import set_default_pip_lib
 from qpt.sys_info import QPT_MODE, check_all, get_env_vars, CheckRun
 from qpt.kernel.tools.qpe import make_icon
+from qpt.gui.tk_progressbar import ProgressbarFrame
 
 __all__ = ["CreateExecutableModule", "RunExecutableModule"]
 
@@ -144,7 +144,7 @@ class CreateExecutableModule:
 
         # 放入增强包
         self.add_sub_module(BatchInstallation())
-        # 放入QT增强包
+        # 放入增强包
         if self.hidden_terminal:
             self.add_sub_module(QPTGUIDependencyPackage())
 
@@ -292,8 +292,12 @@ class CreateExecutableModule:
                       os.path.join(self.module_path, "启动程序.exe"))
         # 修改icon
         if self.icon_path:
-            make_icon(self.icon_path, os.path.join(self.module_path, "启动程序.exe"))
-            make_icon(self.icon_path, os.path.join(self.debug_path, "Debug.exe"))
+            make_icon(self.icon_path,
+                      pe_path=os.path.join(self.module_path, "启动程序.exe"),
+                      img_save_path=os.path.join(self.config_path, "Logo.ico"))
+            make_icon(self.icon_path,
+                      pe_path=os.path.join(self.debug_path, "Debug.exe"),
+                      img_save_path=os.path.join(self.debug_path, "configs", "Logo.ico"))
 
         # Logging Summary
         if Logging.final():
@@ -350,9 +354,6 @@ class RunExecutableModule:
             log_name = "#Debug#" + log_name
         set_logger_file(os.path.join(self.config_path, "logs", "QPT-" + log_name))
         sys.stdout = StdOutLoggerWrapper(os.path.join(self.config_path, "logs", "APP-" + log_name))
-
-        # 向用户提出申请UA保护
-        add_ua()
 
         # 系统信息
         check_all()
@@ -425,33 +426,15 @@ class RunExecutableModule:
 
     def _solve_module(self):
         modules = self.lazy_module + self.sub_module
-        if self.hidden_terminal:
-            from qpt.gui.qpt_unzip import Unzip
-            from PyQt5.QtWidgets import QApplication
-            from PyQt5.QtGui import QIcon
-            terminal = self.auto_terminal.shell_func()
-            app = QApplication(sys.argv)
-            unzip_bar = Unzip()
-            unzip_bar.setWindowIcon(QIcon(os.path.join(self.base_dir, "configs/Logo.ico")))
-            unzip_bar.show()
-            for sub_module_id, sub_name in enumerate(modules):
-                sub_module = SubModule(sub_name)
-                sub_module.prepare(work_dir=self.work_dir,
-                                   interpreter_path=self.interpreter_path,
-                                   module_path=self.base_dir,
-                                   terminal=terminal)
-                sub_module.unpack()
-                unzip_bar.update_value(min(sub_module_id / len(modules) * 100, 99))
-                unzip_bar.update_title(f"正在初始化：{sub_name}")
-                app.processEvents()
-            unzip_bar.close()
-            # app.exit()
-        else:
+
+        def render(arg=None):
             Logging.info("初次使用将会适应本地环境，可能需要几分钟时间，请耐心等待...")
             terminal = self.auto_terminal.shell_func()
             tp = TProgressBar("初始化进度", max_len=len(modules) + 2)
             for sub_module_id, sub_name in enumerate(modules):
                 tp.step(add_end_info=f"{sub_name}部署中...")
+                if arg:
+                    arg.step(text="正在适配" + sub_name)
                 sub_module = SubModule(sub_name)
                 sub_module.prepare(work_dir=self.work_dir,
                                    interpreter_path=self.interpreter_path,
@@ -459,6 +442,13 @@ class RunExecutableModule:
                                    terminal=terminal)
                 sub_module.unpack()
             tp.step(add_end_info=f"初始化完毕")
+            if arg:
+                arg.close()
+
+        if self.hidden_terminal:
+            ProgressbarFrame(bind_fuc=render, max_step=len(modules))
+        else:
+            render()
 
     def solve_work_dir(self):
         # ToDo 加个Lock 彻底去除非Python的环境变量
@@ -509,7 +499,7 @@ class RunExecutableModule:
 
         CheckRun.make_run_file(self.config_path)
         # 执行主程序
-        run_shell = f"cd {self.work_dir}" +\
+        run_shell = f"cd {self.work_dir}" + \
                     '; start "' + self.interpreter_path + '\\python.exe" "' + \
                     os.path.abspath(self.configs["launcher_py_path"]) + '"'
         self.auto_terminal.shell(run_shell)

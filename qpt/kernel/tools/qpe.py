@@ -8,8 +8,10 @@ import os
 from qpt.kernel.tools.qos import get_qpt_tmp_path
 
 
-def make_icon(ico_path, pe_path, save_path=None):
-    temp_file_path = os.path.join(get_qpt_tmp_path("icon"), "make_icon.ico")
+def make_icon(ico_path, pe_path, save_path=None, img_save_path=None):
+    if img_save_path:
+        img_save_path = os.path.join(get_qpt_tmp_path("icon"), "make_icon.ico")
+
     if save_path is None:
         save_path = pe_path
 
@@ -18,11 +20,11 @@ def make_icon(ico_path, pe_path, save_path=None):
     import PIL.Image as Image
     # 处理图像
     img = Image.open(ico_path).resize((128, 128))
-    img.save(temp_file_path, sizes=[(128, 128)])
+    img.save(img_save_path, sizes=[(128, 128)])
 
     # 读取图像
-    assert os.path.exists(temp_file_path), f"{os.path.abspath(temp_file_path)}图像文件不存在，请检查路径拼写是否正确！"
-    with open(temp_file_path, "rb") as f:
+    assert os.path.exists(img_save_path), f"{os.path.abspath(img_save_path)}图像文件不存在，请检查路径拼写是否正确！"
+    with open(img_save_path, "rb") as f:
         img_b = f.read()
 
     # PE

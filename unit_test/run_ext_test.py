@@ -35,3 +35,44 @@ class LogTest(unittest.TestCase):
                                         with_debug=True,
                                         hidden_terminal=True)
         module.make()
+
+    # 验证no debug
+    def test_module_m_not_debug(self):
+        module = CreateExecutableModule(work_dir="./sandbox_m",
+                                        launcher_py_path="./sandbox_m/run.py",
+                                        save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),
+                                        requirements_file="sandbox_m/requirements_with_opt.txt",
+                                        with_debug=False,
+                                        hidden_terminal=False)
+        module.make()
+
+    def test_module_m(self):
+        # 最小流程验证
+        module = CreateExecutableModule(work_dir="./sandbox_m",
+                                        launcher_py_path="./sandbox_m/run.py",
+                                        save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),
+                                        requirements_file="sandbox_m/requirements_with_opt.txt",
+                                        with_debug=True,
+                                        hidden_terminal=False)
+        module.make()
+
+    def test_module_m_opt(self):
+        # 临时流程验证
+        module = CreateExecutableModule(work_dir="./sandbox_m",
+                                        launcher_py_path="./sandbox_m/run.py",
+                                        save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),
+                                        requirements_file="sandbox_m/requirements_with_opt.txt",
+                                        with_debug=True,
+                                        icon=r"M:\ICON\i.ico",
+                                        hidden_terminal=False)
+        module.make()
+
+    def test_module_m_gui(self):
+        # GUI流程验证
+        module = CreateExecutableModule(work_dir="./sandbox_m",
+                                        launcher_py_path="./sandbox_m/run.py",
+                                        save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),
+                                        requirements_file="sandbox_m/requirements_with_opt.txt",
+                                        with_debug=True,
+                                        hidden_terminal=True)
+        module.make()

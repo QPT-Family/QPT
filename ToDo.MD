@@ -11,17 +11,19 @@
 - [x] 增加自定义图标
 - [x] Python部分解压到临时目录
 ## b1.dev6ToDo
-- [ ] 使用TK进度条
-- [x] 更换CMD为PowerShell
+- [x] 使用TK进度条，完全取消PyQT5依赖
+- [x] 内部更换CMD为PowerShell（外部下个版本更新）
 - [x] configs文件保存为二进制，360实在太笨了，文件里加base64就算是病毒也是服了，误报率不算KPI这是？
 - [x] 【实验性】解决多进程输出卡死
-- [ ] Conda中打包可能存在~情况 https://github.com/QPT-Family/QPT/issues/22
+- [x] Conda中打包可能存在~情况 https://github.com/QPT-Family/QPT/issues/22
 - [x] multiprocessing无限循环情况 https://github.com/QPT-Family/QPT/issues/23
+- [x] UA统一使用cmd开启
 ## ## b1.dev7ToDo
 - [ ] 支持Conda版本的CUDA
 - [ ] 增加CUDA选择
 - [ ] 文件夹重复问题还是没解决 - 以后统一迁移吧顺便支持个中文路径
 - [ ] BS多次安装以及为什么wget还需要安装
+- [ ] 整体上使用powershell
 
 ## 下版本可能的ToDo
 - [ ] 试一下重新编译360还会不会误报

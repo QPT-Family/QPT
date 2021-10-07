@@ -15,7 +15,8 @@ setup(
     install_requires=['wget',
                       "click",
                       "pefile",
-                      "pillow"],
+                      "pillow",
+                      "ttkbootstrap"],
     python_requires='>3.5',
     include_package_data=True,
     entry_points={

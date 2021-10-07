@@ -2,9 +2,10 @@ import subprocess
 from qpt.kernel.tools.qlog import Logging
 from qpt.sys_info import get_env_vars
 
-TERMINAL_NAME = "cmd.exe"
+TERMINAL_NAME = "powershell"
+
+
 # TERMINAL_MSG_FITTER_TAG = ["Microsoft Windows [版本", "(c) Microsoft Corporation。保留所有权利。"]
-SHELL_ACT = "&&echo GACT:DONE!||echo GACT:ERROR!\n"
 
 
 # try:
@@ -56,26 +57,32 @@ class LoggingTerminalCallback(TerminalCallback):
     def handle(self, terminal=None):
         assert terminal, "此处需要terminal"
         line = True
+        end = False
         while line:
             line = terminal.stdout.readline()
-            if line == b'GACT:DONE!\r\n':
-                self.normal_func()
-                break
-            elif line == b'GACT:ERROR!\r\n':
-                self.error_func()
-                break
-            msg = line.decode('utf-8', errors="ignore").strip("b'").strip("\n").strip(SHELL_ACT)
-            if msg == "\r":
-                continue
+            msg = line.decode('gbk', errors="ignore").strip("b'").strip("\n").strip("\r")
+            if msg:
+                if msg == '---QPT OUTPUT STATUS CODE---':
+                    end = True
+                    continue
+                if msg == "\r" or msg == "\n":
+                    continue
+                if end:
+                    if msg == "True":
+                        self.normal_func()
+                        break
+                    elif msg == "False":
+                        self.error_func()
+                        break
 
-#             for tag_id, tag in enumerate(TERMINAL_MSG_FITTER_TAG):
-#                 if tag in msg:
-#                     break
-#                 if tag_id == len(TERMINAL_MSG_FITTER_TAG) - 1:
-#                     self.cache += msg
-#                     Logging.debug(msg)
-            self.cache += msg
-            Logging.debug(msg)
+                #             for tag_id, tag in enumerate(TERMINAL_MSG_FITTER_TAG):
+                #                 if tag in msg:
+                #                     break
+                #                 if tag_id == len(TERMINAL_MSG_FITTER_TAG) - 1:
+                #                     self.cache += msg
+                #                     Logging.debug(msg)
+                self.cache += msg
+                Logging.debug(msg)
 
     def normal_func(self):
         self.cache = ""
@@ -149,7 +156,7 @@ class PTerminal(Terminal):
                                               shell=True)
         prepare = "chcp 65001"
         self._shell_func()(prepare)
-        prepare = "set PATH=" + self._get_env_vars()
+        prepare = "set PATH='" + self._get_env_vars() + "'"
         self._shell_func()(prepare)
 
     def reset_terminal(self):
@@ -163,8 +170,9 @@ class PTerminal(Terminal):
         # ToDo 实现Callback
         def closure(closure_shell):
             Logging.debug(f"SHELL: {closure_shell}")
-            closure_shell += "&&echo GACT:DONE!||echo GACT:ERROR!\r\n"
-            # 发送指令
+            if closure_shell[1:3] == ":\\":
+                closure_shell += f"cd {closure_shell[:2]} ;"
+            closure_shell = f'"{closure_shell}" ; echo "---QPT OUTPUT STATUS CODE---" $? \n'
             try:
                 final_shell = closure_shell.encode("utf-8")
             except Exception as e:

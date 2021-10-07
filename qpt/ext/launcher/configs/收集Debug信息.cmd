@@ -1,4 +1,5 @@
 echo off
+cd /d %~dp0
 cd ..
 set QPT_COLOR=False
 set QPT_MODE=Debug

@@ -27,8 +27,10 @@ class PIPTerminal(PTerminal):
                 tmp = [" " + bit_shell for bit_shell in closure_shell]
                 closure_shell = "".join(tmp)
             closure_shell = self.head + closure_shell
+            if closure_shell[1:3] == ":\\":
+                closure_shell = f"cd {closure_shell[:2]} ;" + closure_shell
             Logging.debug(f"SHELL: {closure_shell}")
-            closure_shell += "&&echo GACT:DONE!||echo GACT:ERROR!\r\n"
+            closure_shell = f'{closure_shell}; echo "---QPT OUTPUT STATUS CODE---" ;$? \n'
             # 发送指令
             try:
                 final_shell = closure_shell.encode("utf-8")

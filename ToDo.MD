@@ -58,3 +58,4 @@ git config --global url."https://hub.fastgit.org/".insteadOf "https://github.com
     AMD GCN 1st Gen (Radeon HD 7000 series) and above
     Intel Haswell (4th-gen core) HD Integrated Graphics and above
 
+Start-Process powershell -Verb runAs -NoNewWindow

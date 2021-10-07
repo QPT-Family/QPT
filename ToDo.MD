@@ -14,7 +14,7 @@
 - [ ] 使用TK进度条
 - [x] 更换CMD为PowerShell
 - [x] configs文件保存为二进制，360实在太笨了，文件里加base64就算是病毒也是服了，误报率不算KPI这是？
-- [ ] 解决多进程输出卡死
+- [x] 【实验性】解决多进程输出卡死
 - [ ] Conda中打包可能存在~情况 https://github.com/QPT-Family/QPT/issues/22
 - [x] multiprocessing无限循环情况 https://github.com/QPT-Family/QPT/issues/23
 ## ## b1.dev7ToDo

@@ -153,7 +153,8 @@ class PTerminal(Terminal):
                                               stdout=subprocess.PIPE,
                                               stderr=subprocess.STDOUT,
                                               stdin=subprocess.PIPE,
-                                              shell=True)
+                                              shell=True,
+                                              close_fds=True)
         prepare = "chcp 65001"
         self._shell_func()(prepare)
         prepare = "set PATH='" + self._get_env_vars() + "'"

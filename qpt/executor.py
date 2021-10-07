@@ -106,7 +106,7 @@ class CreateExecutableModule:
         # 额外的成员变量
         self.resources_path = os.path.join(self.module_path, "resources")
         self.config_path = os.path.join(self.module_path, "configs")
-        self.config_file_path = os.path.join(self.config_path, "configs.gt")
+        self.config_file_path = os.path.join(self.config_path, "configs.txt")
         self.lib_package_path = os.path.join(self.interpreter_path,
                                              com_configs["RELATIVE_INTERPRETER_SITE_PACKAGES_PATH"])
 
@@ -230,18 +230,18 @@ class CreateExecutableModule:
             qpt_dir_path = os.path.split(qpt.__file__)[0]
             copytree(src=qpt_dir_path, dst=os.path.join(self.interpreter_path, "Lib/site-packages/qpt"))
 
-        # 避免出现if __name__ == '__main__':
-        with open(os.path.join(self.resources_path, self.launcher_py_path), "r", encoding="utf-8") as lf:
-            lf_codes = lf.readlines()
-        for lf_code_id, lf_code in enumerate(lf_codes):
-            if "if" in lf_code and "__name__" in lf_code and "__main__" in lf_code:
-                # 懒得写正则了嘿嘿嘿
-                Logging.warning(f"{self.launcher_py_path}中包含if __name__ == '__main__'语句，"
-                                f"由于用户使用时QPT成为了主程序，故此处代码块会被Python忽略。"
-                                f"为保证可以正常执行，当前已自动修复该问题")
-                with open(os.path.join(self.resources_path, self.launcher_py_path), "w", encoding="utf-8") as new_lf:
-                    lf_codes[lf_code_id] = lf_code[:lf_code.index("if ")] + "if 'qpt':\n"
-                    new_lf.writelines(lf_codes)
+        # # 避免出现if __name__ == '__main__':
+        # with open(os.path.join(self.resources_path, self.launcher_py_path), "r", encoding="utf-8") as lf:
+        #     lf_codes = lf.readlines()
+        # for lf_code_id, lf_code in enumerate(lf_codes):
+        #     if "if" in lf_code and "__name__" in lf_code and "__main__" in lf_code:
+        #         # 懒得写正则了嘿嘿嘿
+        #         Logging.warning(f"{self.launcher_py_path}中包含if __name__ == '__main__'语句，"
+        #                         f"由于用户使用时QPT成为了主程序，故此处代码块会被Python忽略。"
+        #                         f"为保证可以正常执行，当前已自动修复该问题")
+        #         with open(os.path.join(self.resources_path, self.launcher_py_path), "w", encoding="utf-8") as new_lf:
+        #             lf_codes[lf_code_id] = lf_code[:lf_code.index("if ")] + "if 'qpt':\n"
+        #             new_lf.writelines(lf_codes)
 
         # 创建配置文件
         os.makedirs(self.config_path, exist_ok=True)
@@ -337,7 +337,7 @@ class RunExecutableModule:
         # 初始化Module信息
         self.base_dir = os.path.abspath(module_path)
         self.config_path = os.path.join(self.base_dir, "configs")
-        self.config_file_path = os.path.join(self.base_dir, "configs", "configs.gt")
+        self.config_file_path = os.path.join(self.base_dir, "configs", "configs.txt")
         self.work_dir = os.path.join(self.base_dir, "resources")
         self.interpreter_path = os.path.join(self.base_dir, "Python")
 
@@ -402,6 +402,9 @@ class RunExecutableModule:
         self.lazy_module = self.configs["lazy_module"]
         self.sub_module = self.configs["sub_module"]
 
+        # 实例化终端
+        self.auto_terminal = AutoTerminal()
+
     def warning_msg_box(self, title="Warning - GitHub: QPT-Family/QPT", text="", force=False):
         """
         发出警告框
@@ -426,8 +429,7 @@ class RunExecutableModule:
             from qpt.gui.qpt_unzip import Unzip
             from PyQt5.QtWidgets import QApplication
             from PyQt5.QtGui import QIcon
-            auto_terminal = AutoTerminal()
-            terminal = auto_terminal.shell_func()
+            terminal = self.auto_terminal.shell_func()
             app = QApplication(sys.argv)
             unzip_bar = Unzip()
             unzip_bar.setWindowIcon(QIcon(os.path.join(self.base_dir, "configs/Logo.ico")))
@@ -446,8 +448,7 @@ class RunExecutableModule:
             # app.exit()
         else:
             Logging.info("初次使用将会适应本地环境，可能需要几分钟时间，请耐心等待...")
-            auto_terminal = AutoTerminal()
-            terminal = auto_terminal.shell_func()
+            terminal = self.auto_terminal.shell_func()
             tp = TProgressBar("初始化进度", max_len=len(modules) + 2)
             for sub_module_id, sub_name in enumerate(modules):
                 tp.step(add_end_info=f"{sub_name}部署中...")
@@ -508,13 +509,17 @@ class RunExecutableModule:
 
         CheckRun.make_run_file(self.config_path)
         # 执行主程序
-        main_lib_path = self.configs["launcher_py_path"].replace(".py", "")
-        main_lib_path = main_lib_path. \
-            replace(".py", ""). \
-            replace(r"\\", "."). \
-            replace("\\", "."). \
-            replace("/", ".")
-        # ToDo 等日志系统做好了再取消注释
+        run_shell = f"cd {self.work_dir}" +\
+                    '; start "' + self.interpreter_path + '\\python.exe" "' + \
+                    os.path.abspath(self.configs["launcher_py_path"]) + '"'
+        self.auto_terminal.shell(run_shell)
+        # main_lib_path = self.configs["launcher_py_path"].replace(".py", "")
+        # main_lib_path = main_lib_path. \
+        #     replace(".py", ""). \
+        #     replace(r"\\", "."). \
+        #     replace("\\", "."). \
+        #     replace("/", ".")
+        # # ToDo 等日志系统做好了再取消注释
         # os.system('cls')
-        lib = importlib.import_module(main_lib_path)
+        # lib = importlib.import_module(main_lib_path)
         # input("QPT执行完毕，请按任意键退出")

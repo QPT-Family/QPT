@@ -172,7 +172,7 @@ class PTerminal(Terminal):
             Logging.debug(f"SHELL: {closure_shell}")
             if closure_shell[1:3] == ":\\":
                 closure_shell += f"cd {closure_shell[:2]} ;"
-            closure_shell = f'"{closure_shell}" ; echo "---QPT OUTPUT STATUS CODE---" $? \n'
+            closure_shell = f'{closure_shell} ; echo "---QPT OUTPUT STATUS CODE---" $? \n'
             try:
                 final_shell = closure_shell.encode("utf-8")
             except Exception as e:
@@ -188,7 +188,7 @@ class PTerminal(Terminal):
         return closure
 
     def shell_func(self, callback: TerminalCallback = None):
-        self._shell_func(callback)
+        return self._shell_func(callback)
 
     def shell(self, shell, callback: TerminalCallback = LoggingTerminalCallback()):
         self.shell_func(callback)(shell)

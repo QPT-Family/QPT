@@ -5,7 +5,7 @@
 
 import os
 
-M_PATH = r"D:\Python_Projects\QPT\unit_test\unit_out\test_module_paddle\Debug"
+M_PATH = r"M:\QPT_UT_OUT_CACHE\test_module_opencv\Debug"
 os.chdir(M_PATH)
 from qpt.executor import RunExecutableModule
 

@@ -79,4 +79,4 @@ def cli(folder,
 
 
 if __name__ == '__main__':
-    cli(["--help"])
+    cli()

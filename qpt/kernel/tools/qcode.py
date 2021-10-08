@@ -210,9 +210,14 @@ class PythonPackages:
 
 
 if __name__ == '__main__':
-    _test_dir = "./../../../unit_test/sandbox_qt_paddle"
-    print("当前环境下包安装情况以及对应表", PythonPackages.search_packages_dist_info())
-    print("当前环境下包依赖情况", PythonPackages.search_dep())
-    print("测试场景的依赖搜索情况", PythonPackages.search_import_in_dir(_test_dir))
-    for _i in PythonPackages.intelligent_analysis(_test_dir, True):
-        print("分析情况：", _i)
+    _test_workdir = "./"
+    print("------当前环境下包安装情况以及对应表------")
+    for _i in PythonPackages.search_packages_dist_info():
+        print("TEST_A", _i)
+    print("------当前环境下包依赖情况------")
+    for _i in PythonPackages.search_dep():
+        print("TEST_B", _i)
+    print("------测试场景的依赖搜索情况------")
+    for _i in PythonPackages.search_import_in_dir(_test_workdir, True):
+        print("TEST_C", _i)
+

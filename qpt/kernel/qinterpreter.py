@@ -4,10 +4,10 @@
 # Please indicate the source for reprinting.
 import os
 
-from qpt.kernel.tools.qos import StdOutWrapper, dynamic_load_package, get_qpt_tmp_path
-from qpt.kernel.tools.qlog import clean_stout, Logging
-from qpt.kernel.tools.qterminal import PTerminal, TerminalCallback, LoggingTerminalCallback
-from qpt.kernel.tools.qcode import PythonPackages
+from qpt.kernel.qos import dynamic_load_package, get_qpt_tmp_path
+from qpt.kernel.qlog import clean_stout, Logging
+from qpt.kernel.qterminal import PTerminal, TerminalCallback, LoggingTerminalCallback
+from qpt.kernel.qcode import PythonPackages
 
 TSINGHUA_PIP_SOURCE = "https://pypi.tuna.tsinghua.edu.cn/simple"
 BAIDU_PIP_SOURCE = "https://mirror.baidu.com/pypi/simple"

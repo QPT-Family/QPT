@@ -5,9 +5,9 @@ from PyQt5 import QtGui
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 
 from qpt.kernel.qt_ui import GUIML
-from qpt.kernel.tools.qlog import Logging
-from qpt.kernel.tools.qterminal import QTCondaVenv, QTerminal
-from qpt.kernel.tools.qos import SysInfo
+from qpt.kernel.qlog import Logging
+from qpt.kernel.qterminal import QTCondaVenv, QTerminal
+from qpt.kernel.qos import SysInfo
 
 """
 GUI界面以及变量名命名规范：用途_动作_控件

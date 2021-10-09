@@ -8,7 +8,7 @@ import ast
 from pip._internal.utils.misc import get_installed_distributions
 
 from qpt.memory import QPT_MEMORY, PYTHON_IGNORE_DIRS, IGNORE_PACKAGES
-from qpt.kernel.tools.qlog import Logging, TProgressBar
+from qpt.kernel.qlog import TProgressBar
 
 PACKAGE_FLAG = ".dist-info"
 

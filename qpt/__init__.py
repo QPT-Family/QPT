@@ -1,4 +1,4 @@
-from qpt.kernel.tools.qlog import Logging
+from qpt.kernel.qlog import Logging
 
 try:
     import ctypes

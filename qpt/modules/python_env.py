@@ -3,8 +3,8 @@ import sys
 import zipfile
 
 from qpt.modules.base import SubModule, SubModuleOpt, TOP_LEVEL
-from qpt.kernel.tools.qlog import Logging
-from qpt.kernel.tools.qos import download, get_qpt_tmp_path, copytree
+from qpt.kernel.qlog import Logging
+from qpt.kernel.qos import download, get_qpt_tmp_path, copytree
 from qpt._compatibility import com_configs
 
 """

@@ -5,7 +5,7 @@
 
 import os
 
-from qpt.kernel.tools.qos import get_qpt_tmp_path
+from qpt.kernel.qos import get_qpt_tmp_path
 
 
 def make_icon(ico_path, pe_path, save_path=None, img_save_path=None):

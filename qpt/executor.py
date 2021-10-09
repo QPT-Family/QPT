@@ -22,12 +22,12 @@ from qpt.modules.package import QPTDependencyPackage, QPTGUIDependencyPackage, \
     set_default_deploy_mode, BatchInstallation
 from qpt.modules.auto_requirements import AutoRequirementsPackage
 
-from qpt.kernel.tools.qlog import Logging, TProgressBar, set_logger_file
-from qpt.kernel.tools.qos import clean_qpt_cache, copytree, check_chinese_char, StdOutLoggerWrapper
-from qpt.kernel.tools.qterminal import AutoTerminal
-from qpt.kernel.tools.qinterpreter import set_default_pip_lib
+from qpt.kernel.qlog import Logging, TProgressBar, set_logger_file
+from qpt.kernel.qos import clean_qpt_cache, copytree, check_chinese_char, StdOutLoggerWrapper
+from qpt.kernel.qterminal import AutoTerminal
+from qpt.kernel.qinterpreter import set_default_pip_lib
 from qpt.memory import QPT_MODE, check_all, get_env_vars, CheckRun
-from qpt.kernel.tools.qpe import make_icon
+from qpt.kernel.qpe import make_icon
 from qpt.gui.tk_progressbar import ProgressbarFrame
 
 __all__ = ["CreateExecutableModule", "RunExecutableModule"]

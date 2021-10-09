@@ -6,8 +6,7 @@
 import os
 import sys
 
-from qpt.kernel.tools.qos import copytree
-from qpt.kernel.tools.qlog import Logging
+from qpt.kernel.qos import copytree
 from qpt.modules.base import SubModule, SubModuleOpt
 
 

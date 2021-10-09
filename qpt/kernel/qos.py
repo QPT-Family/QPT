@@ -6,7 +6,7 @@ import tempfile
 import io
 from importlib import util
 
-from qpt.kernel.tools.qlog import Logging, TProgressBar
+from qpt.kernel.qlog import Logging, TProgressBar
 from qpt.version import version
 
 

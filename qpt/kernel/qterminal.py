@@ -1,5 +1,5 @@
 import subprocess
-from qpt.kernel.tools.qlog import Logging
+from qpt.kernel.qlog import Logging
 from qpt.memory import get_env_vars
 
 TERMINAL_NAME = "powershell"

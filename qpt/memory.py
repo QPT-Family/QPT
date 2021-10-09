@@ -7,7 +7,7 @@ import platform
 import os
 from distutils.sysconfig import get_python_lib
 
-from qpt.kernel.tools.qlog import Logging
+from qpt.kernel.qlog import Logging
 
 
 def init_wrapper(func):
@@ -72,6 +72,7 @@ def check_bit():
 def check_os():
     p_os = QPTMemory.platform_os
     assert "Windows" in p_os, "当前QPT只支持Windows系统"
+
 
 def get_env_vars(work_dir="."):
     """

@@ -81,7 +81,6 @@ class ProgressbarFrame:
         self.count += 1
 
 
-
 if __name__ == '__main__':
     import time
 
@@ -95,4 +94,3 @@ if __name__ == '__main__':
 
 
     ProgressbarFrame(foo, 10)
-

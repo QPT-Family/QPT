@@ -6,9 +6,8 @@
 import os
 import sys
 
-import qpt
-from qpt.kernel.tools.qlog import Logging
-from qpt.kernel.tools.qinterpreter import PIP
+from qpt.kernel.qlog import Logging
+from qpt.kernel.qinterpreter import PIP
 from qpt.modules.base import SubModule, SubModuleOpt, GENERAL_LEVEL_REDUCE, LOW_LEVEL_REDUCE
 from qpt.modules.package import CustomPackage, DEFAULT_DEPLOY_MODE
 from qpt.modules.cuda import CopyCUDAPackage

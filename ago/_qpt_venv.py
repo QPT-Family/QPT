@@ -3,7 +3,7 @@ import shutil
 
 from pip import main as pip_main
 
-from qpt.kernel.tools.qlog import Logging
+from qpt.kernel.qlog import Logging
 
 # 缺省环境变量值 ToDo:当前版本仅为适配Windows考虑
 ENVIRON_VARS = {"QPT_BASE": "C:/QPT_HOME"}

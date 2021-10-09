@@ -4,9 +4,9 @@
 # Please indicate the source for reprinting.
 import os
 
-from qpt.kernel.tools.qinterpreter import PIP
-from qpt.kernel.tools.qlog import Logging
-from qpt.kernel.tools.qos import get_qpt_tmp_path
+from qpt.kernel.qinterpreter import PIP
+from qpt.kernel.qlog import Logging
+from qpt.kernel.qos import get_qpt_tmp_path
 from qpt.modules.package import _RequirementsPackage, DEFAULT_DEPLOY_MODE
 from qpt.modules.paddle_family import PaddlePaddlePackage
 

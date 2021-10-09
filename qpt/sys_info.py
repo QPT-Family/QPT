@@ -9,6 +9,39 @@ from distutils.sysconfig import get_python_lib
 
 from qpt.kernel.tools.qlog import Logging
 
+def init_wrapper(func):
+    @property
+    def render(self):
+        if func.__name__ in self.memory:
+            out = self.memory[func.__name__]
+        else:
+            out = func(self)
+            self.memory[func.__name__] = out
+        return out
+
+    return render
+
+
+class QPTMemory:
+    def __init__(self):
+        self.memory = dict()
+
+    def set_mem(self, name, variable):
+        self.memory[name] = variable
+
+    def free_men(self, name):
+        self.memory.pop(name)
+
+    @init_wrapper
+    def var_a(self):
+        print("初始化")
+        return "a"
+
+    @init_wrapper
+    def var_b(self):
+        print("初始化B")
+        return "b"
+
 
 def check_bit():
     arc = platform.machine()

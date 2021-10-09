@@ -29,6 +29,7 @@ class QPTMemory:
 
     def set_mem(self, name, variable):
         self.memory[name] = variable
+        return variable
 
     def free_mem(self, name):
         self.memory.pop(name)
@@ -60,6 +61,12 @@ class QPTMemory:
         site_package_path = os.path.abspath(get_python_lib())
         return site_package_path
 
+    @init_wrapper
+    def pip_tool(self):
+        from qpt.kernel.qinterpreter import PipTools
+        pip_tools = PipTools()
+        return pip_tools
+
 
 QPT_MEMORY = QPTMemory()
 
@@ -82,7 +89,7 @@ def get_env_vars(work_dir="."):
     """
     env_vars = dict()
     # Set PATH ENV
-    path_env = os.environ.get("path").split(";")
+    path_env = os.environ.get("PATH").split(";")
     ignore_env_field = ["conda", "Conda", "Python", "python"]
     pre_add_env = os.path.abspath("./Python/Lib/site-packages") + ";" + \
                   os.path.abspath("./Python/Lib") + ";" + \

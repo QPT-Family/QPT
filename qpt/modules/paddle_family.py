@@ -7,10 +7,10 @@ import os
 import sys
 
 from qpt.kernel.qlog import Logging
-from qpt.kernel.qinterpreter import PIP
 from qpt.modules.base import SubModule, SubModuleOpt, GENERAL_LEVEL_REDUCE, LOW_LEVEL_REDUCE
 from qpt.modules.package import CustomPackage, DEFAULT_DEPLOY_MODE
 from qpt.modules.cuda import CopyCUDAPackage
+from qpt.memory import QPT_MEMORY
 
 
 class SetPaddleFamilyEnvValueOpt(SubModuleOpt):
@@ -41,11 +41,11 @@ class CheckAVXOpt(SubModuleOpt):
             Logging.warning("当前CPU不支持AVX指令集，正在尝试在线下载noavx版本的PaddlePaddle")
             if self.version:
                 new_v = self.version[:self.version.rindex(".")]
-                PIP.pip_shell(
+                QPT_MEMORY.pip_tool.pip_shell(
                     f"install paddlepaddle=={new_v} -f https://www.paddlepaddle.org.cn/whl/mkl/stable/noavx.html"
                     " --no-index --no-deps --force-reinstall")
             else:
-                PIP.pip_shell(
+                QPT_MEMORY.pip_tool.pip_shell(
                     f"install paddlepaddle -f https://www.paddlepaddle.org.cn/whl/mkl/stable/noavx.html"
                     " --no-index --no-deps --force-reinstall")
 

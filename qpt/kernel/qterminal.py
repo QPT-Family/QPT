@@ -5,20 +5,6 @@ from qpt.memory import get_env_vars
 TERMINAL_NAME = "powershell"
 
 
-# TERMINAL_MSG_FITTER_TAG = ["Microsoft Windows [版本", "(c) Microsoft Corporation。保留所有权利。"]
-
-
-# try:
-#     import PyQt5
-#     from PyQt5 import QtCore
-#     from PyQt5.QtCore import pyqtSignal
-#
-#     TERMINAL_TYPE = "QTerminal"
-# except ModuleNotFoundError:
-#     TERMINAL_TYPE = "PTerminal"
-#     Logging.debug("当前环境不存在PyQT")
-
-
 class TerminalCallback:
     def __init__(self):
         self.cache = ""
@@ -195,45 +181,6 @@ class PTerminal(Terminal):
         self.shell_func(callback)(shell)
 
 
-# class QTerminal(Terminal):
-#     def __init__(self):
-#         super(QTerminal, self).__init__()
-#         # 信息输出绑定函数占位
-#         self.terminal_normal_info_func = None
-#         self.terminal_error_info_func = None
-#
-#     def init_terminal(self):
-#         self.main_terminal = QtCore.QProcess()
-#         self.main_terminal.start(TERMINAL_NAME)
-#
-#     def reset_terminal(self):
-#         self.close_terminal()
-#         self.init_terminal()
-#
-#     def close_terminal(self):
-#         self.main_terminal.close()
-#
-#     def shell(self, shell, callback: TerminalCallback = MessageBoxTerminalCallback()):
-#         self.shell_func(callback)(shell)
-#
-#     def shell_func(self, callback: TerminalCallback = MessageBoxTerminalCallback()):
-#         self.main_terminal.readyReadStandardOutput.connect(callback.normal_func)
-#         self.main_terminal.readyReadStandardError.connect(callback.error_func)
-#
-#         def closure(closure_shell):
-#             Logging.debug(f"SHELL: {closure_shell}")
-#             closure_shell += "&&echo GACT:DONE!||echo GACT:ERROR!\n"
-#             # 发送指令
-#             self.main_terminal.write(closure_shell.encode("gbk"))
-#             callback.handle()
-#
-#         return closure
-
-
-# 实现自动Terminal类型
-# AutoTerminal = PTerminal if TERMINAL_TYPE == "PTerminal" else QTerminal
-
-AutoTerminal = PTerminal  # 当前正在测试QTerminal，暂时只使用PTerminal
 if __name__ == '__main__':
-    t = AutoTerminal()
+    t = PTerminal()
     t.shell("ping 192.168.1.1")

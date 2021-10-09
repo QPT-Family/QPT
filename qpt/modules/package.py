@@ -7,10 +7,10 @@ import os
 
 from qpt.version import version as qpt_version
 from qpt.modules.base import SubModule, SubModuleOpt, TOP_LEVEL_REDUCE, LOW_LEVEL
-from qpt.kernel.qinterpreter import PIP
 from qpt.kernel.qos import FileSerialize
 from qpt.kernel.qlog import Logging
 from qpt.kernel.qcode import PythonPackages
+from qpt.memory import QPT_MEMORY
 
 DOWN_PACKAGES_RELATIVE_PATH = "opt/packages"
 
@@ -63,7 +63,7 @@ class DownloadWhlOpt(SubModuleOpt):
         if "[FLAG-FileSerialize]" in self.package[:32]:
             self.package = self.package.strip("[FLAG-FileSerialize]")
             self.package = "-r " + FileSerialize.serialize2file(self.package)
-        PIP.download_package(self.package,
+        QPT_MEMORY.pip_tool.download_package(self.package,
                              version=self.version,
                              save_path=os.path.join(self.module_path, DOWN_PACKAGES_RELATIVE_PATH),
                              no_dependent=self.no_dependent,
@@ -91,7 +91,7 @@ class LocalInstallWhlOpt(SubModuleOpt):
         if self.opts is None:
             self.opts = ""
         # self.opts += "--target " + SITE_PACKAGE_PATH
-        PIP.install_local_package(self.package,
+        QPT_MEMORY.pip_tool.install_local_package(self.package,
                                   version=self.version,
                                   whl_dir=os.path.join(self.module_path, DOWN_PACKAGES_RELATIVE_PATH),
                                   no_dependent=self.no_dependent,
@@ -130,7 +130,7 @@ class OnlineInstallWhlOpt(SubModuleOpt):
             # self.opts += "--target " + SITE_PACKAGE_PATH
             if self.to_python_env_version:
                 self.opts += f" --python-version {self.to_python_env_version} --only-binary :all:"
-        PIP.pip_package_shell(self.package,
+        QPT_MEMORY.pip_tool.pip_package_shell(self.package,
                               act="install",
                               version=self.version,
                               find_links=self.find_links,
@@ -152,7 +152,7 @@ class BatchInstallationOpt(SubModuleOpt):
                     whl.split("-")[0].lower().replace("_", "-") not in ready_list]
         Logging.info(f"需要补充的安装包数量为：{len(whl_list)}")
         for whl_name in whl_list:
-            PIP.install_local_package(whl_name,
+            QPT_MEMORY.pip_tool.install_local_package(whl_name,
                                       whl_dir=self.path,
                                       no_dependent=True)
 

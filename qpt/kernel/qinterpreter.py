@@ -17,6 +17,7 @@ DEFAULT_PIP_SOURCE = BFSU_PIP_SOURCE
 
 
 class PIPTerminal(PTerminal):
+    # ToDo 此处需要简化
     def __init__(self, python_path):
         super(PIPTerminal, self).__init__()
         self.head = os.path.abspath(python_path) + " -m pip"
@@ -221,33 +222,3 @@ class PipTools:
                 else:
                     line = requirement + "\n"
                 file.write(line)
-
-
-PIP = PipTools()
-
-
-def set_default_pip_source(source: str):
-    global PIP, DEFAULT_PIP_SOURCE
-    PIP.source = source
-    DEFAULT_PIP_SOURCE = source
-    Logging.debug(f"已设置PIP镜像源为：{source}")
-
-
-def set_default_pip_lib(interpreter_path: str):
-    global PIP
-    if not os.path.splitext(interpreter_path)[1]:
-        interpreter_path = os.path.join(interpreter_path, "python.exe")
-    PIP.pip_main = PIPTerminal(interpreter_path).shell_func()
-    Logging.debug(f"已设置PIP跨版本编译模式，目标解释器路径为：{interpreter_path}")
-
-
-def set_pip_configs(lib_package_path=None,
-                    source: str = DEFAULT_PIP_SOURCE):
-    """
-    设置全局pip工具组件
-    :param lib_package_path: pip所在位置
-    :param source: 镜像源地址
-    """
-    # 存在Bug，建议开个set接口来替换
-    global PIP
-    PIP = PipTools(pip_path=lib_package_path, source=source)

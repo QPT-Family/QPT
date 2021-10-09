@@ -4,11 +4,11 @@
 # Please indicate the source for reprinting.
 import os
 
-from qpt.kernel.qinterpreter import PIP
 from qpt.kernel.qlog import Logging
 from qpt.kernel.qos import get_qpt_tmp_path
 from qpt.modules.package import _RequirementsPackage, DEFAULT_DEPLOY_MODE
 from qpt.modules.paddle_family import PaddlePaddlePackage
+from qpt.memory import QPT_MEMORY
 
 
 class AutoRequirementsPackage(_RequirementsPackage):
@@ -28,10 +28,10 @@ class AutoRequirementsPackage(_RequirementsPackage):
             Logging.info(f"当前路径{os.path.abspath(path)}中不存在Requirements文件，请优先检查路径是否提供正确，必要时使用绝对路径")
         if os.path.isfile(path):
             Logging.info(f"正在读取{os.path.abspath(path)}下的依赖情况...")
-            requirements = PIP.analyze_requirements_file(path)
+            requirements = QPT_MEMORY.pip_tool.analyze_requirements_file(path)
         else:
             Logging.info(f"[Auto]正在分析{os.path.abspath(path)}下的依赖情况...")
-            requirements = PIP.analyze_dependence(path, return_path=False)
+            requirements = QPT_MEMORY.pip_tool.analyze_dependence(path, return_path=False)
 
         # module_name_list = [m.name for m in module_list]
         # 对特殊包进行过滤和特殊化
@@ -50,7 +50,7 @@ class AutoRequirementsPackage(_RequirementsPackage):
 
         # 保存依赖至
         requirements_path = os.path.join(get_qpt_tmp_path(), "requirements_dev.txt")
-        PIP.save_requirements_file(requirements, requirements_path)
+        QPT_MEMORY.pip_tool.save_requirements_file(requirements, requirements_path)
 
         # 执行常规的安装
         super().__init__(requirements_file_path=requirements_path,

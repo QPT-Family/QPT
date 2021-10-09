@@ -24,8 +24,8 @@ from qpt.modules.auto_requirements import AutoRequirementsPackage
 
 from qpt.kernel.qlog import Logging, TProgressBar, set_logger_file
 from qpt.kernel.qos import clean_qpt_cache, copytree, check_chinese_char, StdOutLoggerWrapper
-from qpt.kernel.qterminal import AutoTerminal
-from qpt.kernel.qinterpreter import set_default_pip_lib
+from qpt.kernel.qterminal import PTerminal
+from qpt.smart_opt import set_default_pip_lib
 from qpt.memory import QPT_MODE, check_all, get_env_vars, CheckRun
 from qpt.kernel.qpe import make_icon
 from qpt.gui.tk_progressbar import ProgressbarFrame
@@ -188,7 +188,7 @@ class CreateExecutableModule:
             # lazy mode 不支持terminal
             terminal = None
         else:
-            self.terminal = AutoTerminal()
+            self.terminal = PTerminal()
             modules = self.sub_modules
             terminal = self.terminal.shell_func()
         for sub in modules:
@@ -404,7 +404,7 @@ class RunExecutableModule:
         self.sub_module = self.configs["sub_module"]
 
         # 实例化终端
-        self.auto_terminal = AutoTerminal()
+        self.auto_terminal = PTerminal()
 
     def warning_msg_box(self, title="Warning - GitHub: QPT-Family/QPT", text="", force=False):
         """

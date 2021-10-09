@@ -29,7 +29,7 @@ class QPTMemory:
     def set_mem(self, name, variable):
         self.memory[name] = variable
 
-    def free_men(self, name):
+    def free_mem(self, name):
         self.memory.pop(name)
 
     @init_wrapper

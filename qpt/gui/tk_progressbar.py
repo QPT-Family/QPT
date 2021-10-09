@@ -56,13 +56,12 @@ class ProgressbarFrame:
 
         self.thread = None
 
-        def t():
-            print(1)
+        def render():
             self.thread = threading.Thread(target=bind_fuc, args=(self,))
             self.thread.setDaemon(True)
             self.thread.start()
 
-        self.root.after(ms=32, func=t)
+        self.root.after(ms=32, func=render)
 
         self.root.mainloop()
         self.close()

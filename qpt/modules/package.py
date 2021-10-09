@@ -6,7 +6,7 @@
 import os
 
 from qpt.version import version as qpt_version
-from qpt.sys_info import SITE_PACKAGE_PATH
+from qpt.memory import SITE_PACKAGE_PATH
 from qpt.modules.base import SubModule, SubModuleOpt, TOP_LEVEL_REDUCE, LOW_LEVEL
 from qpt.kernel.tools.qinterpreter import PIP
 from qpt.kernel.tools.qos import FileSerialize

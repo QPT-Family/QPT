@@ -9,6 +9,7 @@ from distutils.sysconfig import get_python_lib
 
 from qpt.kernel.tools.qlog import Logging
 
+
 def init_wrapper(func):
     @property
     def render(self):
@@ -42,25 +43,35 @@ class QPTMemory:
         print("初始化B")
         return "b"
 
+    @init_wrapper
+    def platform_bit(self):
+        arc = platform.machine()
+        Logging.debug(f"操作系统位数：{arc}")
+        return arc
+
+    @init_wrapper
+    def platform_os(self):
+        p_os = platform.system()
+        Logging.debug(f"操作系统类型：{p_os}")
+        return p_os
+
+    @init_wrapper
+    def site_packages_path(self):
+        site_package_path = os.path.abspath(get_python_lib())
+        return site_package_path
+
+
+QPT_MEMORY = QPTMemory()
+
 
 def check_bit():
-    arc = platform.machine()
-    Logging.debug(f"操作系统位数：{arc}")
+    arc = QPT_MEMORY.platform_bit
     assert "64" in arc, "当前QPT不支持32位操作系统"
 
 
 def check_os():
-    p_os = platform.system()
-    if p_os is None:
-        return 0
-    Logging.debug(f"操作系统类型：{p_os}")
+    p_os = QPTMemory.platform_os
     assert "Windows" in p_os, "当前QPT只支持Windows系统"
-
-
-def req_site_packages_path():
-    site_package_path = os.path.abspath(get_python_lib())
-    return site_package_path
-
 
 def get_env_vars(work_dir="."):
     """
@@ -100,8 +111,6 @@ PYTHON_IGNORE_DIRS = [".idea", ".git", ".github", "venv"]
 
 # 被忽略的Python包
 IGNORE_PACKAGES = ["virtualenv", "pip", "setuptools", "cpython"]
-
-SITE_PACKAGE_PATH = req_site_packages_path()
 
 # QPT运行状态 Run/Debug
 QPT_MODE = os.getenv("QPT_MODE")

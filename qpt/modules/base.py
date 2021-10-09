@@ -9,7 +9,7 @@ import datetime
 
 from qpt.kernel.tools.qos import download
 from qpt.kernel.tools.qlog import Logging
-from qpt.sys_info import QPT_MODE, CheckRun
+from qpt.memory import QPT_MODE, CheckRun
 
 # 定义优先级 优先级越高执行顺序越考前，一般设置为GENERAL_LEVEL
 TOP_LEVEL = 5.  # 底层高优先级

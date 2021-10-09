@@ -7,7 +7,7 @@ import os
 import ast
 from pip._internal.utils.misc import get_installed_distributions
 
-from qpt.sys_info import SITE_PACKAGE_PATH, PYTHON_IGNORE_DIRS, IGNORE_PACKAGES
+from qpt.memory import QPT_MEMORY, PYTHON_IGNORE_DIRS, IGNORE_PACKAGES
 from qpt.kernel.tools.qlog import Logging, TProgressBar
 
 PACKAGE_FLAG = ".dist-info"
@@ -32,7 +32,7 @@ class PythonPackages:
 
         # 获取当前环境下安装的文件列表
         if site_package_path is None:
-            site_package_path = SITE_PACKAGE_PATH
+            site_package_path = QPT_MEMORY.site_packages_path
         packages_dir_list = os.listdir(site_package_path)
         packages_dist = dict()
         tops_dist = dict()

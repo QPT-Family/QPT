@@ -24,13 +24,13 @@
 - [ ] 文件夹重复问题还是没解决 - 以后统一迁移吧顺便支持个中文路径
 - [ ] BS多次安装以及为什么wget还需要安装
 - [ ] 整体上使用powershell
+- [ ] 看一下egg格式的包搜索问题
 
 ## 下版本可能的ToDo
 - [ ] 试一下重新编译360还会不会误报
 - [ ] 增加多程序入口
 - [ ] 开发整体工具包迁移至smart_opt
-- [ ] sys_info更改为sys_swap并增加warmup和mem
-- [ ] 加个缓存接口在sys_info
+- [x] sys_info更改为sys_swap并增加warmup和mem
 - [ ] Debug状态文件删除，借助环境变量统一在sys_info注册
 - [ ] 增加进程锁
 - [ ] 加个网络链接测试，增加链接池

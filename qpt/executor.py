@@ -13,8 +13,8 @@ import tempfile
 from typing import List
 
 import qpt
+from qpt.memory import QPT_MEMORY
 from qpt.version import version as qpt_v
-from qpt._compatibility import com_configs
 from qpt.modules.base import SubModule
 from qpt.modules.python_env import BasePythonEnv, AutoPythonEnv
 from qpt.modules.package import QPTDependencyPackage, QPTGUIDependencyPackage, \
@@ -24,7 +24,7 @@ from qpt.modules.auto_requirements import AutoRequirementsPackage
 
 from qpt.kernel.qlog import Logging, TProgressBar, set_logger_file
 from qpt.kernel.qos import clean_qpt_cache, copytree, check_chinese_char, StdOutLoggerWrapper
-from qpt.kernel.qterminal import PTerminal
+from qpt.kernel.qterminal import PTerminal, RunTerminalCallback
 from qpt.smart_opt import set_default_pip_lib
 from qpt.memory import QPT_MODE, check_all, get_env_vars, CheckRun
 from qpt.kernel.qpe import make_icon
@@ -108,7 +108,7 @@ class CreateExecutableModule:
         self.config_path = os.path.join(self.module_path, "configs")
         self.config_file_path = os.path.join(self.config_path, "configs.txt")
         self.lib_package_path = os.path.join(self.interpreter_path,
-                                             com_configs["RELATIVE_INTERPRETER_SITE_PACKAGES_PATH"])
+                                             QPT_MEMORY.site_packages_path)
 
         # 设置全局下载的Python包默认解释器版本号 - 更换兼容性方案
         # set_default_package_for_python_version(interpreter_module.python_version)
@@ -500,9 +500,10 @@ class RunExecutableModule:
         CheckRun.make_run_file(self.config_path)
         # 执行主程序
         run_shell = f"cd {self.work_dir}" + \
-                    '; start "' + self.interpreter_path + '\\python.exe" "' + \
+                    '; ' + self.interpreter_path + '\\python.exe "' + \
                     os.path.abspath(self.configs["launcher_py_path"]) + '"'
-        self.auto_terminal.shell(run_shell)
+        # start -NoNewWindow
+        self.auto_terminal.shell(run_shell, callback=RunTerminalCallback())
         # main_lib_path = self.configs["launcher_py_path"].replace(".py", "")
         # main_lib_path = main_lib_path. \
         #     replace(".py", ""). \

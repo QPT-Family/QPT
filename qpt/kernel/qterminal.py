@@ -60,15 +60,12 @@ class LoggingTerminalCallback(TerminalCallback):
                     elif msg == "False":
                         self.error_func()
                         break
-
-                #             for tag_id, tag in enumerate(TERMINAL_MSG_FITTER_TAG):
-                #                 if tag in msg:
-                #                     break
-                #                 if tag_id == len(TERMINAL_MSG_FITTER_TAG) - 1:
-                #                     self.cache += msg
-                #                     Logging.debug(msg)
                 self.cache += msg
-                Logging.debug(msg)
+                self.print(msg)
+
+    @staticmethod
+    def print(msg):
+        Logging.debug(msg)
 
     def normal_func(self):
         self.cache = ""
@@ -77,6 +74,12 @@ class LoggingTerminalCallback(TerminalCallback):
     def error_func(self):
         Logging.error(f"在执行终端命令时检测到了失败，完整信息如下：\n{self.cache}")
         self.cache = ""
+
+
+class RunTerminalCallback(LoggingTerminalCallback):
+    @staticmethod
+    def print(msg):
+        Logging.info(msg)
 
 
 class Terminal:
@@ -131,19 +134,25 @@ class Terminal:
 
 
 class PTerminal(Terminal):
-    def __init__(self):
+    def __init__(self, shell_mode=True):
+        self.shell_mode = shell_mode
         super(PTerminal, self).__init__()
 
     def init_terminal(self):
-        self.main_terminal = subprocess.Popen(TERMINAL_NAME,
-                                              stdout=subprocess.PIPE,
-                                              stderr=subprocess.STDOUT,
-                                              stdin=subprocess.PIPE,
-                                              shell=True,
-                                              close_fds=True)
+        if self.shell_mode:
+            self.main_terminal = subprocess.Popen(TERMINAL_NAME,
+                                                  stdout=subprocess.PIPE,
+                                                  stderr=subprocess.STDOUT,
+                                                  stdin=subprocess.PIPE,
+                                                  shell=True,
+                                                  bufsize=1)
+        else:
+            self.main_terminal = subprocess.Popen(TERMINAL_NAME,
+                                                  shell=False,
+                                                  bufsize=1)
         prepare = "chcp 65001"
         self._shell_func()(prepare)
-        prepare = "set PATH='" + self._get_env_vars() + "'"
+        prepare = "$env:PATH='" + self._get_env_vars() + "'"
         self._shell_func()(prepare)
 
     def reset_terminal(self):

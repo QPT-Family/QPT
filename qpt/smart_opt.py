@@ -6,8 +6,9 @@
 # 设置镜像源
 import os
 
-from qpt import QPT_MEMORY, Logging
+from qpt import Logging
 from qpt.kernel.qinterpreter import PIPTerminal, PipTools
+from qpt.memory import QPT_MEMORY
 
 
 def set_default_pip_source(source: str):

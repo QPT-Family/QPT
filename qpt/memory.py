@@ -35,16 +35,6 @@ class QPTMemory:
         self.memory.pop(name)
 
     @init_wrapper
-    def var_a(self):
-        print("初始化")
-        return "a"
-
-    @init_wrapper
-    def var_b(self):
-        print("初始化B")
-        return "b"
-
-    @init_wrapper
     def platform_bit(self):
         arc = platform.machine()
         Logging.debug(f"操作系统位数：{arc}")
@@ -77,7 +67,7 @@ def check_bit():
 
 
 def check_os():
-    p_os = QPTMemory.platform_os
+    p_os = QPT_MEMORY.platform_os
     assert "Windows" in p_os, "当前QPT只支持Windows系统"
 
 

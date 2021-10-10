@@ -3,10 +3,12 @@
 # Copyright belongs to the author.
 # Please indicate the source for reprinting.
 import threading
+import traceback
 
 import tkinter
 import tkinter.font
 from tkinter import ttk
+from tkinter.messagebox import showerror
 
 
 class ProgressbarFrame:
@@ -34,7 +36,7 @@ class ProgressbarFrame:
 
         self.progressbar_var = tkinter.IntVar(self.root, value=0)
         self.label_var = tkinter.StringVar(self.root, value=default_text)
-        self.value_var = tkinter.StringVar(self.root, value="进度" + f"{0:.2f}%".rjust(10, " "))
+        self.value_var = tkinter.StringVar(self.root, value="进度" + f"{0:.2f} %".rjust(10, " "))
         self.progressbar_var.trace("w", self.progressbar_var_trace)
 
         label = ttk.Label(self.root,
@@ -57,7 +59,15 @@ class ProgressbarFrame:
         self.thread = None
 
         def render():
-            self.thread = threading.Thread(target=bind_fuc, args=(self,))
+            def func(self):
+                try:
+                    bind_fuc(self)
+                except Exception as e:
+                    msg = traceback.format_exc()
+                    showerror(title="发生异常 - QPT提示", message=f"简略异常说明:\n{e}\n\n完整报错信息如下：\n{msg}")
+                    self.root.quit()
+                return func
+            self.thread = threading.Thread(target=func, args=(self,))
             self.thread.setDaemon(True)
             self.thread.start()
 
@@ -68,7 +78,7 @@ class ProgressbarFrame:
 
     def progressbar_var_trace(self, *args):
         v = self.progressbar_var.get()
-        self.value_var.set(f"进度 {v:.2f}%")
+        self.value_var.set(f"进度 {v:.2f} %")
 
     def close(self):
         self.step("加载完毕")

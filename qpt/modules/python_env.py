@@ -5,7 +5,7 @@ import zipfile
 from qpt.modules.base import SubModule, SubModuleOpt, TOP_LEVEL
 from qpt.kernel.qlog import Logging
 from qpt.kernel.qos import download, get_qpt_tmp_path, copytree
-from qpt._compatibility import com_configs
+from qpt.memory import QPT_MEMORY
 
 """
 Python镜像打包指南
@@ -90,7 +90,7 @@ class UnPackPythonEnvOpt(SubModuleOpt):
 
         # 添加Python以及Python/lib/python/site_packages_path下的包到环境变量/工作目录
         python_path = self.interpreter_path
-        site_packages_path = os.path.join(self.interpreter_path, com_configs["RELATIVE_INTERPRETER_SITE_PACKAGES_PATH"])
+        site_packages_path = os.path.join(self.interpreter_path, QPT_MEMORY.site_packages_path)
         script_path = os.path.join(self.interpreter_path, "Scripts")
         sys.path.append(python_path)
         sys.path.append(site_packages_path)

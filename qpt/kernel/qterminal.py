@@ -61,10 +61,10 @@ class LoggingTerminalCallback(TerminalCallback):
                         self.error_func()
                         break
                 self.cache += msg
-                self.print(msg)
+                self.print_func(msg)
 
     @staticmethod
-    def print(msg):
+    def print_func(msg):
         Logging.debug(msg)
 
     def normal_func(self):
@@ -78,8 +78,8 @@ class LoggingTerminalCallback(TerminalCallback):
 
 class RunTerminalCallback(LoggingTerminalCallback):
     @staticmethod
-    def print(msg):
-        Logging.info(msg)
+    def print_func(msg):
+        print(msg)
 
 
 class Terminal:

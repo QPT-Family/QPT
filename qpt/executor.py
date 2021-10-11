@@ -499,8 +499,8 @@ class RunExecutableModule:
 
         CheckRun.make_run_file(self.config_path)
         # 执行主程序
-        run_shell = f"cd {self.work_dir}" + \
-                    '; ' + self.interpreter_path + '\\python.exe "' + \
+        run_shell = f'cd "{self.work_dir}"' + \
+                    '; ' + './Python/python.exe "' + \
                     os.path.abspath(self.configs["launcher_py_path"]) + '"'
         # start -NoNewWindow
         self.auto_terminal.shell(run_shell, callback=RunTerminalCallback())

@@ -52,9 +52,9 @@ class CreateExecutableModule:
         self.launcher_py_path = os.path.relpath(launcher_py_path, work_dir)
         if self.launcher_py_path[:1] == "\\":
             self.launcher_py_path = self.launcher_py_path[1:]
-        assert "." not in self.launcher_py_path.strip(".py"), \
-            f"{self.launcher_py_path}中的路径或文件名中出现了除“.py”以外的“.”符号，请保证路径和文件中没有除“.py”以外的“.”符号\n" \
-            f"例如：C:/123.445/run.py 中123.445文件夹包含了“.”符号，该符号将可能导致Python程序运行终止，请修改该类情况！"
+#         assert "." not in self.launcher_py_path.strip(".py"), \
+#             f"{self.launcher_py_path}中的路径或文件名中出现了除“.py”以外的“.”符号，请保证路径和文件中没有除“.py”以外的“.”符号\n" \
+#             f"例如：C:/123.445/run.py 中123.445文件夹包含了“.”符号，该符号将可能导致Python程序运行终止，请修改该类情况！"
         assert " " not in self.launcher_py_path, \
             f"{self.launcher_py_path}中的路径或文件名中出现了空格符号，请删去文件夹或文件名中的空格\n" \
             f"例如：C:/123 445/run.py 中123 445文件夹包含了空格符号，该符号将可能导致Python程序运行终止，请修改该类情况！"

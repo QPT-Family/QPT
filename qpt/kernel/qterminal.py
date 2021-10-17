@@ -3,11 +3,13 @@ from qpt.kernel.qlog import Logging
 from qpt.memory import get_env_vars
 
 TERMINAL_NAME = "powershell"
+# TERMINAL_NAME = "pwsh"
 
 
 class TerminalCallback:
     def __init__(self):
         self.cache = ""
+        self.error_fitter = list()
 
     def handle(self, terminal=None):
         """
@@ -54,13 +56,20 @@ class LoggingTerminalCallback(TerminalCallback):
                 if msg == "\r" or msg == "\n":
                     continue
                 if end:
+                    fitter_flag = False
+                    for error_fitter in self.error_fitter:
+                        if error_fitter in self.cache:
+                            self.error_func()
+                            fitter_flag = True
+                    if fitter_flag:
+                        break
                     if msg == "True":
                         self.normal_func()
                         break
                     elif msg == "False":
                         self.error_func()
                         break
-                self.cache += msg
+                self.cache += msg + "\n"
                 self.print_func(msg)
 
     @staticmethod
@@ -150,6 +159,10 @@ class PTerminal(Terminal):
             self.main_terminal = subprocess.Popen(TERMINAL_NAME,
                                                   shell=False,
                                                   bufsize=1)
+        # ToDo 加个自动判断
+        Logging.info("如在该步骤停留时间较长，请升级Windows Powershell至版本5即可解决该问题，下载地址：\n"
+                     "官方地址：https://www.microsoft.com/en-us/download/details.aspx?id=54616\n"
+                     "团子云镜像：https://s.dango.cloud/s/ZyDSn 下载码：egl95d")
         prepare = "chcp 65001"
         self._shell_func()(prepare)
         prepare = "$env:PATH='" + self._get_env_vars() + "'"

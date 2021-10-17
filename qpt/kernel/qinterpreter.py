@@ -43,6 +43,9 @@ class PIPTerminal(PTerminal):
                 self.main_terminal.stdin.flush()
             except Exception as e:
                 Logging.error(str(e))
+
+            # 捕获PIP的异常
+            callback.error_fitter = ["ERROR:"]
             callback.handle(self.main_terminal)
 
         return closure

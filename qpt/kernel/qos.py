@@ -1,5 +1,4 @@
 import shutil
-import ctypes
 import os
 import sys
 import tempfile
@@ -44,6 +43,7 @@ def add_ua():
     """
     获取UA权限
     """
+    import ctypes
     ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
     Logging.info("UA请求完毕")
 

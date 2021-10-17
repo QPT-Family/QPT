@@ -10,6 +10,7 @@ class TerminalCallback:
     def __init__(self):
         self.cache = ""
         self.error_fitter = list()
+        self.normal_fitter = list()
 
     def handle(self, terminal=None):
         """
@@ -57,6 +58,10 @@ class LoggingTerminalCallback(TerminalCallback):
                     continue
                 if end:
                     fitter_flag = False
+                    for normal_fitter in self.normal_fitter:
+                        if normal_fitter in self.cache:
+                            self.normal_func()
+                            fitter_flag = True
                     for error_fitter in self.error_fitter:
                         if error_fitter in self.cache:
                             self.error_func()
@@ -160,7 +165,7 @@ class PTerminal(Terminal):
                                                   shell=False,
                                                   bufsize=1)
         # ToDo 加个自动判断
-        Logging.info("如在该步骤停留时间较长，请升级Windows Powershell至版本5即可解决该问题，下载地址：\n"
+        Logging.info("\n如在本信息之后停留时间较长，请升级Windows Powershell至版本5即可解决该问题，下载地址：\n"
                      "官方地址：https://www.microsoft.com/en-us/download/details.aspx?id=54616\n"
                      "团子云镜像：https://s.dango.cloud/s/ZyDSn 下载码：egl95d")
         prepare = "chcp 65001"

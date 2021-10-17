@@ -46,6 +46,7 @@ class PIPTerminal(PTerminal):
 
             # 捕获PIP的异常
             callback.error_fitter = ["ERROR:"]
+            callback.normal_fitter = ["requires click, which is not installed.\nqpt"]
             callback.handle(self.main_terminal)
 
         return closure

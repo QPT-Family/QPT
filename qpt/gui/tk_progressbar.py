@@ -62,6 +62,7 @@ class ProgressbarFrame:
             def func(self):
                 try:
                     bind_fuc(self)
+                    self.close()
                 except Exception as e:
                     msg = traceback.format_exc()
                     showerror(title="发生异常 - QPT提示", message=f"简略异常说明:\n{e}\n\n完整报错信息如下：\n{msg}")

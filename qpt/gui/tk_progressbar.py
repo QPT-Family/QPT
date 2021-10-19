@@ -62,10 +62,10 @@ class ProgressbarFrame:
             def func(self):
                 try:
                     bind_fuc(self)
+                    self.step("加载完毕")
                 except Exception as e:
                     msg = traceback.format_exc()
                     showerror(title="发生异常 - QPT提示", message=f"简略异常说明:\n{e}\n\n完整报错信息如下：\n{msg}")
-                    self.root.quit()
                 finally:
                     self.close()
                 return func
@@ -76,14 +76,12 @@ class ProgressbarFrame:
         self.root.after(ms=32, func=render)
 
         self.root.mainloop()
-        self.close()
 
     def progressbar_var_trace(self, *args):
         v = self.progressbar_var.get()
         self.value_var.set(f"进度 {v:.2f} %")
 
     def close(self):
-        self.step("加载完毕")
         self.root.quit()
 
     def step(self, text: str = None):

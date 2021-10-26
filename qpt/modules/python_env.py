@@ -153,3 +153,8 @@ class Python38(BasePythonEnv):
 class Python39(BasePythonEnv):
     def __init__(self, mode=DEFINE_PYTHON_ENV_MODE):
         super().__init__(name=None, version="3.9", mode=mode)
+
+
+class Python310(BasePythonEnv):
+    def __init__(self, mode=DEFINE_PYTHON_ENV_MODE):
+        super().__init__(name=None, version="3.9", mode=mode)

@@ -488,7 +488,7 @@ class RunExecutableModule:
         run_shell = f'cd "{self.work_dir}"' + \
                     '; ' + './../Python/python.exe "' + \
                     os.path.abspath(self.configs["launcher_py_path"]) + '"'
-        # start -NoNewWindow
+        # start -NoNewWindow 看看要不要从输入符号入手
         self.auto_terminal.shell(run_shell, callback=RunTerminalCallback())
         # main_lib_path = self.configs["launcher_py_path"].replace(".py", "")
         # main_lib_path = main_lib_path. \

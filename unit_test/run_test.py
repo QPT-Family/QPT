@@ -8,7 +8,7 @@ import os
 
 from qpt.executor import CreateExecutableModule
 from qpt.modules.package import ONLINE_DEPLOY_MODE
-from qpt.modules.python_env import Python37, Python38, Python39
+from qpt.modules.python_env import *
 
 # from qpt.kernel.tools.interpreter import set_default_pip_source
 # set_default_pip_source("https://mirror.baidu.com/pypi/simple")
@@ -50,6 +50,17 @@ class LogTest(unittest.TestCase):
                                         save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),
                                         requirements_file="sandbox_m/requirements_with_opt.txt",
                                         interpreter_module=Python39(),
+                                        with_debug=True,
+                                        hidden_terminal=True)
+        module.make()
+
+    def test_module_m_gui_python310(self):
+        # 验证Python兼容性
+        module = CreateExecutableModule(work_dir="./sandbox_m",
+                                        launcher_py_path="./sandbox_m/run.py",
+                                        save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),
+                                        requirements_file="sandbox_m/requirements_with_opt.txt",
+                                        interpreter_module=Python310(),
                                         with_debug=True,
                                         hidden_terminal=True)
         module.make()

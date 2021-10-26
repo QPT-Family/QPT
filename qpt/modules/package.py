@@ -64,12 +64,12 @@ class DownloadWhlOpt(SubModuleOpt):
             self.package = self.package.strip("[FLAG-FileSerialize]")
             self.package = "-r " + FileSerialize.serialize2file(self.package)
         QPT_MEMORY.pip_tool.download_package(self.package,
-                             version=self.version,
-                             save_path=os.path.join(self.module_path, DOWN_PACKAGES_RELATIVE_PATH),
-                             no_dependent=self.no_dependent,
-                             find_links=self.find_links,
-                             python_version=self.python_version,
-                             opts=self.opts)
+                                             version=self.version,
+                                             save_path=os.path.join(self.module_path, DOWN_PACKAGES_RELATIVE_PATH),
+                                             no_dependent=self.no_dependent,
+                                             find_links=self.find_links,
+                                             python_version=self.python_version,
+                                             opts=self.opts)
 
 
 class LocalInstallWhlOpt(SubModuleOpt):
@@ -92,10 +92,10 @@ class LocalInstallWhlOpt(SubModuleOpt):
             self.opts = ""
         # self.opts += "--target " + SITE_PACKAGE_PATH
         QPT_MEMORY.pip_tool.install_local_package(self.package,
-                                  version=self.version,
-                                  whl_dir=os.path.join(self.module_path, DOWN_PACKAGES_RELATIVE_PATH),
-                                  no_dependent=self.no_dependent,
-                                  opts=self.opts)
+                                                  version=self.version,
+                                                  whl_dir=os.path.join(self.module_path, DOWN_PACKAGES_RELATIVE_PATH),
+                                                  no_dependent=self.no_dependent,
+                                                  opts=self.opts)
 
 
 class OnlineInstallWhlOpt(SubModuleOpt):
@@ -131,11 +131,11 @@ class OnlineInstallWhlOpt(SubModuleOpt):
             if self.to_python_env_version:
                 self.opts += f" --python-version {self.to_python_env_version} --only-binary :all:"
         QPT_MEMORY.pip_tool.pip_package_shell(self.package,
-                              act="install",
-                              version=self.version,
-                              find_links=self.find_links,
-                              no_dependent=self.no_dependent,
-                              opts=self.opts)
+                                              act="install",
+                                              version=self.version,
+                                              find_links=self.find_links,
+                                              no_dependent=self.no_dependent,
+                                              opts=self.opts)
 
 
 class BatchInstallationOpt(SubModuleOpt):
@@ -153,8 +153,8 @@ class BatchInstallationOpt(SubModuleOpt):
         Logging.info(f"需要补充的安装包数量为：{len(whl_list)}")
         for whl_name in whl_list:
             QPT_MEMORY.pip_tool.install_local_package(whl_name,
-                                      whl_dir=self.path,
-                                      no_dependent=True)
+                                                      whl_dir=self.path,
+                                                      no_dependent=True)
 
 
 class CustomPackage(SubModule):
@@ -233,10 +233,6 @@ class QPTDependencyPackage(SubModule):
                                               version=qpt_version,
                                               no_dependent=True,
                                               to_module_env_path=True))
-        # self.add_pack_opt(OnlineInstallWhlOpt(package="qpt",
-        #                                       version=qpt_version,
-        #                                       no_dependent=True,
-        #                                       to_module_env_path=True))
         self.add_pack_opt(OnlineInstallWhlOpt(package=kernel,
                                               no_dependent=False,
                                               to_module_env_path=True))

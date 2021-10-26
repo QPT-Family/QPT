@@ -20,18 +20,21 @@ PYTHON_ENV_MODE_PACKAGE_VOLUME_FIRST = "[暂不支持]封装后保留压缩的Py
 PYTHON_ENV_MODE_ONLINE_INSTALLATION = "[暂不支持]不封装Python环境，用户使用时在线进行下载并部署"
 DEFINE_PYTHON_ENV_MODE = PYTHON_ENV_MODE_SPEED_FIRST
 
-RESOURCES_URLS = {"Python3.7Env-Win": "https://bj.bcebos.com/v1/ai-studio-online/ef4dc15e6b494630b499eb8346851212a"
-                                      "75164a1ac0444f794b7cf8166245bdc?responseContentDisposition=attachment%3B%20"
-                                      "filename%3DPython37_full.zip",
-                  "Python3.8Env-Win": "https://bj.bcebos.com/v1/ai-studio-online/e399eff8de3544319bd19ce57ef399ca9"
-                                      "06d377adbbe46d4842efebd2554f554?responseContentDisposition=attachment%3B%20"
-                                      "filename%3DPython3.8.10.full.zip",
-                  "Python3.9Env-Win": "https://bj.bcebos.com/v1/ai-studio-online/b56a0350ff404d919ce0606d474cfc643"
-                                      "4bcc8cf331447fbbee5f432b053bf41?responseContentDisposition=attachment%3B%20"
-                                      "filename%3DPython39_full.zip",
-                  "DEFAULT-Win": "https://bj.bcebos.com/v1/ai-studio-online/e399eff8de3544319bd19ce57ef399ca9"
-                                 "06d377adbbe46d4842efebd2554f554?responseContentDisposition=attachment%3B%20"
-                                 "filename%3DPython3.8.10.full.zip"}
+RESOURCES_URLS = {"Python3.7Env-Win": "https://bj.bcebos.com/v1/ai-studio-online/470b6a91063f425db72ddece0931bcc56"
+                                      "6950d67f3914339b40beea878461f3b?responseContentDisposition=attachment%3B%20"
+                                      "filename%3DPython37.zip",
+                  "Python3.8Env-Win": "https://bj.bcebos.com/v1/ai-studio-online/d0383fa2194d4853883f89b3ab54e841f"
+                                      "8cdcc3c88824e2398ba22f9b8fd5094?responseContentDisposition=attachment%3B%20"
+                                      "filename%3DPython38.zip",
+                  "Python3.9Env-Win": "https://bj.bcebos.com/v1/ai-studio-online/ea6af2820f594d209d6dc421b9392327d"
+                                      "270368a6fb2428ebf8bd90cd74d7e26?responseContentDisposition=attachment%3B%20"
+                                      "filename%3DPython39.zip",
+                  "Python3.10Env-Win": "https://bj.bcebos.com/v1/ai-studio-online/bad0502d69344493a12a10fac443bad"
+                                       "ca01a97001c294009937964a6ebb59893?responseContentDisposition=attachment%3B%20"
+                                       "filename%3DPython310.zip",
+                  "DEFAULT-Win": "https://bj.bcebos.com/v1/ai-studio-online/d0383fa2194d4853883f89b3ab54e841f"
+                                 "8cdcc3c88824e2398ba22f9b8fd5094?responseContentDisposition=attachment%3B%20"
+                                 "filename%3DPython38.zip"}
 
 DEFAULT_PYTHON_IMAGE_VERSION = "3.8"
 

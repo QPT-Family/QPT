@@ -4,6 +4,7 @@
 # Please indicate the source for reprinting.
 import threading
 import traceback
+import gc
 
 import tkinter
 import tkinter.font
@@ -68,7 +69,9 @@ class ProgressbarFrame:
                     showerror(title="发生异常 - QPT提示", message=f"简略异常说明:\n{e}\n\n完整报错信息如下：\n{msg}")
                 finally:
                     self.close()
+                    gc.collect()
                 return func
+
             self.thread = threading.Thread(target=func, args=(self,))
             self.thread.setDaemon(True)
             self.thread.start()
@@ -82,7 +85,8 @@ class ProgressbarFrame:
         self.value_var.set(f"进度 {v:.2f} %")
 
     def close(self):
-        self.root.quit()
+        self.root.destroy()
+        # self.root.quit()
 
     def step(self, text: str = None):
         if text:

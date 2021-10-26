@@ -82,7 +82,7 @@ class PipTools:
         if not os.path.exists(get_qpt_tmp_path('pip_cache')):
             os.makedirs(get_qpt_tmp_path('pip_cache'), exist_ok=True)
         shell += f" --isolated --disable-pip-version-check --cache-dir {get_qpt_tmp_path('pip_cache')}" \
-                 f" --timeout 60"
+                 f" --timeout 10"
         if self.quiet:
             shell += " --quiet"
         self.pip_main(shell.split(" "))

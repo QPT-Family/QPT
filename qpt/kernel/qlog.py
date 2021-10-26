@@ -177,3 +177,5 @@ class TProgressBar:
         if self.count == self.max_len:
             Logging.info("", line_feed=True)
             Logging.flush()
+
+

@@ -57,6 +57,16 @@ class QPTMemory:
         pip_tools = PipTools()
         return pip_tools
 
+    @init_wrapper
+    def get_win32con(self):
+        import win32con
+        return win32con
+
+    @init_wrapper
+    def get_win32api(self):
+        import win32api
+        return win32api
+
 
 QPT_MEMORY = QPTMemory()
 
@@ -143,3 +153,5 @@ if QPT_MODE == "Run":
     check_all()
 elif QPT_MODE == "Debug":
     check_all()
+
+

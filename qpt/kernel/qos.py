@@ -6,6 +6,7 @@ import io
 from importlib import util
 
 from qpt.kernel.qlog import Logging, TProgressBar
+from qpt.memory import QPT_MEMORY
 from qpt.version import version
 
 
@@ -209,3 +210,24 @@ class FileSerialize:
         with open(file_path, "w", encoding="utf-8") as file:
             file.write(data)
         return file_path
+
+
+def warning_msg_box(title="Warning - GitHub: QPT-Family/QPT", text="", force=False):
+    """
+    发出警告框
+    :param title: 标题
+    :param text: 文本
+    :param force: 是否强制只有确定按钮
+    :return: 用户反馈
+    """
+    win32api = QPT_MEMORY.get_win32api
+    win32con = QPT_MEMORY.get_win32con
+    if force:
+        flag = win32con.MB_OK | win32con.MB_ICONEXCLAMATION
+    else:
+        flag = win32con.MB_OKCANCEL | win32con.MB_ICONEXCLAMATION
+    msg = win32api.MessageBox(0, text, title, flag)
+    if not force and msg == 2:
+        return False
+    else:
+        return True

@@ -23,7 +23,7 @@ from qpt.modules.package import QPTDependencyPackage, QPTGUIDependencyPackage, \
 from qpt.modules.auto_requirements import AutoRequirementsPackage
 
 from qpt.kernel.qlog import Logging, TProgressBar, set_logger_file
-from qpt.kernel.qos import clean_qpt_cache, copytree, check_chinese_char, StdOutLoggerWrapper
+from qpt.kernel.qos import clean_qpt_cache, copytree, check_chinese_char, StdOutLoggerWrapper, warning_msg_box
 from qpt.kernel.qterminal import PTerminal, RunTerminalCallback
 from qpt.smart_opt import set_default_pip_lib
 from qpt.memory import QPT_MODE, check_all, get_env_vars, CheckRun
@@ -52,9 +52,9 @@ class CreateExecutableModule:
         self.launcher_py_path = os.path.relpath(launcher_py_path, work_dir)
         if self.launcher_py_path[:1] == "\\":
             self.launcher_py_path = self.launcher_py_path[1:]
-#         assert "." not in self.launcher_py_path.strip(".py"), \
-#             f"{self.launcher_py_path}中的路径或文件名中出现了除“.py”以外的“.”符号，请保证路径和文件中没有除“.py”以外的“.”符号\n" \
-#             f"例如：C:/123.445/run.py 中123.445文件夹包含了“.”符号，该符号将可能导致Python程序运行终止，请修改该类情况！"
+        #         assert "." not in self.launcher_py_path.strip(".py"), \
+        #             f"{self.launcher_py_path}中的路径或文件名中出现了除“.py”以外的“.”符号，请保证路径和文件中没有除“.py”以外的“.”符号\n" \
+        #             f"例如：C:/123.445/run.py 中123.445文件夹包含了“.”符号，该符号将可能导致Python程序运行终止，请修改该类情况！"
         assert " " not in self.launcher_py_path, \
             f"{self.launcher_py_path}中的路径或文件名中出现了空格符号，请删去文件夹或文件名中的空格\n" \
             f"例如：C:/123 445/run.py 中123 445文件夹包含了空格符号，该符号将可能导致Python程序运行终止，请修改该类情况！"
@@ -334,10 +334,6 @@ class CreateExecutableModule:
 
 class RunExecutableModule:
     def __init__(self, module_path):
-        import win32api
-        import win32con
-        self.win32api = win32api
-        self.win32con = win32con
         # 初始化Module信息
         self.base_dir = os.path.abspath(module_path)
         self.config_path = os.path.join(self.base_dir, "configs")
@@ -367,26 +363,26 @@ class RunExecutableModule:
         # 检查路径是否非法
         check_path = __file__
         if os.path.realpath(tempfile.gettempdir()) in os.path.realpath(self.base_dir):
-            self.warning_msg_box(text=f"{self.base_dir}\n"
-                                      f"上述目录存在于系统的临时目录下，该情况可能会对程序运行造成影响\n"
-                                      f"建议的解决方案如下：\n"
-                                      f"1. 请勿在压缩软件中打开本程序，务必解压后再运行。\n"
-                                      f"2. 请在物理硬盘上执行本程序。")
+            warning_msg_box(text=f"{self.base_dir}\n"
+                                 f"上述目录存在于系统的临时目录下，该情况可能会对程序运行造成影响\n"
+                                 f"建议的解决方案如下：\n"
+                                 f"1. 请勿在压缩软件中打开本程序，务必解压后再运行。\n"
+                                 f"2. 请在物理硬盘上执行本程序。")
         if check_chinese_char(check_path) or " " in check_path:
-            self.warning_msg_box(text=f"{self.base_dir}\n"
-                                      f"警告！当前路径↑中包含中文或空格，部分软件包将无法运行，强烈建议您修改相关的文件夹名，\n"
-                                      f"---------------------------------------\n"
-                                      f"不符合规范的路径如下：\n"
-                                      f"C:/GT真菜/xxx/yyy\r\r！“真菜”为中文\n"
-                                      f"C:/zzz/GT真 菜/yyy\r\r！“GT真 菜”中“真”字后带有空格\n"
-                                      f"---------------------------------------\n"
-                                      f"符合规范的路径如下：\n"
-                                      f"C:/hello/xxx/yyy\n"
-                                      f"---------------------------------------\n"
-                                      f"当然，您也可将Windows系统的默认编码模式更改为UTF-8，这可以更好兼容中文，但操作难度较高。\n"
-                                      f"---------------------------------------\n"
-                                      f"请修改相关文件名后重新运行，谢谢！",
-                                 force=True)
+            warning_msg_box(text=f"{self.base_dir}\n"
+                                 f"警告！当前路径↑中包含中文或空格，部分软件包将无法运行，强烈建议您修改相关的文件夹名，\n"
+                                 f"---------------------------------------\n"
+                                 f"不符合规范的路径如下：\n"
+                                 f"C:/GT真菜/xxx/yyy\r\r！“真菜”为中文\n"
+                                 f"C:/zzz/GT真 菜/yyy\r\r！“GT真 菜”中“真”字后带有空格\n"
+                                 f"---------------------------------------\n"
+                                 f"符合规范的路径如下：\n"
+                                 f"C:/hello/xxx/yyy\n"
+                                 f"---------------------------------------\n"
+                                 f"当然，您也可将Windows系统的默认编码模式更改为UTF-8，这可以更好兼容中文，但操作难度较高。\n"
+                                 f"---------------------------------------\n"
+                                 f"请修改相关文件名后重新运行，谢谢！",
+                            force=True)
             Logging.info("程序已停止")
             exit(1)
 
@@ -405,24 +401,6 @@ class RunExecutableModule:
 
         # 实例化终端
         self.auto_terminal = PTerminal()
-
-    def warning_msg_box(self, title="Warning - GitHub: QPT-Family/QPT", text="", force=False):
-        """
-        发出警告框
-        :param title: 标题
-        :param text: 文本
-        :param force: 是否强制只有确定按钮
-        :return: 用户反馈
-        """
-        if force:
-            flag = self.win32con.MB_OK | self.win32con.MB_ICONEXCLAMATION
-        else:
-            flag = self.win32con.MB_OKCANCEL | self.win32con.MB_ICONEXCLAMATION
-        msg = self.win32api.MessageBox(0, text, title, flag)
-        if not force and msg == 2:
-            return False
-        else:
-            return True
 
     def _solve_module(self):
         modules = self.lazy_module + self.sub_module
@@ -482,22 +460,30 @@ class RunExecutableModule:
             env_warning_flag = False
 
         if env_warning_flag:
-            msg = self.warning_msg_box("Warning", f"非常不建议在该环境下进行调试，原因如下： \n"
-                                                  f" 1. 继续执行将会加载“一次性部署模块”，部署后该模块会消失，消失后可能无法在其他电脑上使用。\n"
-                                                  f" 2. 该程序会解压缩当前环境，执行“启动程序.exe”后整个目录大小可能会增加1~5倍。（取决于压缩率）\n"
-                                                  f" 3. 若需要测试打包后程序是否可以正常运行，请在Debug目录下进行测试。\n"
-                                                  f" 4. 若特殊情况必须在Release目录下进行测试，请制作Release目录的备份，在他人需要时提供该备份\n"
-                                                  f"    文件或重新打包，以避免因执行“启动程序.exe”后丢失“一次性部署模块”，从而无法被他人使用。\n"
-                                                  f"---------------------------------------------------------------------------\n"
-                                                  f"当然，这个警告框并不会在其它电脑上弹出，仅会在本计算机运行时提示"
-                                                  f"请问是否还要在该环境下继续执行？")
+            msg = warning_msg_box("Warning", f"非常不建议在该环境下进行调试，原因如下： \n"
+                                             f" 1. 继续执行将会加载“一次性部署模块”，部署后该模块会消失，消失后可能无法在其他电脑上使用。\n"
+                                             f" 2. 该程序会解压缩当前环境，执行“启动程序.exe”后整个目录大小可能会增加1~5倍。（取决于压缩率）\n"
+                                             f" 3. 若需要测试打包后程序是否可以正常运行，请在Debug目录下进行测试。\n"
+                                             f" 4. 若特殊情况必须在Release目录下进行测试，请制作Release目录的备份，在他人需要时提供该备份\n"
+                                             f"    文件或重新打包，以避免因执行“启动程序.exe”后丢失“一次性部署模块”，从而无法被他人使用。\n"
+                                             f"---------------------------------------------------------------------------\n"
+                                             f"当然，这个警告框并不会在其它电脑上弹出，仅会在本计算机运行时提示"
+                                             f"请问是否还要在该环境下继续执行？")
             if not msg:
                 Logging.info("程序已停止")
                 exit(1)
         # prepare module - GUI组件需要在此之后才能进行
         self._solve_module()
 
-        CheckRun.make_run_file(self.config_path)
+        if Logging.final():
+            msg = warning_msg_box(title="ERROR 发生异常 -GitHub: QPT-Family/QPT",
+                                  text="检测到安装中出现问题，若您为未成功运行过本程序，请点击 取消 \n"
+                                       "若您已经成功运行了本程序，可点击 确定 来隐藏该窗口")
+            if msg:
+                CheckRun.make_run_file(self.config_path)
+        else:
+            CheckRun.make_run_file(self.config_path)
+
         # 执行主程序
         run_shell = f'cd "{self.work_dir}"' + \
                     '; ' + './../Python/python.exe "' + \

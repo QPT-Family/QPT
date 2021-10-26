@@ -7,7 +7,37 @@ import os
 import ast
 from typing import Optional, List, Container
 
-from pip._internal.utils.misc import Distribution, cast
+# 对pip低版本做兼容
+try:
+    from pip._internal.utils.misc import Distribution, cast
+    def get_installed_distributions(
+            local_only=True,  # type: bool
+            include_editables=True,  # type: bool
+            editables_only=False,  # type: bool
+            user_only=False,  # type: bool
+            paths=None,  # type: Optional[List[str]]
+    ):
+        # type: (...) -> List[Distribution]
+        """Return a list of installed Distribution objects.
+        Left for compatibility until direct pkg_resources uses are refactored out.
+        """
+        from pip._internal.metadata import get_default_environment, get_environment
+        from pip._internal.metadata.pkg_resources import Distribution as _Dist
+
+        if paths is None:
+            env = get_default_environment()
+        else:
+            env = get_environment(paths)
+        dists = env.iter_installed_distributions(
+            local_only=local_only,
+            skip={"python", "wsgiref", "argparse"},
+            include_editables=include_editables,
+            editables_only=editables_only,
+            user_only=user_only,
+        )
+        return [cast(_Dist, dist)._dist for dist in dists]
+except ImportError:
+    from pip._internal.utils.misc import get_installed_distributions
 
 from qpt.memory import QPT_MEMORY, PYTHON_IGNORE_DIRS, IGNORE_PACKAGES
 from qpt.kernel.qlog import TProgressBar
@@ -17,33 +47,6 @@ PACKAGE_FLAG = ".dist-info"
 
 # 字典尽量用get，都是泪
 # 尽量统一lower依赖a
-
-def get_installed_distributions(
-        local_only=True,  # type: bool
-        include_editables=True,  # type: bool
-        editables_only=False,  # type: bool
-        user_only=False,  # type: bool
-        paths=None,  # type: Optional[List[str]]
-):
-    # type: (...) -> List[Distribution]
-    """Return a list of installed Distribution objects.
-    Left for compatibility until direct pkg_resources uses are refactored out.
-    """
-    from pip._internal.metadata import get_default_environment, get_environment
-    from pip._internal.metadata.pkg_resources import Distribution as _Dist
-
-    if paths is None:
-        env = get_default_environment()
-    else:
-        env = get_environment(paths)
-    dists = env.iter_installed_distributions(
-        local_only=local_only,
-        skip={"python", "wsgiref", "argparse"},
-        include_editables=include_editables,
-        editables_only=editables_only,
-        user_only=user_only,
-    )
-    return [cast(_Dist, dist)._dist for dist in dists]
 
 
 class PythonPackages:

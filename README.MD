@@ -74,8 +74,10 @@ QPT是一款可以“模拟”开发环境的多功能封装工具，最短只�
 
 * 打开cmd/终端并输入以下命令即可完成打包：  
   ```python
+  chcp 65001
   qpt.exe -f ./sample_program -p ./sample_program/run.py -s ./out -h False
   ``` 
+  > `chcp 65001` 命令可使得终端转为utf-8形式，避免出现编码问题
 
 * 完整命令列表可使用`qpt --help`获取：
   ```python

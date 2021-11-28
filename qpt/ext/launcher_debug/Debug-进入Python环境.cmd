@@ -1,10 +1,10 @@
-%1 mshta vbscript:CreateObject("Shell.Application").ShellExecute("cmd.exe","/c %~s0 ::","","runas",1)(window.close)&&exit
 echo on
 chcp 65001
+cd /d %~dp0
 set QPT_COLOR=False
 set QPT_MODE=Debug
-set PYTHONPATH=./Python/resources;./Python/Lib/site-packages;./Python
-set PATH=%PATH%;./Python/resources;./Python/Lib/site-packages;./Python;./Python/Lib;./Python/Scripts
+set PYTHONPATH=Python/Lib/site-packages;Python/Lib;Python
+set PATH=Python/Lib/site-package;Python/Lib;Python;%PATH%
 cls
 "./Python/python.exe"
 pause

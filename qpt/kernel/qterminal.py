@@ -1,6 +1,6 @@
 import subprocess
 from qpt.kernel.qlog import Logging
-from qpt.memory import get_env_vars
+from qpt.memory import get_env_vars, QPT_MODE
 
 TERMINAL_NAME = "powershell"
 # TERMINAL_NAME = "pwsh"
@@ -115,7 +115,8 @@ class Terminal:
         为Terminal设置环境变量
         """
         # ToDO 需考虑增加兼容性支持 - 当前只考虑Windows和完整Python环境
-        path_vars = get_env_vars()["PATH"]
+        # ToDO 貌似没考虑打包时候的环境变量
+        path_vars = get_env_vars()
         return path_vars
 
     def reset_terminal(self):
@@ -159,19 +160,22 @@ class PTerminal(Terminal):
                                                   stderr=subprocess.STDOUT,
                                                   stdin=subprocess.PIPE,
                                                   shell=True,
-                                                  bufsize=1)
+                                                  env=self._get_env_vars())
         else:
             self.main_terminal = subprocess.Popen(TERMINAL_NAME,
                                                   shell=False,
-                                                  bufsize=1)
+                                                  env=self._get_env_vars())
         # ToDo 加个自动判断
         Logging.info("\n如在本信息之后停留时间较长，请升级Windows Powershell至版本5即可解决该问题，下载地址：\n"
                      "官方地址：https://www.microsoft.com/en-us/download/details.aspx?id=54616\n"
                      "团子云镜像：https://s.dango.cloud/s/ZyDSn 下载码：egl95d")
         prepare = "chcp 65001"
         self._shell_func()(prepare)
-        prepare = "$env:PATH='" + self._get_env_vars() + "'"
-        self._shell_func()(prepare)
+        if QPT_MODE == "Debug":
+            # 打印环境变量
+            self._shell_func()("dir env:")
+        # prepare = "$env:PATH='" + self._get_env_vars() + "'"
+        # self._shell_func()(prepare)
 
     def reset_terminal(self):
         self.close_terminal()

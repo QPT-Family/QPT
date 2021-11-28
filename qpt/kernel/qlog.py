@@ -57,11 +57,11 @@ class BaseLogging:
         for msg in ERROR_SUMMARY:
             Logging.info(msg)
         Logging.info("-" * 10 + f"生成状态WARNING:{len(WARNING_SUMMARY)} ERROR:{len(ERROR_SUMMARY)}")
-        flag = WARNING_SUMMARY.copy()
+        flag = ERROR_SUMMARY.copy()
         if clear:
             WARNING_SUMMARY.clear()
             ERROR_SUMMARY.clear()
-        if flag:
+        if len(flag) > 0:
             return True
         else:
             return False
@@ -178,5 +178,3 @@ class TProgressBar:
         if self.count == self.max_len:
             Logging.info("", line_feed=True)
             Logging.flush()
-
-

@@ -6,6 +6,7 @@
 import os
 import pickle
 import datetime
+from distutils.sysconfig import get_python_lib
 
 from qpt.kernel.qlog import Logging
 from qpt.memory import QPT_MODE, CheckRun
@@ -89,6 +90,16 @@ class SubModuleOpt:
     @property
     def config_path(self):
         return os.path.join(self.module_path, "configs")
+
+    @property
+    def site_package_path(self):
+        sp_path = os.path.abspath(get_python_lib())
+        return sp_path
+
+    @property
+    def module_site_package_path(self):
+        sp_path = os.path.abspath(os.path.join(self.module_path, "Python/Lib/site-packages"))
+        return sp_path
 
     def prepare(self, work_dir=None, interpreter_path=None, module_path=None, terminal=None):
         self._work_dir = work_dir

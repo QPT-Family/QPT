@@ -1,9 +1,10 @@
 echo off
 chcp 65001
+cd /d %~dp0
 set QPT_COLOR=False
 set QPT_MODE=Debug
-set PYTHONPATH=./Python/resources;./Python/Lib/site-packages;./Python
-set PATH=%PATH%;./Python/resources;./Python/Lib/site-packages;./Python;./Python/Lib;./Python/Scripts
+set PYTHONPATH=Python/Lib/site-packages;Python/Lib;Python
+set PATH=Python/Lib/site-package;Python/Lib;Python;%PATH%
 set PROMPT=(QPT_VENV) %PROMPT%
 for /f "tokens=2 delims=:." %%a in ('"%SystemRoot%\System32\chcp.com"') do (
     set _OLD_CODEPAGE=%%a

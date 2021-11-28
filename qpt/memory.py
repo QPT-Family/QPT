@@ -81,6 +81,9 @@ def check_os():
     assert "Windows" in p_os, "当前QPT只支持Windows系统"
 
 
+IGNORE_ENV_FIELD = ["conda", "Conda", "Python", "python"]
+
+
 def get_env_vars(work_dir="."):
     """
     获取当前待设置的环境变量字典
@@ -90,7 +93,6 @@ def get_env_vars(work_dir="."):
     env_vars = dict()
     # Set PATH ENV
     path_env = os.environ.get("PATH").split(";")
-    ignore_env_field = ["conda", "Conda", "Python", "python"]
     pre_add_env = os.path.abspath("./Python/Lib/site-packages") + ";" + \
                   os.path.abspath("./Python/Lib") + ";" + \
                   os.path.abspath("./Python/Lib/ext") + ";" + \
@@ -100,7 +102,7 @@ def get_env_vars(work_dir="."):
     for pe in path_env:
         if pe:
             add_flag = True
-            for ief in ignore_env_field:
+            for ief in IGNORE_ENV_FIELD:
                 if ief in pe:
                     add_flag = False
                     break
@@ -112,7 +114,10 @@ def get_env_vars(work_dir="."):
     env_vars["PYTHONPATH"] = os.path.abspath("./Python/Lib/site-packages") + ";" + \
                              work_dir + ";" + \
                              os.path.abspath("./Python")
-    return env_vars
+    os_env = os.environ.copy()
+    os_env.update(env_vars)
+
+    return os_env
 
 
 PYTHON_IGNORE_DIRS = [".idea", ".git", ".github", "venv"]
@@ -148,10 +153,4 @@ def check_all():
     check_bit()
 
 
-# 需考虑Run避免无法记录进日志的情况
-if QPT_MODE == "Run":
-    check_all()
-elif QPT_MODE == "Debug":
-    check_all()
-
-
+check_all()

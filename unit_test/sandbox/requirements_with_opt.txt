@@ -5,7 +5,7 @@
 # QPT Home:        https://github.com/GT-ZhangAcer/QPT
 # ---------------------------------------------------------------------
 # 
-paddlepaddle
+paddlepaddle==2.1.0
 # appdirs
 # astor
 # Babel

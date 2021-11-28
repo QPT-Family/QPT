@@ -3,6 +3,7 @@
 # Copyright belongs to the author.
 # Please indicate the source for reprinting.
 import sys
+import traceback
 from qpt.kernel.qos import Logging
 
 SUPPORT_AVX = None
@@ -46,4 +47,9 @@ try:
     SUPPORT_AVX = True
 except Exception as e:
     Logging.warning(str(e))
-    SUPPORT_AVX = False
+    info = traceback.format_exc()
+    if "cv2" in info:
+        # ToDo 实际上还是不能确定，但Paddle这块不知道为什么要这样测cv2是否存在
+        SUPPORT_AVX = True
+    else:
+        SUPPORT_AVX = False

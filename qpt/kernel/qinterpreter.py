@@ -46,7 +46,8 @@ class PIPTerminal(PTerminal):
 
             # 捕获PIP的异常
             callback.error_fitter = ["ERROR:"]
-            callback.normal_fitter = ["requires click, which is not installed.\nqpt"]
+            callback.normal_fitter = ["requires click, which is not installed.\nqpt",
+                                      "ERROR: pip's dependency resolver "]
             callback.handle(self.main_terminal)
 
         return closure

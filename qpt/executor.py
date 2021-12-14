@@ -370,7 +370,7 @@ class RunExecutableModule:
                                  f"2. 请在物理硬盘上执行本程序。")
         if check_warning_char(check_path) or " " in check_path:
             warning_msg_box(text=f"{self.base_dir}\n"
-                                 f"警告！当前路径↑中包含中文或空格，部分软件包将无法运行，强烈建议您修改相关的文件夹名，\n"
+                                 f"警告！当前路径↑中包含中文或空格等无法识别的字符，部分软件包将无法运行，强烈建议您修改相关的文件夹名，\n"
                                  f"---------------------------------------\n"
                                  f"不符合规范的路径如下：\n"
                                  f"C:/GT真菜/xxx/yyy\r\r！“真菜”为中文\n"

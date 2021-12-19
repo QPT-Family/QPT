@@ -1,8 +1,10 @@
+import os
+
 from setuptools import setup
 from setuptools import find_packages
 from qpt.version import version
 
-with open("./README.MD", encoding='utf-8') as f:
+with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "README.MD"), encoding='utf-8') as f:
     long_description = '\n' + f.read()
 
 setup(

@@ -39,7 +39,7 @@ class CheckAVXOpt(SubModuleOpt):
         if not self._check_dll():
             Logging.warning("为保证可以成功在NoAVX平台执行PaddlePaddle，即将忽略小版本号进行安装PaddlePaddle-NoAVX")
             Logging.warning("当前CPU不支持AVX指令集，正在尝试在线下载noavx版本的PaddlePaddle")
-            QPT_MEMORY.pip_tool.pip_shell("uninstall paddlepaddle")
+            QPT_MEMORY.pip_tool.pip_shell("uninstall paddlepaddle -y")
             if self.version:
                 new_v = self.version[:self.version.rindex(".")]
                 QPT_MEMORY.pip_tool.pip_shell(

@@ -10,17 +10,27 @@ from distutils.sysconfig import get_python_lib
 from qpt.kernel.qlog import Logging
 
 
-def init_wrapper(func):
-    @property
-    def render(self):
-        if func.__name__ in self.memory:
-            out = self.memory[func.__name__]
+def init_wrapper(var=True):
+    def i_wrapper(func):
+        if var:
+            @property
+            def render(self):
+                if func.__name__ in self.memory:
+                    out = self.memory[func.__name__]
+                else:
+                    out = func(self)
+                    self.memory[func.__name__] = out
+                return out
         else:
-            out = func(self)
-            self.memory[func.__name__] = out
-        return out
-
-    return render
+            def render(self, *args, **kwargs):
+                if func.__name__ in self.memory:
+                    out = self.memory[func.__name__]
+                else:
+                    out = func(self, *args, **kwargs)
+                    self.memory[func.__name__] = out
+                return out
+        return render
+    return i_wrapper
 
 
 class QPTMemory:
@@ -34,38 +44,42 @@ class QPTMemory:
     def free_mem(self, name):
         self.memory.pop(name)
 
-    @init_wrapper
+    @init_wrapper()
     def platform_bit(self):
         arc = platform.machine()
         Logging.debug(f"操作系统位数：{arc}")
         return arc
 
-    @init_wrapper
+    @init_wrapper()
     def platform_os(self):
         p_os = platform.system()
         Logging.debug(f"操作系统类型：{p_os}")
         return p_os
 
-    @init_wrapper
+    @init_wrapper()
     def site_packages_path(self):
         site_package_path = os.path.abspath(get_python_lib())
         return site_package_path
 
-    @init_wrapper
+    @init_wrapper()
     def pip_tool(self):
         from qpt.kernel.qinterpreter import PipTools
         pip_tools = PipTools()
         return pip_tools
 
-    @init_wrapper
+    @init_wrapper()
     def get_win32con(self):
         import win32con
         return win32con
 
-    @init_wrapper
+    @init_wrapper()
     def get_win32api(self):
         import win32api
         return win32api
+
+    @init_wrapper(var=False)
+    def get_env_vars(self, work_dir="."):
+        return get_env_vars(work_dir)
 
 
 QPT_MEMORY = QPTMemory()
@@ -108,7 +122,11 @@ def get_env_vars(work_dir="."):
                     break
             if add_flag:
                 pre_add_env += pe + ";"
-    env_vars["PATH"] = pre_add_env
+    env_vars["PATH"] = pre_add_env + \
+                       "%SYSTEMROOT%/System32/WindowsPowerShell/v1.0;" + \
+                       "C:/Windows/System32/WindowsPowerShell/v1.0;" + \
+                       "%ProgramFiles%/WindowsPowerShell/Modules;" + \
+                       "%SystemRoot%/system32/WindowsPowerShell/v1.0/Modules;"
 
     # Set PYTHON PATH ENV
     env_vars["PYTHONPATH"] = os.path.abspath("./Python/Lib/site-packages") + ";" + \

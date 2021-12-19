@@ -1,8 +1,14 @@
 import subprocess
+import os
+import zipfile
+
 from qpt.kernel.qlog import Logging
-from qpt.memory import get_env_vars, QPT_MODE
+from qpt.kernel.qos import download, TMP_BASE_PATH
+from qpt.memory import QPT_MEMORY, QPT_MODE
 
 TERMINAL_NAME = "powershell"
+
+
 # TERMINAL_NAME = "pwsh"
 
 
@@ -116,7 +122,7 @@ class Terminal:
         """
         # ToDO 需考虑增加兼容性支持 - 当前只考虑Windows和完整Python环境
         # ToDO 貌似没考虑打包时候的环境变量
-        path_vars = get_env_vars()
+        path_vars = QPT_MEMORY.get_env_vars()
         return path_vars
 
     def reset_terminal(self):
@@ -151,6 +157,7 @@ class Terminal:
 class PTerminal(Terminal):
     def __init__(self, shell_mode=True):
         self.shell_mode = shell_mode
+        self.first_flag = True
         super(PTerminal, self).__init__()
 
     def init_terminal(self):
@@ -168,14 +175,13 @@ class PTerminal(Terminal):
         # ToDo 加个自动判断
         Logging.info("\n如在本信息之后停留时间较长，请升级Windows Powershell至版本5即可解决该问题，下载地址：\n"
                      "官方地址：https://www.microsoft.com/en-us/download/details.aspx?id=54616\n"
-                     "团子云镜像：https://s.dango.cloud/s/ZyDSn 下载码：egl95d")
+                     "团子云镜像：https://s.dango.cloud/s/GVbhB 下载码：zAkjpradJA2eHiC")
         prepare = "chcp 65001"
         self._shell_func()(prepare)
+        Logging.info("检测结束，当前Powershell满足使用需求。")
         if QPT_MODE == "Debug":
             # 打印环境变量
             self._shell_func()("dir env:")
-        # prepare = "$env:PATH='" + self._get_env_vars() + "'"
-        # self._shell_func()(prepare)
 
     def reset_terminal(self):
         self.close_terminal()
@@ -196,7 +202,34 @@ class PTerminal(Terminal):
             except Exception as e:
                 Logging.error("执行该指令时遇到解码问题，目前将采用兼容模式进行，原始报错如下：\n" + str(e))
                 final_shell = closure_shell.encode("utf-8", errors="ignore")
-            self.main_terminal.stdin.write(final_shell)
+
+            try:
+                self.main_terminal.stdin.write(final_shell)
+            except OSError as e:
+                if self.first_flag:
+                    Logging.warning("当前操作系统可能无法正常调起Powershell，如您正在使用盗版/已被破坏的Windows操作系统，"
+                                    f"强烈建议您进行更新！\n当前正在尝试在线补充Powershell，原始报错信息如下\n{e}")
+                    Logging.info("正在下载Powershell 5")
+                    download(url="https://bj.bcebos.com/v1/ai-studio-online/1c4c1b9fd52c49f3b88697e60f"
+                                 "771d1e1181711684b84c7bb830cb589d1689ee?responseContentDisposition=at"
+                                 "tachment%3B%20filename%3Dpwsh.zip",
+                             file_name="pwsh.zip",
+                             path=TMP_BASE_PATH)
+                    zip_path = os.path.join(TMP_BASE_PATH, "pwsh.zip")
+
+                    pwsh_dir = os.path.join(TMP_BASE_PATH, "pwsh_ext")
+                    with zipfile.ZipFile(zip_path) as zip_obj:
+                        zip_obj.extractall(pwsh_dir)
+
+                    os_env = QPT_MEMORY.get_env_vars().copy()
+                    os_env["PATH"] += f"{pwsh_dir};"
+                    QPT_MEMORY.set_mem(name="get_env_vars", variable=os_env)
+                    self.reset_terminal()
+
+                    self.first_flag = False
+                else:
+                    Logging.error("当前操作系统仍无法正常调起Powershell，程序已终止！")
+                    exit(-200)
             try:
                 self.main_terminal.stdin.flush()
             except Exception as e:
@@ -214,4 +247,6 @@ class PTerminal(Terminal):
 
 if __name__ == '__main__':
     t = PTerminal()
+    t.shell("ping 192.168.1.1")
+    t.shell("dir")
     t.shell("ping 192.168.1.1")

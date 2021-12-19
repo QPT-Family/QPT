@@ -2,7 +2,7 @@ import os
 import sys
 
 
-from qpt.memory import get_env_vars
+from qpt.memory import QPT_MEMORY
 
 IGNORE_ENV_FIELD = ["conda", "Conda", "Python", "python"]
 interpreter_dir = os.path.dirname(sys.executable)
@@ -17,9 +17,8 @@ for sp in sys_p:
         new_sys_p.append(sp)
 
 sys.path = new_sys_p
-print(sys.path)
 ROOT_PATH = os.path.abspath("./")
-os.environ.update(get_env_vars(ROOT_PATH))
+os.environ.update(QPT_MEMORY.get_env_vars(ROOT_PATH))
 from qpt.executor import RunExecutableModule
 
 module = RunExecutableModule("./")

@@ -439,7 +439,7 @@ class RunExecutableModule:
         sys.path.append(os.path.abspath("./Python/Scripts"))
 
         # Set PATH ENV
-        env_vars = get_env_vars(self.work_dir)
+        env_vars = QPT_MEMORY.get_env_vars(self.work_dir)
         for k, v in env_vars.items():
             os.environ[k] = v
 

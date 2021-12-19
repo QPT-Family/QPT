@@ -86,6 +86,7 @@ class ProgressbarFrame:
 
     def close(self):
         self.root.destroy()
+        del self.root
         # self.root.quit()
 
     def step(self, text: str = None):

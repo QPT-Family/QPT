@@ -68,6 +68,8 @@ def download(url, file_name, path=None, clean=False):
     :return: 1代表全新数据，0代表使用缓存
     """
     import wget
+    if path is None:
+        path = os.path.join(TMP_BASE_PATH, "download")
     if not os.path.exists(path):
         os.makedirs(path)
     file_path = os.path.join(path, file_name)

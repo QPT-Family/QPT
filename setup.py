@@ -2,11 +2,15 @@ from setuptools import setup
 from setuptools import find_packages
 from qpt.version import version
 
-# python setup.py sdist bdist_wheel
+with open("./README.MD", encoding='utf-8') as f:
+    long_description = '\n' + f.read()
+
 setup(
     name='QPT',
     version=version,
     packages=find_packages(),
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     url='https://github.com/GT-ZhangAcer/QPT',
     license='LGPL',
     author='GT-ZhangAcer',

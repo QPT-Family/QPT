@@ -18,12 +18,13 @@
 - [x] Conda中打包可能存在~情况 https://github.com/QPT-Family/QPT/issues/22
 - [x] multiprocessing无限循环情况 https://github.com/QPT-Family/QPT/issues/23
 - [x] UA统一使用cmd开启
-## ## b1.dev7ToDo
+- 
+## b2.dev2
+- [x] 增强pwsh兼容性
 - [ ] 支持Conda版本的CUDA
 - [ ] 增加CUDA选择
 - [ ] 文件夹重复问题还是没解决 - 以后统一迁移吧顺便支持个中文路径
 - [ ] BS多次安装以及为什么wget还需要安装
-- [ ] 整体上使用powershell
 - [ ] 看一下egg格式的包搜索问题
 
 ## 下版本可能的ToDo

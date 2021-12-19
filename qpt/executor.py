@@ -23,7 +23,7 @@ from qpt.modules.package import QPTDependencyPackage, QPTGUIDependencyPackage, \
 from qpt.modules.auto_requirements import AutoRequirementsPackage
 
 from qpt.kernel.qlog import Logging, TProgressBar, set_logger_file
-from qpt.kernel.qos import clean_qpt_cache, copytree, check_chinese_char, StdOutLoggerWrapper, warning_msg_box
+from qpt.kernel.qos import clean_qpt_cache, copytree, check_warning_char, StdOutLoggerWrapper, warning_msg_box
 from qpt.kernel.qterminal import PTerminal, RunTerminalCallback
 from qpt.smart_opt import set_default_pip_lib
 from qpt.memory import QPT_MODE, check_all, get_env_vars, CheckRun
@@ -368,9 +368,9 @@ class RunExecutableModule:
                                  f"建议的解决方案如下：\n"
                                  f"1. 请勿在压缩软件中打开本程序，务必解压后再运行。\n"
                                  f"2. 请在物理硬盘上执行本程序。")
-        if check_chinese_char(check_path) or " " in check_path:
+        if check_warning_char(check_path) or " " in check_path:
             warning_msg_box(text=f"{self.base_dir}\n"
-                                 f"警告！当前路径↑中包含中文或空格，部分软件包将无法运行，强烈建议您修改相关的文件夹名，\n"
+                                 f"警告！当前路径↑中包含中文或空格等无法识别的字符，部分软件包将无法运行，强烈建议您修改相关的文件夹名，\n"
                                  f"---------------------------------------\n"
                                  f"不符合规范的路径如下：\n"
                                  f"C:/GT真菜/xxx/yyy\r\r！“真菜”为中文\n"

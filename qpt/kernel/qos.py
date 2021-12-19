@@ -10,18 +10,24 @@ from qpt.memory import QPT_MEMORY
 from qpt.version import version
 
 
-def check_chinese_char(text):
+def check_warning_char(text):
     """
-    判断是否包含中文，避免来自部分内鬼C++底层的Python包无缘无故报错
+    判断是否包含中文等可能无法被正确识别的符号，避免来自部分内鬼C++底层的Python包无缘无故报错
     :param text: 字符串
     :return: 是否包含
     """
-    return not all(ord(char) < 128 for char in text)
+    for c in text:
+        ac = ord(c)
+        if 48 <= ac <= 57 or 65 <= ac <= 90 or 97 <= ac <= 122 or ac == 45 or ac == 95:
+            continue
+        else:
+            return True
+    return False
 
 
 TMP_BASE_PATH = os.path.join(tempfile.gettempdir(), f"QPT_Cache_V/{version}")
 # Check User name is chinese
-if check_chinese_char(TMP_BASE_PATH) or " " in TMP_BASE_PATH:
+if check_warning_char(TMP_BASE_PATH) or " " in TMP_BASE_PATH:
     TMP_BASE_PATH = "C:/q_tmp"
     Logging.warning(f"当前系统的用户名中包含中文/空格等可能会对程序造成异常的字符，现已默认QPT临时目录为{TMP_BASE_PATH}")
     os.makedirs(TMP_BASE_PATH, exist_ok=True)

@@ -424,7 +424,8 @@ class RunExecutableModule:
                 arg.close()
 
         if self.hidden_terminal:
-            ProgressbarFrame(bind_fuc=render, max_step=len(modules))
+            pf = ProgressbarFrame(bind_fuc=render, max_step=len(modules))
+            del pf
         else:
             render()
 

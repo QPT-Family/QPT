@@ -18,7 +18,7 @@ def check_warning_char(text):
     """
     for c in text:
         ac = ord(c)
-        if 48 <= ac <= 57 or 65 <= ac <= 90 or 97 <= ac <= 122 or ac == 45 or ac == 95:
+        if 45 <= ac <= 58 or 64 <= ac <= 95 or 97 <= ac <= 122:
             continue
         else:
             return True

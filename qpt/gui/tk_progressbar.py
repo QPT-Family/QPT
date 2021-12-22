@@ -60,10 +60,10 @@ class ProgressbarFrame:
         self.thread = None
 
         def render():
-            def func(self):
+            def func(pbf_obj):
                 try:
-                    bind_fuc(self)
-                    self.step("加载完毕")
+                    bind_fuc(pbf_obj)
+                    pbf_obj.step("加载完毕")
                 except Exception as e:
                     msg = traceback.format_exc()
                     showerror(title="发生异常 - QPT提示", message=f"简略异常说明:\n{e}\n\n完整报错信息如下：\n{msg}")
@@ -86,7 +86,6 @@ class ProgressbarFrame:
 
     def close(self):
         self.root.destroy()
-        del self.root
         # self.root.quit()
 
     def step(self, text: str = None):

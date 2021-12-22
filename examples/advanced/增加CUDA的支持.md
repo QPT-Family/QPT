@@ -15,7 +15,7 @@ Tips：由于新卡不一定兼容旧版本CUDA，推荐在打包时安装新版
 
 ## 使用方式B - 通用模式
 
-只需在打包时添加CUDA相关SubModule即可，代码示例如下：  
+只需在打包时添加CUDA相关SubModule即可，但在使用之前请保证本机已经安装对应版本CUDA，并将其正确加入环境变量。代码示例如下：  
 
 ```python
 from qpt.executor import CreateExecutableModule as CEM

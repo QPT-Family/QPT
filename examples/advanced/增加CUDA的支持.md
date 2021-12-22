@@ -27,7 +27,7 @@ from qpt.modules.cuda import CopyCUDAPackage
 module = CEM(work_dir="./sample_program",                
             launcher_py_path="./sample_program/run.py", 
             save_path="./out",
-            # 引入SubModule，并设置CUDA为10.2
+            # 引入SubModule，并设置CUDA为所需版本，例如10.2
             sub_modules=[CopyCUDAPackage(cuda_version="10.2")])
 # 开始打包
 module.make()

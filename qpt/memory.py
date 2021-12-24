@@ -30,6 +30,7 @@ def init_wrapper(var=True):
                     self.memory[func.__name__] = out
                 return out
         return render
+
     return i_wrapper
 
 
@@ -126,7 +127,8 @@ def get_env_vars(work_dir="."):
                        "%SYSTEMROOT%/System32/WindowsPowerShell/v1.0;" + \
                        "C:/Windows/System32/WindowsPowerShell/v1.0;" + \
                        "%ProgramFiles%/WindowsPowerShell/Modules;" + \
-                       "%SystemRoot%/system32/WindowsPowerShell/v1.0/Modules;"
+                       "%SystemRoot%/system32/WindowsPowerShell/v1.0/Modules;" + \
+                       f"{os.path.join(os.path.abspath(work_dir), 'opt/CUDA')};"
 
     # Set PYTHON PATH ENV
     env_vars["PYTHONPATH"] = os.path.abspath("./Python/Lib/site-packages") + ";" + \
@@ -134,6 +136,11 @@ def get_env_vars(work_dir="."):
                              os.path.abspath("./Python")
     os_env = os.environ.copy()
     os_env.update(env_vars)
+
+    if QPT_MODE and QPT_MODE.lower() == "debug":
+        Logging.debug(msg="Python所识别到的环境变量如下：\n" +
+                          "".join([_ek + ":" + _e_v + " \n" for _ek, _ev in env_vars.items()
+                                   for _e_v in _ev.split(";")]))
 
     return os_env
 
@@ -146,7 +153,7 @@ IGNORE_PACKAGES = ["virtualenv", "pip", "setuptools", "cpython"]
 # QPT运行状态 Run/Debug
 QPT_MODE = os.getenv("QPT_MODE")
 
-# QPT检测到的运行状态 Run/本地Run
+# QPT检测到的运行状态 Run/本地Run - 目的给予开发者警告，避免软件包膨胀
 QPT_RUN_MODE = None
 
 

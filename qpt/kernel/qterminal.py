@@ -107,8 +107,9 @@ class Terminal:
     Terminal基类，定义Terminal基本方法
     """
 
-    def __init__(self):
+    def __init__(self, cwd="./"):
         self.main_terminal = None
+        self.cwd = cwd
         self.init_terminal()
         Logging.debug(f"正在连接{self.__class__.__name__}")
 
@@ -155,10 +156,10 @@ class Terminal:
 
 
 class PTerminal(Terminal):
-    def __init__(self, shell_mode=True):
+    def __init__(self, shell_mode=True, cwd="./"):
         self.shell_mode = shell_mode
         self.first_flag = True
-        super(PTerminal, self).__init__()
+        super(PTerminal, self).__init__(cwd=cwd)
 
     def init_terminal(self):
         if self.shell_mode:
@@ -167,11 +168,13 @@ class PTerminal(Terminal):
                                                   stderr=subprocess.STDOUT,
                                                   stdin=subprocess.PIPE,
                                                   shell=True,
-                                                  env=self._get_env_vars())
+                                                  env=self._get_env_vars(),
+                                                  cwd=self.cwd)
         else:
             self.main_terminal = subprocess.Popen(TERMINAL_NAME,
                                                   shell=False,
-                                                  env=self._get_env_vars())
+                                                  env=self._get_env_vars(),
+                                                  cwd=self.cwd)
         # ToDo 加个自动判断
         Logging.info("\n如在本信息之后停留时间较长，请升级Windows Powershell至版本5即可解决该问题，下载地址：\n"
                      "官方地址：https://www.microsoft.com/en-us/download/details.aspx?id=54616\n"
@@ -179,9 +182,8 @@ class PTerminal(Terminal):
         prepare = "chcp 65001"
         self._shell_func()(prepare)
         Logging.info("检测结束，当前Powershell满足使用需求。")
-        if QPT_MODE == "Debug":
-            # 打印环境变量
-            self._shell_func()("dir env:")
+        # if QPT_MODE == "Debug":
+        #     self._shell_func()("dir env:")
 
     def reset_terminal(self):
         self.close_terminal()

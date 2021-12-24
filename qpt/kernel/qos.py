@@ -21,6 +21,7 @@ def check_warning_char(text):
         if 45 <= ac <= 58 or 64 <= ac <= 95 or 97 <= ac <= 122:
             continue
         else:
+            Logging.warning(f"{text}中 {c} 字符会可能影响使用。")
             return True
     return False
 

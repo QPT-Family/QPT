@@ -351,9 +351,6 @@ class RunExecutableModule:
         set_logger_file(os.path.join(self.config_path, "logs", "QPT-" + log_name))
         sys.stdout = StdOutLoggerWrapper(os.path.join(self.config_path, "logs", "APP-" + log_name))
 
-        # 系统信息
-        check_all()
-
         # 软件信息
         Logging.info(f"QPT Runtime版本号为{qpt_v}，若无法使用该程序，可向程序发布者或GitHub: QPT-Family/QPT提交issue寻求帮助")
 
@@ -420,8 +417,6 @@ class RunExecutableModule:
                                    terminal=terminal)
                 sub_module.unpack()
             tp.step(add_end_info=f"初始化完毕")
-            if arg:
-                arg.close()
 
         if self.hidden_terminal:
             get_func_bind_progressbar(bind_fuc=render, max_step=len(modules))
@@ -429,7 +424,6 @@ class RunExecutableModule:
             render()
 
     def solve_work_dir(self):
-        # ToDo 加个Lock 彻底去除非Python的环境变量
         # Set Sys ENV
         sys.path.append(self.work_dir)
         sys.path.append(os.path.abspath("./Python/Lib/site-packages"))
@@ -439,12 +433,11 @@ class RunExecutableModule:
         sys.path.append(os.path.abspath("./Python/Scripts"))
 
         # Set PATH ENV
-        env_vars = QPT_MEMORY.get_env_vars(self.work_dir)
-        for k, v in env_vars.items():
-            os.environ[k] = v
+        env_vars = QPT_MEMORY.get_env_vars(self.base_dir)
+        os.environ.update(env_vars)
 
         # change dir
-        os.chdir(self.work_dir)
+        # os.chdir(self.work_dir)
 
     def run(self):
         # 设置工作目录
@@ -485,9 +478,8 @@ class RunExecutableModule:
             CheckRun.make_run_file(self.config_path)
 
         # 执行主程序
-        run_shell = f'cd "{self.work_dir}"' + \
-                    '; ' + './../Python/python.exe "' + \
-                    os.path.abspath(self.configs["launcher_py_path"]) + '"'
+        run_shell = f'cd "{self.work_dir}";' + './../Python/python.exe "' + \
+                    os.path.abspath(os.path.join(self.work_dir, self.configs["launcher_py_path"])) + '"'
         # start -NoNewWindow 看看要不要从输入符号入手
         self.auto_terminal.shell(run_shell, callback=RunTerminalCallback())
         # main_lib_path = self.configs["launcher_py_path"].replace(".py", "")
@@ -496,7 +488,5 @@ class RunExecutableModule:
         #     replace(r"\\", "."). \
         #     replace("\\", "."). \
         #     replace("/", ".")
-        # # ToDo 等日志系统做好了再取消注释
-        # os.system('cls')
         # lib = importlib.import_module(main_lib_path)
         # input("QPT执行完毕，请按任意键退出")

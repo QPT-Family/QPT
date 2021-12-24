@@ -39,6 +39,7 @@ class ProgressbarFrame:
         self.root.style = Style("lumen")
         self.root.title(title)
         self.root.wm_resizable(False, False)
+        self.root.wm_attributes('-topmost', 1)
         self.root.iconbitmap(icon)
         default_font = tkinter.font.nametofont("TkDefaultFont")
         # ToDo 此处需考虑字体在不同操作系统兼容性

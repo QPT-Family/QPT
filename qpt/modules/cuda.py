@@ -41,8 +41,10 @@ class CopyCUDADLL(SubModuleOpt):
             version = self.cuda_version.split(".")
             assert len(version) == 2, "CUDA版本号需要为以下格式传入：主版本号.从版本号，例如11.0"
             base_path = os.environ.get(f"CUDA_PATH_V{version[0]}_{version[1]}")
-            if not base_path or not os.path.exists(base_path):
-                raise FileNotFoundError(f"当前环境的{os.path.abspath(base_path)}目录下无CUDA驱动，无法封装。")
+            if not base_path or not os.path.exists(os.path.join(base_path, f"bin/cublas64_{version[0]}.dll")):
+                raise FileNotFoundError(f"当前环境的下无{version}版本的CUDA驱动，"
+                                        f"请添加环境变量CUDA_PATH_V{version[0]}_{version[1]}为对应版本的CUDA目录，例如：\n"
+                                        r"CUDA_PATH_V10_2=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2")
             bin_path = os.path.join(base_path, "bin")
             copytree(bin_path, os.path.join(self.module_path, "opt/CUDA"), ignore_files=["compute-sanitizer.bat"])
 

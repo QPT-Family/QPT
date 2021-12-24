@@ -75,15 +75,15 @@ class LogTest(unittest.TestCase):
                                         hidden_terminal=False)
         module.make()
 
-    # def test_module_paddle_gpu(self):
-    #     # 验证CUDA
-    #     module = CreateExecutableModule(work_dir="./sandbox_paddle_gpu",
-    #                                     launcher_py_path="./sandbox_paddle_gpu/run.py",
-    #                                     save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),
-    #                                     requirements_file="sandbox_paddle_gpu/requirements_with_opt.txt",
-    #                                     with_debug=True,
-    #                                     hidden_terminal=False)
-    #     module.make()
+    def test_module_paddle_gpu(self):
+        # 验证CUDA
+        module = CreateExecutableModule(work_dir="./sandbox_paddle_gpu",
+                                        launcher_py_path="./sandbox_paddle_gpu/run.py",
+                                        save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),
+                                        # requirements_file="sandbox_paddle_gpu/requirements_with_opt.txt",
+                                        with_debug=True,
+                                        hidden_terminal=True)
+        module.make()
 
     def test_module_qt(self):
         # 验证QT

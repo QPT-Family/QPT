@@ -28,7 +28,7 @@ from qpt.kernel.qterminal import PTerminal, RunTerminalCallback
 from qpt.smart_opt import set_default_pip_lib
 from qpt.memory import QPT_MODE, check_all, get_env_vars, CheckRun
 from qpt.kernel.qpe import make_icon
-from qpt.gui.tk_progressbar import ProgressbarFrame
+from qpt.gui.tk_progressbar import get_func_bind_progressbar
 
 __all__ = ["CreateExecutableModule", "RunExecutableModule"]
 
@@ -424,8 +424,7 @@ class RunExecutableModule:
                 arg.close()
 
         if self.hidden_terminal:
-            pf = ProgressbarFrame(bind_fuc=render, max_step=len(modules))
-            del pf
+            get_func_bind_progressbar(bind_fuc=render, max_step=len(modules))
         else:
             render()
 

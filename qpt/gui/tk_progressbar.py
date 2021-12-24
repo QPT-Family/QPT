@@ -4,12 +4,19 @@
 # Please indicate the source for reprinting.
 import threading
 import traceback
-import gc
 
-import tkinter
-import tkinter.font
-from tkinter import ttk
-from tkinter.messagebox import showerror
+
+def get_func_bind_progressbar(bind_fuc,
+                              max_step: int,
+                              default_text: str = "正在准备",
+                              title: str = "初始化程序 - QPT",
+                              icon=None):
+    _pf = ProgressbarFrame(bind_fuc=bind_fuc,
+                           max_step=max_step,
+                           default_text=default_text,
+                           title=title,
+                           icon=icon)
+    del _pf
 
 
 class ProgressbarFrame:
@@ -20,6 +27,9 @@ class ProgressbarFrame:
                  title: str = "初始化程序 - QPT",
                  icon=None):
         from ttkbootstrap import Style
+        import tkinter.font
+        from tkinter import ttk
+        from tkinter.messagebox import showerror
 
         self.scale = 1. / (max_step + 1)
         self.count = 0
@@ -68,8 +78,9 @@ class ProgressbarFrame:
                     msg = traceback.format_exc()
                     showerror(title="发生异常 - QPT提示", message=f"简略异常说明:\n{e}\n\n完整报错信息如下：\n{msg}")
                 finally:
+                    self.root.withdraw()
                     self.close()
-                    gc.collect()
+                    exit(0)
                 return func
 
             self.thread = threading.Thread(target=func, args=(self,))
@@ -85,8 +96,8 @@ class ProgressbarFrame:
         self.value_var.set(f"进度 {v:.2f} %")
 
     def close(self):
+        del self.thread
         self.root.destroy()
-        # self.root.quit()
 
     def step(self, text: str = None):
         if text:
@@ -104,7 +115,7 @@ if __name__ == '__main__':
             print(2)
             time.sleep(0.2)
             self.step()
-        self.close()
 
 
-    ProgressbarFrame(foo, 10)
+    get_func_bind_progressbar(foo, 10)
+    input("输入")

@@ -146,9 +146,12 @@ QPT是一款可以“模拟”开发环境的多功能封装工具，最短只�
 本项目开发所使用的IDE由Jetbrains支持。
 <div align=center><img alt="https://jb.gg/OpenSource" src="ext/img/jetbrains.png" width="80" /></div>
 
+#### 来一杯咖啡☕
+一杯咖啡提神醒脑，代码更新会更快更好！  
+<img width="990" alt="图片" src="https://ai-studio-static-online.cdn.bcebos.com/ee86a01ea5384734b73a414b626dc384ecd863aa187a413f8ece33a16068e26f">
 
 ### 开源协议
 本项目使用GNU LESSER GENERAL PUBLIC LICENSE(LGPL)开源协议。  
-#### Example：
-1. 使用QPT简单打包了自己的“强化学习小游戏”，该情况无需申请QPT授权以及更换个人代码仓库完整的开源协议。   
-2. 对QPT源代码进行了修改，尽管这些代码非恶意代码，但为了保证开发者和使用者权益和安全，在未取得QPT授权的情况下需要开源完整的源代码等LGPL协议中所要求的内容。
+#### Other情况
+1. 形如使用QPT简单打包了自己的“强化学习小游戏”等操作，该情况无需申请QPT授权以及更换个人代码仓库完整的开源协议。   
+2. 若对QPT源代码进行了修改，尽管这些代码非恶意代码，但为了保证开发者和使用者权益和安全，在未取得QPT授权的情况下需要开源完整的源代码等LGPL协议中所要求的内容。

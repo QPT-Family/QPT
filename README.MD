@@ -148,7 +148,7 @@ QPT是一款可以“模拟”开发环境的多功能封装工具，最短只�
 
 #### 来一杯咖啡☕
 一杯咖啡提神醒脑，代码更新会更快更好！  
-<img width="990" alt="图片" src="https://ai-studio-static-online.cdn.bcebos.com/ee86a01ea5384734b73a414b626dc384ecd863aa187a413f8ece33a16068e26f">
+<img width="490" alt="图片" src="https://ai-studio-static-online.cdn.bcebos.com/ee86a01ea5384734b73a414b626dc384ecd863aa187a413f8ece33a16068e26f">
 
 ### 开源协议
 本项目使用GNU LESSER GENERAL PUBLIC LICENSE(LGPL)开源协议。  

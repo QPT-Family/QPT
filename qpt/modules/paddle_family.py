@@ -131,7 +131,7 @@ class PaddlePaddlePackage(CustomPackage):
             super().__init__("paddlepaddle-gpu",
                              version=paddle_version,
                              deploy_mode=deploy_mode,
-                             find_links="https://paddlepaddle.org.cn/whl/mkl/stable.html")
+                             find_links="https://www.paddlepaddle.org.cn/whl/windows/mkl/avx/stable.html")
             self.add_ext_module(CopyCUDAPackage(cuda_version=cuda_version))
         # ToDO 当前方案需要放置在init后
         self.add_unpack_opt(SetPaddleFamilyEnvValueOpt())

@@ -43,11 +43,11 @@ class CheckAVXOpt(SubModuleOpt):
             if self.version:
                 new_v = self.version[:self.version.rindex(".")]
                 QPT_MEMORY.pip_tool.pip_shell(
-                    f"install paddlepaddle=={new_v} -f https://www.paddlepaddle.org.cn/whl/mkl/stable/noavx.html"
+                    f"install paddlepaddle=={new_v} -f https://www.paddlepaddle.org.cn/whl/windows/mkl/noavx/stable.html"
                     " --no-index --no-deps --force-reinstall")
             else:
                 QPT_MEMORY.pip_tool.pip_shell(
-                    f"install paddlepaddle -f https://www.paddlepaddle.org.cn/whl/mkl/stable/noavx.html"
+                    f"install paddlepaddle -f https://www.paddlepaddle.org.cn/whl/windows/mkl/noavx/stable.html"
                     " --no-index --no-deps --force-reinstall")
 
 

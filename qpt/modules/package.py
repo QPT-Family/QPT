@@ -235,7 +235,8 @@ class QPTDependencyPackage(SubModule):
                                               to_module_env_path=True))
         self.add_pack_opt(OnlineInstallWhlOpt(package=kernel,
                                               no_dependent=False,
-                                              to_module_env_path=True))
+                                              to_module_env_path=True,
+                                              opts="-U "))
         self.add_pack_opt(DownloadWhlOpt(package=lazy,
                                          no_dependent=False))
         self.add_unpack_opt(LocalInstallWhlOpt(package=lazy_dependency_serialize,

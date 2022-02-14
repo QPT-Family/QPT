@@ -13,7 +13,7 @@ A clear and concise description of what the bug is.
 **基本信息**
 QPT版本：
 操作系统版本：
-CPU型号：  
+CPU型号或AVX支持情况：  
 
 **复现步骤/报错截图**
 

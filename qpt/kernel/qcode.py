@@ -11,7 +11,7 @@ from typing import Optional, List, Container
 try:
     from pip._internal.utils.misc import get_installed_distributions
 except ImportError:
-    from pip._internal.utils.misc import Distribution, cast
+    from pip._internal.utils.misc import cast
     def get_installed_distributions(
             local_only=True,  # type: bool
             include_editables=True,  # type: bool
@@ -19,7 +19,6 @@ except ImportError:
             user_only=False,  # type: bool
             paths=None,  # type: Optional[List[str]]
     ):
-        # type: (...) -> List[Distribution]
         """Return a list of installed Distribution objects.
         Left for compatibility until direct pkg_resources uses are refactored out.
         """

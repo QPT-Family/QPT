@@ -9,6 +9,8 @@ from typing import Optional, List, Container
 
 # 对pip低版本做兼容
 try:
+    from pip._internal.utils.misc import get_installed_distributions
+except ImportError:
     from pip._internal.utils.misc import Distribution, cast
     def get_installed_distributions(
             local_only=True,  # type: bool
@@ -36,8 +38,7 @@ try:
             user_only=user_only,
         )
         return [cast(_Dist, dist)._dist for dist in dists]
-except ImportError:
-    from pip._internal.utils.misc import get_installed_distributions
+    
 
 from qpt.memory import QPT_MEMORY, PYTHON_IGNORE_DIRS, IGNORE_PACKAGES
 from qpt.kernel.qlog import TProgressBar

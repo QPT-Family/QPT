@@ -1,2 +1,2 @@
 recursive-include qpt *
-recursive-include README.MD
+include README.MD

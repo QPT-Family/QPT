@@ -8,7 +8,7 @@
 [![QQGroup](https://img.shields.io/badge/QQ群-1128826410-9cf?logo=tencent-qq&logoColor=000&logoWidth=15)](https://jq.qq.com/?_wv=1027&k=49HB5ymm)
 
 
-[GitHub主页](https://github.com/GT-ZhangAcer/QPT) | [Gitee主页](https://gitee.com/GT-zhangacer/QPT)
+[Gitee主页 - 支持国产](https://gitee.com/GT-zhangacer/QPT) | [GitHub主页](https://github.com/GT-ZhangAcer/QPT)
 
 QPT是一款可以“模拟”开发环境的多功能封装工具，最短只需一行命令即可将普通的Python脚本打包成EXE可执行程序，并选择性添加CUDA和NoAVX的支持，尽可能兼容更多的用户环境。 
 

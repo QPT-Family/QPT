@@ -19,16 +19,16 @@
 - [x] multiprocessing无限循环情况 https://github.com/QPT-Family/QPT/issues/23
 - [x] UA统一使用cmd开启
 - 
-## b2.dev2
+## b2.dev3
 - [x] 增强pwsh兼容性
 - [ ] 支持Conda版本的CUDA
 - [ ] 增加CUDA选择
+- [ ] 简单加密
 - [ ] 文件夹重复问题还是没解决 - 以后统一迁移吧顺便支持个中文路径
 - [ ] BS多次安装以及为什么wget还需要安装
-- [ ] 看一下egg格式的包搜索问题
+- [ ] 增加PaddleOCR部署的文档/依赖列表的适配
 
 ## 下版本可能的ToDo
-- [ ] 试一下重新编译360还会不会误报
 - [ ] 增加多程序入口
 - [ ] 开发整体工具包迁移至smart_opt
 - [x] sys_info更改为sys_swap并增加warmup和mem
@@ -39,23 +39,26 @@
 - [ ] 给用户UA选择权
 - [ ] 重构Module管理器，增加互斥Module - 初步考虑按主键+name去判定是否互斥
 ## Other
-- [ ] 关键部分增加Callback
-- [ ] 增加跨应用CLI
+- [ ] 增加跨应用CLI的文档
 - [ ] Pyd支持
 - [ ] 增加防修改部分 - 增加安装状态文件+状态文件增加GUID+哈希校验
 - [ ] 增加跨平台需求
 - [ ] Requirements类缺乏前瞻性考虑，或增加互斥Module概念
 - [ ] 要不要杀进程 - PID互斥锁
-- [ ] 增加MKL深度适配（或许直接加环境变量？） https://blog.csdn.net/qq_35133971/article/details/100101397
 - [ ] EXE、txt、cmd加入QPT元素
 - [ ] QPT拓展名支持
 - [ ] 超轻量级在线环境部署能力 - 环境部分完全在线部署，可轻松控制在1M文件大小
 - [ ] QPT图形化封装界面
 - [ ] 自定义封装算子 - 提供自定义封装OP支持
 - [ ] Module集市
-- [ ] 模型加密
-- [ ] 增加32位操作系统支持
+- [ ] 分区加密
+
 - [ ] 用户测PIP增加测速，避开国内源无法在国外使用
+
+## 二次验证优先级
+- [ ] 增加MKL深度适配（或许直接加环境变量？） https://blog.csdn.net/qq_35133971/article/details/100101397
+- [ ] 增加32位操作系统支持
+- [ ] 看一下egg格式的包搜索问题
 
 git config --global --unset url.https://hub.fastgit.org/.insteadof
 git config --global url."https://hub.fastgit.org/".insteadOf "https://github.com/"

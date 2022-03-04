@@ -147,7 +147,7 @@ QPT是一款可以“模拟”开发环境的多功能封装工具，最短只�
 <div align=center><img alt="https://jb.gg/OpenSource" src="ext/img/jetbrains.png" width="80" /></div>
 
 #### 来一杯咖啡☕
-一杯咖啡提神醒脑，代码更新会更快更好！  
+一杯咖啡提神醒脑，代码更新会更快更好！（不介意的话可以在捐赠时加个备注，后续将更新至[捐赠致谢](https://github.com/QPT-Family/.github/blob/%E5%BC%80%E5%8F%91%E5%88%86%E6%94%AF/%E6%8D%90%E8%B5%A0%E8%87%B4%E8%B0%A2.MD)中）  
 <div align=center><img width="490" alt="图片" src="https://cdn.jsdelivr.net/gh/GT-ZhangAcer/GT-ZhangAcer/d.jpg"></div>
 
 ### 开源协议

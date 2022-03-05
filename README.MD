@@ -143,7 +143,7 @@ QPT是一款可以“模拟”开发环境的多功能封装工具，最短只�
 
 | 捐赠者 | 累计捐赠金额 | 赞助席位 |
 | --- | --- | --- |
-| [星河云（Stariver）](https://cloud.stariver.org/) | 5,000 .00 RMB | 金牌赞助席位 |
+| <a href="https://cloud.stariver.org"><img width="100" src="https://user-images.githubusercontent.com/46156734/156889607-ad230ff1-47bf-416a-b7b7-7f4067dcf99a.png"> </a> | 5,000 .00 RMB | 金牌赞助席位 |
 | 社区ID 23\*\*\*\*770 | 200 .00 RMB | 银牌赞助席位 |
 | 社区ID 14\*\*\*\*650 | 30 .00 RMB | 支持牌赞助席位 |
 | 社区ID 未知 | 1 .00 RMB | 兴趣赞助席位 |

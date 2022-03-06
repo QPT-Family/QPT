@@ -76,3 +76,17 @@ class LogTest(unittest.TestCase):
                                         with_debug=True,
                                         hidden_terminal=True)
         module.make()
+
+    def test_m_paddlex(self):
+        # GUI流程验证
+        from qpt.modules.base import HIGH_LEVEL
+        from qpt.modules.package import CustomPackage, LOCAL_INSTALL_DEPLOY_MODE
+        numpy_package = CustomPackage(package="numpy", version=None, deploy_mode=LOCAL_INSTALL_DEPLOY_MODE)
+        lap_package = CustomPackage(package="lap", version=None, deploy_mode=LOCAL_INSTALL_DEPLOY_MODE)
+        module = CreateExecutableModule(work_dir="./sandbox_paddlex",
+                                        launcher_py_path="./sandbox_paddlex/run.py",
+                                        save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),
+                                        requirements_file="sandbox_paddlex/req.txt",
+                                        sub_modules=[numpy_package, lap_package],
+                                        with_debug=True)
+        module.make()

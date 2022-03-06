@@ -227,3 +227,6 @@ class PipTools:
                 else:
                     line = requirement + "\n"
                 file.write(line)
+
+if __name__ == '__main__':
+    pass

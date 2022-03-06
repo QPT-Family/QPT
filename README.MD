@@ -102,6 +102,7 @@ QPT是一款可以“模拟”开发环境的多功能封装工具，最短只�
 - [x] [3. 能够更快定位用户问题的日志系统](examples/advanced/收集用于Debug的用户日志.md)
 - [x] [4. 增加CUDA加速模块](examples/advanced/增加CUDA的支持.md)
 - [x] [5. 打包兼容性更强的Python解释器](examples/advanced/打包兼容性更强的Python解释器.md)
+- [ ] [6. 打包PaddleOCR、PaddleX等业务程序](https://aistudio.baidu.com/aistudio/projectdetail/3571518)
 
 完整进阶使用文档详见[examples/advanced](examples/advanced)
 ## 高阶开发手册

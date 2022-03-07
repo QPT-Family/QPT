@@ -158,7 +158,7 @@ class TProgressBar:
     def step(self, add_start_info="", add_end_info=""):
         self.count += 1
         if self.max_len == 0:
-            block_str = "|" + "".join(['█'] * int(self.block)).ljust(self.block, " ") + "|"
+            block_str = "|" + "".join(['━'] * int(self.block)).ljust(self.block, " ") + "|"
             Logging.info("\r" +
                          self.msg +
                          f"\r1/1 {add_start_info} {block_str} {100:.2f}% " +
@@ -167,7 +167,7 @@ class TProgressBar:
         else:
             rate = self.count / self.max_len
 
-            block_str = "|" + "".join(['█'] * int(rate * self.block)).ljust(self.block, " ") + "|"
+            block_str = "|" + "".join(['━'] * int(rate * self.block)).ljust(self.block, " ") + "|"
             block = f"{block_str}"
             Logging.info("\r" +
                          self.msg +

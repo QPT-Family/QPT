@@ -23,7 +23,7 @@ setup(
                       "click",
                       "pefile",
                       "pillow",
-                      "ttkbootstrap"],
+                      "ttkbootstrap==0.5.1"],
     python_requires='>3.5',
     include_package_data=True,
     entry_points={

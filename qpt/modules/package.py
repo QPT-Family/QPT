@@ -152,7 +152,7 @@ class BatchInstallationOpt(SubModuleOpt):
                     whl.split("-")[0].lower().replace("_", "-") not in ready_list]
         Logging.info(f"需要补充的安装包数量为：{len(whl_list)}")
         for whl_name in whl_list:
-            QPT_MEMORY.pip_tool.install_local_package(whl_name,
+            QPT_MEMORY.pip_tool.install_local_package(whl_name.replace("-", "_"),
                                                       whl_dir=self.path,
                                                       no_dependent=True)
 

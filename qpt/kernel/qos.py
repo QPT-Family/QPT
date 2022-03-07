@@ -87,7 +87,7 @@ def download(url, file_name, path=None, clean=False):
         except Exception as e:
             Logging.error(f"无法下载文件，请检查网络是否可以连接以下链接\n"
                           f"{url}\n"
-                          f"若该文件由QPT提供，请升级QPT版本，若版本升级后仍未解决可在以下地址提交issue反馈该情况\n"
+                          f"若该文件由QPT提供且链接无法正常访问，请优先升级QPT版本并检查当前网络情况，关闭可能影响下载的代理软件，若检查后仍未解决可在以下地址提交issue反馈该情况\n"
                           f"https://github.com/GT-ZhangAcer/QPT/issues")
             raise Exception("文件下载失败，报错如下：" + str(e))
     else:

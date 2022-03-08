@@ -51,13 +51,15 @@ def add_ua():
     """
     获取UA权限
     """
+    
     import ctypes
+    # 导入失败的话，可能是KB2533623没有安装，在极其旧版本的Win7中存在这个情况
     ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
     Logging.info("UA请求完毕")
 
 
 def set_qpt_env_var(path):
-    # ToDO:可考虑用Win32代替
+    # ToDo:可考虑用Win32代替
     out = os.system(f'setx "QPT_BASE" {path} /m')
     if out == 0:
         return True

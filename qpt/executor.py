@@ -372,6 +372,7 @@ class RunExecutableModule:
                                  f"不符合规范的路径如下：\n"
                                  f"C:/GT真菜/xxx/yyy\r\r！“真菜”为中文\n"
                                  f"C:/zzz/GT真 菜/yyy\r\r！“GT真 菜”中“真”字后带有空格\n"
+                                 f"C:/zzz/GT真*&！的菜/yyy\r\r！“*&！”为特殊字符\n"
                                  f"---------------------------------------\n"
                                  f"符合规范的路径如下：\n"
                                  f"C:/hello/xxx/yyy\n"

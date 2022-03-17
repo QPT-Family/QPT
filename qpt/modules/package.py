@@ -264,7 +264,7 @@ class BatchInstallation(SubModule):
             self.add_unpack_opt(BatchInstallationOpt())
 
 
-class CopyWhl2PackagesOPT(SubModuleOpt):
+class CopyWhl2PackagesOpt(SubModuleOpt):
     def __init__(self, whl_path):
         """
         适用于安装额外且单一的whl包，将whl包移动至打包后的opt/packages目录，在首次运行EXE时会自动对该包进行安装。
@@ -284,7 +284,7 @@ class CopyWhl2Packages(SubModule):
         :param whl_path: whl路径
         """
         super().__init__()
-        self.add_pack_opt(CopyWhl2PackagesOPT(whl_path))
+        self.add_pack_opt(CopyWhl2PackagesOpt(whl_path))
 
 # 自动推理依赖时需要特殊处理的Module配置列表 格式{包名: (Module, Module参数字典)}
 # version、deploy_mode 为必填字段

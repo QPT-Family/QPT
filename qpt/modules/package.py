@@ -284,7 +284,7 @@ class CopyWhl2Packages(SubModule):
         :param whl_path: whl路径
         """
         super().__init__()
-        self.add_unpack_opt(CopyWhl2PackagesOPT(whl_path))
+        self.add_pack_opt(CopyWhl2PackagesOPT(whl_path))
 
 # 自动推理依赖时需要特殊处理的Module配置列表 格式{包名: (Module, Module参数字典)}
 # version、deploy_mode 为必填字段

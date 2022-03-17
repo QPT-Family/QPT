@@ -4,6 +4,7 @@
 # Please indicate the source for reprinting.
 
 import os
+import shutil
 
 from qpt.version import version as qpt_version
 from qpt.modules.base import SubModule, SubModuleOpt, TOP_LEVEL_REDUCE, LOW_LEVEL
@@ -12,7 +13,6 @@ from qpt.kernel.qlog import Logging
 from qpt.kernel.qcode import PythonPackages
 from qpt.memory import QPT_MEMORY
 
-DOWN_PACKAGES_RELATIVE_PATH = "opt/packages"
 
 # 第三方库部署方式
 LOCAL_DOWNLOAD_DEPLOY_MODE = "为用户准备Whl包，首次启动时会自动安装，即使这样也可能会有兼容性问题"
@@ -65,7 +65,8 @@ class DownloadWhlOpt(SubModuleOpt):
             self.package = "-r " + FileSerialize.serialize2file(self.package)
         QPT_MEMORY.pip_tool.download_package(self.package,
                                              version=self.version,
-                                             save_path=os.path.join(self.module_path, DOWN_PACKAGES_RELATIVE_PATH),
+                                             save_path=os.path.join(self.module_path,
+                                                                    QPT_MEMORY.get_down_packages_relative_path),
                                              no_dependent=self.no_dependent,
                                              find_links=self.find_links,
                                              python_version=self.python_version,
@@ -93,7 +94,8 @@ class LocalInstallWhlOpt(SubModuleOpt):
         self.opts += "--target " + self.module_site_package_path
         QPT_MEMORY.pip_tool.install_local_package(self.package,
                                                   version=self.version,
-                                                  whl_dir=os.path.join(self.module_path, DOWN_PACKAGES_RELATIVE_PATH),
+                                                  whl_dir=os.path.join(self.module_path,
+                                                                       QPT_MEMORY.get_down_packages_relative_path),
                                                   no_dependent=self.no_dependent,
                                                   opts=self.opts)
 
@@ -145,7 +147,7 @@ class BatchInstallationOpt(SubModuleOpt):
 
     def act(self) -> None:
         if self.path is None:
-            self.path = os.path.join(self.module_path, DOWN_PACKAGES_RELATIVE_PATH)
+            self.path = os.path.join(self.module_path, QPT_MEMORY.get_down_packages_relative_path)
         ready_list = PythonPackages.search_packages_dist_info()[0].keys()
         whl_list = [whl.split("-")[0] for whl in os.listdir(self.path)
                     if whl.split("-")[0] not in ready_list and
@@ -260,6 +262,29 @@ class BatchInstallation(SubModule):
         self.level = LOW_LEVEL
         if DEFAULT_DEPLOY_MODE == LOCAL_DOWNLOAD_DEPLOY_MODE:
             self.add_unpack_opt(BatchInstallationOpt())
+
+
+class CopyWhl2PackagesOPT(SubModuleOpt):
+    def __init__(self, whl_path):
+        """
+        适用于安装额外且单一的whl包，将whl包移动至打包后的opt/packages目录，在首次运行EXE时会自动对该包进行安装。
+        :param whl_path: whl路径
+        """
+        super().__init__(disposable=True)
+        self.whl_path = whl_path
+
+    def act(self) -> None:
+        shutil.copy(src=self.whl_path, dst=os.path.join(self.module_path, QPT_MEMORY.get_down_packages_relative_path))
+
+
+class CopyWhl2Packages(SubModule):
+    def __init__(self, whl_path):
+        """
+        适用于安装额外且单一的whl包，将whl包移动至打包后的opt/packages目录，在首次运行EXE时会自动对该包进行安装。
+        :param whl_path: whl路径
+        """
+        super().__init__()
+        self.add_unpack_opt(CopyWhl2PackagesOPT(whl_path))
 
 # 自动推理依赖时需要特殊处理的Module配置列表 格式{包名: (Module, Module参数字典)}
 # version、deploy_mode 为必填字段

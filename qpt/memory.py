@@ -11,6 +11,11 @@ from qpt.kernel.qlog import Logging
 
 
 def init_wrapper(var=True):
+    """
+    缓存器
+    :param var: 是否未包含参数
+    """
+
     def i_wrapper(func):
         if var:
             @property
@@ -81,6 +86,10 @@ class QPTMemory:
     @init_wrapper(var=False)
     def get_env_vars(self, work_dir="."):
         return get_env_vars(work_dir)
+
+    @init_wrapper()
+    def get_down_packages_relative_path(self):
+        return "opt/packages"
 
 
 QPT_MEMORY = QPTMemory()

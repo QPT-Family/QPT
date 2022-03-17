@@ -30,6 +30,9 @@ class SubModuleOpt:
     """
 
     def __init__(self, disposable=False):
+        """
+        :param disposable: 算子是否为一次性算子，默认非一次性 - 通常用于安装第三方库等只需要进行一次就可以永久使用的情况
+        """
         self.name = self.__class__.__name__
 
         # 算子是否为一次性算子 - 通常用于安装第三方库等只需要进行一次就可以永久使用的情况
@@ -40,6 +43,9 @@ class SubModuleOpt:
         self._interpreter_path = "./"
         # Module目录 - 创建Module时的保存目录/执行Module时的Module目录
         self._module_path = "./"
+        # opt目录
+        self._opt_path = "./opt"
+
         # 终端占位
         self._terminal = None
         # 工作目录占位 - 创建Module时的工作目录（待打包的目录）/执行Module时的resources目录

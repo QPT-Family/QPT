@@ -274,7 +274,7 @@ class CopyWhl2PackagesOPT(SubModuleOpt):
         self.whl_path = whl_path
 
     def act(self) -> None:
-        shutil.copy(src=self.whl_path, dst=os.path.join(self.module_path, QPT_MEMORY.get_down_packages_relative_path))
+        shutil.copy(src=self.whl_path, dst=self.packages_path)
 
 
 class CopyWhl2Packages(SubModule):

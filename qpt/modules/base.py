@@ -9,7 +9,7 @@ import datetime
 from distutils.sysconfig import get_python_lib
 
 from qpt.kernel.qlog import Logging
-from qpt.memory import QPT_MODE, CheckRun
+from qpt.memory import QPT_MODE, CheckRun, QPT_MEMORY
 
 # 定义优先级 优先级越高执行顺序越考前，一般设置为GENERAL_LEVEL
 TOP_LEVEL = 5.  # 底层高优先级
@@ -43,8 +43,6 @@ class SubModuleOpt:
         self._interpreter_path = "./"
         # Module目录 - 创建Module时的保存目录/执行Module时的Module目录
         self._module_path = "./"
-        # opt目录
-        self._opt_path = "./opt"
 
         # 终端占位
         self._terminal = None
@@ -106,6 +104,14 @@ class SubModuleOpt:
     def module_site_package_path(self):
         sp_path = os.path.abspath(os.path.join(self.module_path, "Python/Lib/site-packages"))
         return sp_path
+
+    @property
+    def packages_path(self):
+        return os.path.join(self.module_path, QPT_MEMORY.get_down_packages_relative_path)
+
+    @property
+    def opt_path(self):
+        return os.path.join(self.module_path, "opt")
 
     def prepare(self, work_dir=None, interpreter_path=None, module_path=None, terminal=None):
         self._work_dir = work_dir

@@ -3,4 +3,6 @@
 # Copyright belongs to the author.
 # Please indicate the source for reprinting.
 
+import paddlex
+
 print("安装成功")

@@ -6,6 +6,9 @@ import unittest
 import sys
 import os
 
+# 测试Action 模式
+os.environ["QPT_Action"] = "True"
+
 from qpt.executor import CreateExecutableModule
 from qpt.modules.package import ONLINE_DEPLOY_MODE
 from qpt.modules.python_env import *

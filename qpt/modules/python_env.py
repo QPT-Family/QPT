@@ -52,7 +52,7 @@ class PackPythonEnvOpt(SubModuleOpt):
                 os.path.join("Python", "".join(list(filter(str.isdigit, self.url)))[-10:]
                              , "unzip"))
             Logging.info(f"正在加载Python解释器原文件至{dir_name}")
-            d_result = download(self.url, "Python.zip", dir_name)
+            d_result, _ = download(self.url, "Python.zip", dir_name)
             if d_result:
                 zip_path = os.path.join(dir_name, "Python.zip")
                 # 解压至输出文件夹

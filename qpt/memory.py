@@ -91,6 +91,11 @@ class QPTMemory:
     def get_down_packages_relative_path(self):
         return "opt/packages"
 
+    @init_wrapper()
+    def action_flag(self):
+        flag = os.environ.get("QPT_Action", default=False)
+        return flag
+
 
 QPT_MEMORY = QPTMemory()
 

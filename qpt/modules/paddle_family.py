@@ -6,9 +6,10 @@
 import os
 import sys
 
+from qpt.kernel.qos import download
 from qpt.kernel.qlog import Logging
-from qpt.modules.base import SubModule, SubModuleOpt, GENERAL_LEVEL_REDUCE, LOW_LEVEL_REDUCE
-from qpt.modules.package import CustomPackage, DEFAULT_DEPLOY_MODE
+from qpt.modules.base import SubModule, SubModuleOpt, GENERAL_LEVEL_REDUCE, LOW_LEVEL_REDUCE, HIGH_LEVEL_REDUCE
+from qpt.modules.package import CustomPackage, DEFAULT_DEPLOY_MODE, CopyWhl2Packages, ArgManager
 from qpt.modules.cuda import CopyCUDAPackage
 from qpt.memory import QPT_MEMORY
 
@@ -136,6 +137,46 @@ class PaddlePaddlePackage(CustomPackage):
         # ToDO 当前方案需要放置在init后
         self.add_unpack_opt(SetPaddleFamilyEnvValueOpt())
         self.add_ext_module(PaddlePaddleCheckAVX(version=version, use_cuda=include_cuda))
+
+
+class PaddleOCRPackage(CustomPackage):
+    def __init__(self,
+                 version: str = None,
+                 deploy_mode=DEFAULT_DEPLOY_MODE):
+        super().__init__("paddleocr",
+                         version=version,
+                         deploy_mode=deploy_mode,
+                         no_dependent=True)
+        self.level = GENERAL_LEVEL_REDUCE - 0.1
+        # 因为PaddleOCR的Requirement文件没有强制使用PaddlePaddle，但实际上需要依赖PaddlePaddle
+        # ToDo 不排除用户不想用默认版本的Paddle的情况，先写死，未来再重构，直接修改Callback也是可以的
+
+        Logging.info("由于当前QPT仍在适配PaddleOCR，故此处需要确认是否打包CUDA（建议非原生CUDA的环境暂时不打包）\n"
+                     "是否需要打包CUDA (Y/N)：")
+        Logging.flush()
+        inc = input()
+        include_cuda = True if inc.lower() == "y" else False
+        self.add_ext_module(PaddlePaddlePackage(include_cuda=include_cuda))
+
+        # ToDo 替换掉这个临时方案，顺便把PaddleX也给兼容了
+        _, fasttext = download(
+            url="https://bj.bcebos.com/v1/ai-studio-online/a8e2ee8bd4924c629a6bec6b442654ed849f3a426d87"
+                "4c8a8ac88d1b809539b9?responseContentDisposition=attachment%3B%20filename%3Dfasttext-0"
+                ".9.2-cp38-cp38-win_amd64.whl",
+            file_name="fasttext-0.9.2-cp38-cp38-win_amd64.whl")
+        _, levenshtein = download(
+            url="https://bj.bcebos.com/v1/ai-studio-online/4a22f12c04154e20862dd35a70a148f2dc14da1d"
+                "3f3e4789826e306def8ffdcb?responseContentDisposition=attachment%3B%20filename%3"
+                "Dpython_Levenshtein-0.12.2-cp38-cp38-win_amd64.whl",
+            file_name="python_Levenshtein-0.12.2-cp38-cp38-win_amd64.whl")
+        self.add_ext_module(module=CopyWhl2Packages(fasttext,
+                                                    level=GENERAL_LEVEL_REDUCE,
+                                                    opt=ArgManager(["--no-deps"])))
+        self.add_ext_module(module=CopyWhl2Packages(levenshtein,
+                                                    level=GENERAL_LEVEL_REDUCE))
+        ext_package = "opencv-python tqdm shapely visualdl premailer " \
+                      "lxml imgaug==0.4.0 lmdb scikit-image numpy openpyxl pyclipper cython"
+        self.add_ext_module(module=CustomPackage(ext_package))
 
 
 class PaddleHubPackage(CustomPackage):

@@ -1,9 +1,11 @@
+import copy
 import shutil
 import os
 import sys
 import tempfile
 import io
 from importlib import util
+from typing import List
 
 from qpt.kernel.qlog import Logging, TProgressBar
 from qpt.memory import QPT_MEMORY
@@ -51,7 +53,7 @@ def add_ua():
     """
     获取UA权限
     """
-    
+
     import ctypes
     # 导入失败的话，可能是KB2533623没有安装，在极其旧版本的Win7中存在这个情况
     ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
@@ -85,7 +87,7 @@ def download(url, file_name, path=None, clean=False):
     if not os.path.exists(file_path) or clean:
         try:
             wget.download(url, file_path)
-            return 1
+            return 1, file_path
         except Exception as e:
             Logging.error(f"无法下载文件，请检查网络是否可以连接以下链接\n"
                           f"{url}\n"
@@ -93,7 +95,7 @@ def download(url, file_name, path=None, clean=False):
                           f"https://github.com/GT-ZhangAcer/QPT/issues")
             raise Exception("文件下载失败，报错如下：" + str(e))
     else:
-        return 0
+        return 0, file_path
 
 
 def get_qpt_tmp_path(dir_name="Cache", clean=False):
@@ -242,3 +244,50 @@ def warning_msg_box(title="Warning - GitHub: QPT-Family/QPT", text="", force=Fal
         return False
     else:
         return True
+
+
+class ArgManager:
+    def __init__(self, args: List[str] = None):
+        """
+        shell指令管理器
+
+        Example:
+            sample = ArgManager(["a", "-r", "req.txt"])
+            sample += "-U"
+            print(sample)
+
+            Out: a -r req.txt -U
+
+        """
+        self.args = args if args else list()
+
+    def __add__(self, arg):
+        self = copy.copy(self)
+        if isinstance(arg, str):
+            self.args.append(arg)
+        elif isinstance(arg, list):
+            self.args += arg
+        elif isinstance(arg, ArgManager):
+            self.args += arg.args
+        else:
+            raise TypeError("输入类型需为Str | List | ArgManager")
+        return self
+
+    def __sub__(self, arg):
+        self = copy.copy(self)
+        if isinstance(arg, str):
+            self.args.pop(self.args.index(arg))
+        elif isinstance(arg, list):
+            for a in arg:
+                self.args.pop(self.args.index(a))
+        elif isinstance(arg, ArgManager):
+            for a in arg.args:
+                self.args.pop(self.args.index(a))
+        else:
+            raise TypeError("输入类型需为Str | List | ArgManager")
+        return self
+
+    def __str__(self):
+        # 解决额外空格\双空格问题
+        args = [arg for arg in self.args if arg != ""]
+        return " ".join(args)

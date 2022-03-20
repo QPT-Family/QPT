@@ -7,6 +7,9 @@ import unittest
 import sys
 import os
 
+# 测试Action 模式
+# os.environ["QPT_Action"] = "True"
+
 from qpt.executor import CreateExecutableModule
 from qpt.modules.package import ONLINE_DEPLOY_MODE
 from qpt.modules.python_env import Python37, Python38, Python39
@@ -63,7 +66,7 @@ class LogTest(unittest.TestCase):
                                         save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),
                                         requirements_file="sandbox_m/requirements_with_opt.txt",
                                         with_debug=True,
-                                        icon=r"M:\ICON\i.ico",
+                                        icon=r"./sandbox_m/Logo.ico",
                                         hidden_terminal=False)
         module.make()
 
@@ -88,5 +91,14 @@ class LogTest(unittest.TestCase):
                                         save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),
                                         requirements_file="sandbox_paddlex/req.txt",
                                         sub_modules=[numpy_package, lap_package],
+                                        with_debug=True)
+        module.make()
+
+    def test_m_paddleocr(self):
+        # GUI流程验证
+        module = CreateExecutableModule(work_dir="./sandbox_paddleocr",
+                                        launcher_py_path="./sandbox_paddleocr/run.py",
+                                        save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),
+                                        requirements_file="./sandbox_paddleocr/requirements_with_opt.txt",
                                         with_debug=True)
         module.make()

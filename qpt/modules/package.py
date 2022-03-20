@@ -7,14 +7,14 @@ import os
 import shutil
 
 from qpt.version import version as qpt_version
-from qpt.modules.base import SubModule, SubModuleOpt, TOP_LEVEL_REDUCE, LOW_LEVEL
-from qpt.kernel.qos import FileSerialize
+from qpt.modules.base import SubModule, SubModuleOpt, TOP_LEVEL_REDUCE, LOW_LEVEL, GENERAL_LEVEL
+from qpt.kernel.qos import FileSerialize, ArgManager
 from qpt.kernel.qlog import Logging
 from qpt.kernel.qcode import PythonPackages
 from qpt.memory import QPT_MEMORY
 
-
 # 第三方库部署方式
+FLAG_FILE_SERIALIZE = "[FLAG-FileSerialize]"
 LOCAL_DOWNLOAD_DEPLOY_MODE = "为用户准备Whl包，首次启动时会自动安装，即使这样也可能会有兼容性问题"
 LOCAL_INSTALL_DEPLOY_MODE = "[不推荐]预编译第三方库，首次启动无需安装但将额外消耗硬盘空间，可能会有兼容性问题并且只支持二进制包"
 ONLINE_DEPLOY_MODE = "用户使用时在线安装Python第三方库"
@@ -45,13 +45,15 @@ def set_default_package_for_python_version(version):
 
 class DownloadWhlOpt(SubModuleOpt):
     def __init__(self,
-                 package: str,
+                 package: str = "",
                  version: str = None,
                  no_dependent=False,
                  find_links: str = None,
                  python_version=DEFAULT_PACKAGE_FOR_PYTHON_VERSION,
-                 opts: str = None):
+                 opts: ArgManager = None):
         super().__init__()
+        if opts is None:
+            opts = ArgManager()
         self.package = package
         self.no_dependent = no_dependent
         self.find_links = find_links
@@ -60,9 +62,10 @@ class DownloadWhlOpt(SubModuleOpt):
         self.python_version = python_version
 
     def act(self) -> None:
-        if "[FLAG-FileSerialize]" in self.package[:32]:
-            self.package = self.package.strip("[FLAG-FileSerialize]")
-            self.package = "-r " + FileSerialize.serialize2file(self.package)
+        # 对固化的Requirement文件进行解冻
+        if FLAG_FILE_SERIALIZE in self.package[:32]:
+            self.opts += "-r " + FileSerialize.serialize2file(self.package.strip(FLAG_FILE_SERIALIZE))
+            self.package = ""
         QPT_MEMORY.pip_tool.download_package(self.package,
                                              version=self.version,
                                              save_path=os.path.join(self.module_path,
@@ -75,41 +78,55 @@ class DownloadWhlOpt(SubModuleOpt):
 
 class LocalInstallWhlOpt(SubModuleOpt):
     def __init__(self,
-                 package: str,
+                 package: str = "",
                  version: str = None,
+                 static_whl: bool = False,  # 控制是否从镜像源安装
                  no_dependent=False,
-                 opts: str = None):
+                 opts: ArgManager = None):
         super().__init__(disposable=True)
+        if opts is None:
+            opts = ArgManager()
         self.package = package
+        self.static_whl = static_whl
         self.no_dependent = no_dependent
         self.opts = opts
         self.version = version
 
     def act(self) -> None:
-        if "[FLAG-FileSerialize]" in self.package[:32]:
-            self.package = self.package.strip("[FLAG-FileSerialize]")
-            self.package = "-r " + FileSerialize.serialize2file(self.package)
-        if self.opts is None:
-            self.opts = ""
+        if FLAG_FILE_SERIALIZE in self.package[:32]:
+            self.opts += "-r " + FileSerialize.serialize2file(self.package.strip(FLAG_FILE_SERIALIZE))
+            self.package = ""
         self.opts += "--target " + self.module_site_package_path
-        QPT_MEMORY.pip_tool.install_local_package(self.package,
-                                                  version=self.version,
-                                                  whl_dir=os.path.join(self.module_path,
-                                                                       QPT_MEMORY.get_down_packages_relative_path),
-                                                  no_dependent=self.no_dependent,
-                                                  opts=self.opts)
+
+        if self.static_whl:
+            QPT_MEMORY.pip_tool.install_local_package(os.path.join(self.packages_path, os.path.basename(self.package)),
+                                                      abs_package=True,
+                                                      version=self.version,
+                                                      whl_dir=os.path.join(self.module_path,
+                                                                           QPT_MEMORY.get_down_packages_relative_path),
+                                                      no_dependent=self.no_dependent,
+                                                      opts=self.opts)
+        else:
+            QPT_MEMORY.pip_tool.install_local_package(self.package,
+                                                      version=self.version,
+                                                      whl_dir=os.path.join(self.module_path,
+                                                                           QPT_MEMORY.get_down_packages_relative_path),
+                                                      no_dependent=self.no_dependent,
+                                                      opts=self.opts)
 
 
 class OnlineInstallWhlOpt(SubModuleOpt):
     def __init__(self,
-                 package: str,
+                 package: str = "",
                  version: str = None,
                  to_module_env_path=True,
                  to_python_env_version=DEFAULT_PACKAGE_FOR_PYTHON_VERSION,
                  no_dependent=False,
                  find_links: str = None,
-                 opts: str = None):
+                 opts: ArgManager = None):
         super().__init__(disposable=True)
+        if opts is None:
+            opts = ArgManager()
         self.package = package
         self.to_module_env = to_module_env_path
         self.no_dependent = no_dependent
@@ -123,15 +140,13 @@ class OnlineInstallWhlOpt(SubModuleOpt):
             self.to_python_env_version = DEFAULT_PACKAGE_FOR_PYTHON_VERSION
 
     def act(self) -> None:
-        if "[FLAG-FileSerialize]" in self.package[:32]:
-            self.package = self.package.strip("[FLAG-FileSerialize]")
-            self.package = "-r " + FileSerialize.serialize2file(self.package)
+        if FLAG_FILE_SERIALIZE in self.package[:32]:
+            self.opts += "-r " + FileSerialize.serialize2file(self.package.strip(FLAG_FILE_SERIALIZE))
+            self.package = ""
         if self.to_module_env:
-            if not self.opts:
-                self.opts = ""
             self.opts += "--target " + self.module_site_package_path
             if self.to_python_env_version:
-                self.opts += f" --python-version {self.to_python_env_version} --only-binary :all:"
+                self.opts += f"--python-version {self.to_python_env_version} --only-binary :all:"
         QPT_MEMORY.pip_tool.pip_package_shell(self.package,
                                               act="install",
                                               version=self.version,
@@ -148,26 +163,29 @@ class BatchInstallationOpt(SubModuleOpt):
     def act(self) -> None:
         if self.path is None:
             self.path = os.path.join(self.module_path, QPT_MEMORY.get_down_packages_relative_path)
-        ready_list = PythonPackages.search_packages_dist_info()[0].keys()
-        whl_list = [whl.split("-")[0] for whl in os.listdir(self.path)
-                    if whl.split("-")[0] not in ready_list and
-                    whl.split("-")[0].lower().replace("_", "-") not in ready_list]
+
+        # 模糊匹配
+        ready_list = " ".join([k.lower() for k in PythonPackages.search_packages_dist_info()[0].keys()])
+        whl_list = [whl for whl in os.listdir(self.path)
+                    if whl.split("-")[0].lower() not in ready_list]
         Logging.info(f"需要补充的安装包数量为：{len(whl_list)}")
         for whl_name in whl_list:
-            QPT_MEMORY.pip_tool.install_local_package(whl_name.replace("-", "_"),
-                                                      whl_dir=self.path,
+            QPT_MEMORY.pip_tool.install_local_package(os.path.join(self.packages_path, whl_name),
+                                                      abs_package=True,
                                                       no_dependent=True)
 
 
 class CustomPackage(SubModule):
     def __init__(self,
-                 package,
+                 package="",
                  version: str = None,
                  deploy_mode=None,
                  no_dependent=False,
                  find_links: str = None,
-                 opts: str = None):
+                 opts: ArgManager = None):
         super().__init__(name=None)
+        if opts is None:
+            opts = ArgManager()
         if deploy_mode is None:
             deploy_mode = DEFAULT_DEPLOY_MODE
         if deploy_mode == LOCAL_DOWNLOAD_DEPLOY_MODE:
@@ -179,7 +197,7 @@ class CustomPackage(SubModule):
             self.add_unpack_opt(LocalInstallWhlOpt(package=package,
                                                    version=version,
                                                    no_dependent=no_dependent,
-                                                   opts=opts))
+                                                   opts=ArgManager() + "-U --upgrade-strategy eager"))
         elif deploy_mode == ONLINE_DEPLOY_MODE:
             self.add_unpack_opt(OnlineInstallWhlOpt(package=package,
                                                     version=version,
@@ -206,10 +224,10 @@ class _RequirementsPackage(SubModule):
         # 部分情况需要序列化requirement.txt文件
         if deploy_mode != LOCAL_INSTALL_DEPLOY_MODE:
             fs = FileSerialize(requirements_file_path)
-            fs_data = "[FLAG-FileSerialize]" + fs.get_serialize_data()
+            fs_data = FLAG_FILE_SERIALIZE + fs.get_serialize_data()
         requirements_file_path = "-r " + requirements_file_path
         if deploy_mode == LOCAL_DOWNLOAD_DEPLOY_MODE:
-            self.add_pack_opt(DownloadWhlOpt(package=requirements_file_path,
+            self.add_pack_opt(DownloadWhlOpt(opts=ArgManager() + requirements_file_path,
                                              no_dependent=False))
             self.add_unpack_opt(LocalInstallWhlOpt(package=fs_data,
                                                    no_dependent=False))
@@ -217,7 +235,7 @@ class _RequirementsPackage(SubModule):
             self.add_unpack_opt(OnlineInstallWhlOpt(package=fs_data,
                                                     no_dependent=False))
         elif deploy_mode == LOCAL_INSTALL_DEPLOY_MODE:
-            self.add_pack_opt(OnlineInstallWhlOpt(package=requirements_file_path,
+            self.add_pack_opt(OnlineInstallWhlOpt(opts=ArgManager() + requirements_file_path,
                                                   no_dependent=False,
                                                   to_module_env_path=True))
 
@@ -228,18 +246,17 @@ class QPTDependencyPackage(SubModule):
         super().__init__(name=None)
         kernel_dependency_path = os.path.join(os.path.split(__file__)[0], "kernel_dependency.txt")
         lazy_dependency_path = os.path.join(os.path.split(__file__)[0], "qpt_lazy_dependency.txt")
-        lazy_dependency_serialize = "[FLAG-FileSerialize]" + FileSerialize(lazy_dependency_path).get_serialize_data()
+        lazy_dependency_serialize = FLAG_FILE_SERIALIZE + FileSerialize(lazy_dependency_path).get_serialize_data()
         kernel = "-r " + kernel_dependency_path
         lazy = "-r " + lazy_dependency_path
         self.add_pack_opt(OnlineInstallWhlOpt(package="qpt",
                                               version=qpt_version,
                                               no_dependent=True,
                                               to_module_env_path=True))
-        self.add_pack_opt(OnlineInstallWhlOpt(package=kernel,
-                                              no_dependent=False,
+        self.add_pack_opt(OnlineInstallWhlOpt(no_dependent=False,
                                               to_module_env_path=True,
-                                              opts="-U "))
-        self.add_pack_opt(DownloadWhlOpt(package=lazy,
+                                              opts=ArgManager() + "-U" + kernel))
+        self.add_pack_opt(DownloadWhlOpt(opts=ArgManager() + lazy,
                                          no_dependent=False))
         self.add_unpack_opt(LocalInstallWhlOpt(package=lazy_dependency_serialize,
                                                no_dependent=False))
@@ -251,7 +268,7 @@ class QPTGUIDependencyPackage(SubModule):
         super().__init__(name=None)
         kernel_dependency_path = os.path.join(os.path.split(__file__)[0], "kernel_dependency_GUI.txt")
         kernel = "-r " + kernel_dependency_path
-        self.add_pack_opt(OnlineInstallWhlOpt(package=kernel,
+        self.add_pack_opt(OnlineInstallWhlOpt(opts=ArgManager() + kernel,
                                               no_dependent=False,
                                               to_module_env_path=True))
 
@@ -278,13 +295,19 @@ class CopyWhl2PackagesOpt(SubModuleOpt):
 
 
 class CopyWhl2Packages(SubModule):
-    def __init__(self, whl_path):
+    def __init__(self,
+                 whl_path,
+                 level=GENERAL_LEVEL,
+                 not_install=False,
+                 opt=None):
         """
         适用于安装额外且单一的whl包，将whl包移动至打包后的opt/packages目录，在首次运行EXE时会自动对该包进行安装。
         :param whl_path: whl路径
         """
-        super().__init__()
+        super().__init__(name=os.path.basename(whl_path).replace(".", "")[:10], level=level)
         self.add_pack_opt(CopyWhl2PackagesOpt(whl_path))
 
-# 自动推理依赖时需要特殊处理的Module配置列表 格式{包名: (Module, Module参数字典)}
-# version、deploy_mode 为必填字段
+        if not not_install:
+            if opt is None:
+                opt = ArgManager(["-U --force-reinstall"])
+            self.add_unpack_opt(LocalInstallWhlOpt(package=whl_path, static_whl=True, opts=opt))

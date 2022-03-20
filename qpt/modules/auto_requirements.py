@@ -7,7 +7,7 @@ import os
 from qpt.kernel.qlog import Logging
 from qpt.kernel.qos import get_qpt_tmp_path
 from qpt.modules.package import _RequirementsPackage, DEFAULT_DEPLOY_MODE
-from qpt.modules.paddle_family import PaddlePaddlePackage
+from qpt.modules.paddle_family import PaddlePaddlePackage, PaddleOCRPackage
 from qpt.memory import QPT_MEMORY
 
 
@@ -31,7 +31,9 @@ class AutoRequirementsPackage(_RequirementsPackage):
             requirements = QPT_MEMORY.pip_tool.analyze_requirements_file(path)
         else:
             Logging.info(f"[Auto]正在分析{os.path.abspath(path)}下的依赖情况...")
-            requirements = QPT_MEMORY.pip_tool.analyze_dependence(path, return_path=False)
+            requirements = QPT_MEMORY.pip_tool.analyze_dependence(path,
+                                                                  return_path=False,
+                                                                  action_mode=QPT_MEMORY.action_flag)
 
         # module_name_list = [m.name for m in module_list]
         # 对特殊包进行过滤和特殊化
@@ -59,9 +61,14 @@ class AutoRequirementsPackage(_RequirementsPackage):
             self.add_ext_module(pam)
 
 
+# 自动推理依赖时需要特殊处理的Module配置列表 格式{包名: (Module, Module参数字典)}
+# version、deploy_mode 为必填字段
+# ToDo 小心 DEFAULT_DEPLOY_MODE 不在mem中可能会有问题
 SPECIAL_MODULE = {"paddlepaddle": (PaddlePaddlePackage, {"version": None,
                                                          "include_cuda": False,
                                                          "deploy_mode": DEFAULT_DEPLOY_MODE}),
                   "paddlepaddle-gpu": (PaddlePaddlePackage, {"version": None,
                                                              "include_cuda": True,
-                                                             "deploy_mode": DEFAULT_DEPLOY_MODE})}
+                                                             "deploy_mode": DEFAULT_DEPLOY_MODE}),
+                  "paddleocr": (PaddleOCRPackage, {"version": None,
+                                                   "deploy_mode": DEFAULT_DEPLOY_MODE})}

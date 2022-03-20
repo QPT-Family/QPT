@@ -4,7 +4,7 @@
 # Please indicate the source for reprinting.
 import os
 
-from qpt.kernel.qos import dynamic_load_package, get_qpt_tmp_path
+from qpt.kernel.qos import dynamic_load_package, get_qpt_tmp_path, ArgManager
 from qpt.kernel.qlog import clean_stout, Logging
 from qpt.kernel.qterminal import PTerminal, TerminalCallback, LoggingTerminalCallback
 from qpt.kernel.qcode import PythonPackages
@@ -79,14 +79,14 @@ class PipTools:
         # ToDo 可考虑增加环境管理部分 - 可考虑生成软链
         pass
 
-    def pip_shell(self, shell):
+    def pip_shell(self, shell: str):
         if not os.path.exists(get_qpt_tmp_path('pip_cache')):
             os.makedirs(get_qpt_tmp_path('pip_cache'), exist_ok=True)
         shell += f" --isolated --disable-pip-version-check --cache-dir {get_qpt_tmp_path('pip_cache')}" \
-                 f" --timeout 10"
+                 f" --timeout 10 --prefer-binary"
         if self.quiet:
             shell += " --quiet"
-        self.pip_main(shell.split(" "))
+        self.pip_main(str(shell).split(" "))
         clean_stout(['console', 'console_errors', 'console_subprocess'])
 
     def pip_package_shell(self,
@@ -95,22 +95,30 @@ class PipTools:
                           act="install",
                           no_dependent=False,
                           find_links: str = None,
-                          opts: str = None):
+                          opts: ArgManager = None):
+        if opts is None:
+            opts = ArgManager()
+        else:
+            if not isinstance(opts, ArgManager):
+                Logging.warning(f"在键入以下指令时，opts传递的并非是ArgManager对象，可能存在意料之外的问题\n{opts}")
+
+        #  package兼容性
+        package = package.replace("-", "_")
+
         if version:
             package += "==" + version
 
-        shell = f"{act} {package} -i {self.source}"
+        opts = ArgManager([act, package]) + opts
 
         if no_dependent:
-            shell += " --no-deps"
+            opts += "--no-deps"
 
         if find_links:
-            shell += " -f " + find_links
+            opts += "-f " + find_links
+        else:
+            opts += ["-i", self.source]
 
-        if opts:
-            shell += " " + opts
-
-        self.pip_shell(shell)
+        self.pip_shell(str(opts))
 
     def download_package(self,
                          package: str,
@@ -119,14 +127,14 @@ class PipTools:
                          no_dependent=False,
                          find_links: str = None,
                          python_version: str = None,
-                         opts: str = None):
-        d_opts = "-d " + save_path
-        if python_version:
-            d_opts += " --python-version " + python_version
-            d_opts += " --only-binary :all:"
+                         opts: ArgManager = None):
+        if opts is None:
+            opts = ArgManager()
 
-        if opts:
-            d_opts += " " + opts
+        opts += "-d " + save_path
+        if python_version:
+            opts += "--python-version " + python_version
+            opts += "--only-binary :all:"
 
         # pip download xxx -d ./test
         # pip install xxx -f ./test --no-deps
@@ -135,25 +143,38 @@ class PipTools:
                                act="download",
                                no_dependent=no_dependent,
                                find_links=find_links,
-                               opts=d_opts)
+                               opts=opts)
 
     def install_local_package(self,
                               package: str,
+                              abs_package: bool = False,  # abs则不会替换下划线，通常用于绝对路径whl安装
                               version: str = None,
                               whl_dir: str = None,
                               no_dependent=False,
-                              opts: str = None):
-        i_opts = "--no-index"
-        if opts:
-            i_opts += " " + opts
+                              opts: ArgManager = None):
+        if opts is None:
+            opts = ArgManager()
+
+        opts += "--no-index"
+
+        if abs_package:
+            act = "install " + package
+            package = ""
+        else:
+            act = "install"
         self.pip_package_shell(package=package,
-                               act="install",
+                               act=act,
                                version=version,
                                no_dependent=no_dependent,
                                find_links=whl_dir,
-                               opts=i_opts)
+                               opts=opts)
 
-    def analyze_dependence(self, analyze_path, save_file_path=None, return_path=False):
+    def analyze_dependence(self,
+                           analyze_path,
+                           save_file_path=None,
+                           return_path=False,
+                           action_mode=False):  # action mode为静默模式
+
         if save_file_path is None:
             save_file_path = os.path.join(analyze_path, "requirements_with_opt.txt")
 
@@ -193,7 +214,8 @@ class PipTools:
                      f"---------------------------------------------------------------------\n"
                      f"\033[41m请在检查/修改依赖文件后\033[0m在此处按下回车键继续...\n"
                      f"请键入指令[回车键 - 一次不行可以试试按两次]:_", line_feed=False)
-        input()
+        if not action_mode:
+            input()
         if return_path:
             return save_file_path
         else:
@@ -227,6 +249,7 @@ class PipTools:
                 else:
                     line = requirement + "\n"
                 file.write(line)
+
 
 if __name__ == '__main__':
     pass

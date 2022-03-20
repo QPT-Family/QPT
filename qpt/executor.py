@@ -302,8 +302,9 @@ class CreateExecutableModule:
         # Logging Summary
         if Logging.final():
             Logging.warning("SUMMARY结束，发现上述异常情况，请确认后按任意键继续！")
-            Logging.flush()
-            input()
+            if not QPT_MEMORY.action_flag:
+                Logging.flush()
+                input()
 
         # 收尾工作
         Logging.info(f"\n制作完毕，保存位置为：{os.path.abspath(self.module_path)}，该目录下将会有以下文件夹\n"
@@ -321,15 +322,16 @@ class CreateExecutableModule:
                         f"|    文件或重新打包，以避免因执行“启动程序.exe”后丢失“一次性部署模块”，从而无法被他人使用。\n"
                         f"| ----------------------------------------------------------------------------- |\n")
 
-        sys.stdout.flush()
-        Logging.info("是否需要保留QPT在打包时产生的缓存文件？若不清空则可能会在下次使用QPT时复用缓存以提升打包速度")
-        Logging.info("[保留(Y)/清空(N)]:_", line_feed=False)
-        clear_key = input()
-        sys.stdout.flush()
-        if clear_key.lower() == "n":
-            clean_qpt_cache()
-            Logging.info("QPT缓存已全部清空")
-        os.startfile(os.path.abspath(self.save_path))
+        if not QPT_MEMORY.action_flag:
+            sys.stdout.flush()
+            Logging.info("是否需要保留QPT在打包时产生的缓存文件？若不清空则可能会在下次使用QPT时复用缓存以提升打包速度")
+            Logging.info("[保留(Y)/清空(N)]:_", line_feed=False)
+            clear_key = input()
+            sys.stdout.flush()
+            if clear_key.lower() == "n":
+                clean_qpt_cache()
+                Logging.info("QPT缓存已全部清空")
+            os.startfile(os.path.abspath(self.save_path))
 
 
 class RunExecutableModule:

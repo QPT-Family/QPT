@@ -153,9 +153,12 @@ class PaddleOCRPackage(CustomPackage):
 
         Logging.info("由于当前QPT仍在适配PaddleOCR，故此处需要确认是否打包CUDA（建议非原生CUDA的环境暂时不打包）\n"
                      "是否需要打包CUDA (Y/N)：")
-        Logging.flush()
-        inc = input()
-        include_cuda = True if inc.lower() == "y" else False
+
+        include_cuda = False
+        if not QPT_MEMORY.action_flag:
+            Logging.flush()
+            inc = input()
+            include_cuda = True if inc.lower() == "y" else False
         self.add_ext_module(PaddlePaddlePackage(include_cuda=include_cuda))
 
         # ToDo 替换掉这个临时方案，顺便把PaddleX也给兼容了

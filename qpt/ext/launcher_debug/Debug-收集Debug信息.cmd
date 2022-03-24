@@ -4,7 +4,7 @@ cd /d %~dp0
 set QPT_COLOR=False
 set QPT_MODE=Debug
 set PYTHONPATH=Python/Lib/site-packages;Python/Lib;Python
-set PATH=Python/Lib/site-package;Python/Lib;Python;%PATH%
+set PATH=Python/Lib/site-package;Python/Lib;Python;Python/Scripts;%PATH%
 set PROMPT=(QPT_VENV) %PROMPT%
 for /f "tokens=2 delims=:." %%a in ('"%SystemRoot%\System32\chcp.com"') do (
     set _OLD_CODEPAGE=%%a

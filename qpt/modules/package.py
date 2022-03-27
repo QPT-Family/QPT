@@ -12,13 +12,11 @@ from qpt.kernel.qos import FileSerialize, ArgManager
 from qpt.kernel.qlog import Logging
 from qpt.kernel.qcode import PythonPackages
 from qpt.memory import QPT_MEMORY
+from qpt.kernel.qinterpreter import DISPLAY_LOCAL_INSTALL, DISPLAY_SETUP_INSTALL, DISPLAY_ONLINE_INSTALL
 
 # 第三方库部署方式
 FLAG_FILE_SERIALIZE = "[FLAG-FileSerialize]"
-LOCAL_DOWNLOAD_DEPLOY_MODE = "为用户准备Whl包，首次启动时会自动安装，即使这样也可能会有兼容性问题"
-LOCAL_INSTALL_DEPLOY_MODE = "[不推荐]预编译第三方库，首次启动无需安装但将额外消耗硬盘空间，可能会有兼容性问题并且只支持二进制包"
-ONLINE_DEPLOY_MODE = "用户使用时在线安装Python第三方库"
-DEFAULT_DEPLOY_MODE = LOCAL_DOWNLOAD_DEPLOY_MODE
+DEFAULT_DEPLOY_MODE = DISPLAY_LOCAL_INSTALL
 
 # 第三方库下载版本
 PACKAGE_FOR_PYTHON38_VERSION = "3.8"
@@ -182,13 +180,14 @@ class CustomPackage(SubModule):
                  deploy_mode=None,
                  no_dependent=False,
                  find_links: str = None,
-                 opts: ArgManager = None):
-        super().__init__(name=None)
+                 opts: ArgManager = None,
+                 name: str = None):
+        super().__init__(name=name)
         if opts is None:
             opts = ArgManager()
         if deploy_mode is None:
             deploy_mode = DEFAULT_DEPLOY_MODE
-        if deploy_mode == LOCAL_DOWNLOAD_DEPLOY_MODE:
+        if deploy_mode == DISPLAY_LOCAL_INSTALL:
             self.add_pack_opt(DownloadWhlOpt(package=package,
                                              version=version,
                                              no_dependent=no_dependent,
@@ -198,13 +197,13 @@ class CustomPackage(SubModule):
                                                    version=version,
                                                    no_dependent=no_dependent,
                                                    opts=ArgManager() + "-U --upgrade-strategy eager"))
-        elif deploy_mode == ONLINE_DEPLOY_MODE:
+        elif deploy_mode == DISPLAY_ONLINE_INSTALL:
             self.add_unpack_opt(OnlineInstallWhlOpt(package=package,
                                                     version=version,
                                                     no_dependent=no_dependent,
                                                     find_links=find_links,
                                                     opts=opts))
-        elif deploy_mode == LOCAL_INSTALL_DEPLOY_MODE:
+        elif deploy_mode == DISPLAY_SETUP_INSTALL:
             self.add_pack_opt(OnlineInstallWhlOpt(package=package,
                                                   version=version,
                                                   no_dependent=no_dependent,
@@ -215,26 +214,27 @@ class CustomPackage(SubModule):
 class _RequirementsPackage(SubModule):
     def __init__(self,
                  requirements_file_path,
-                 deploy_mode=None):
-        super().__init__(name=None)
+                 deploy_mode=None,
+                 name: str = None):
+        super().__init__(name=name)
         if deploy_mode is None:
             deploy_mode = DEFAULT_DEPLOY_MODE
 
         fs_data = ""
         # 部分情况需要序列化requirement.txt文件
-        if deploy_mode != LOCAL_INSTALL_DEPLOY_MODE:
+        if deploy_mode != DISPLAY_SETUP_INSTALL:
             fs = FileSerialize(requirements_file_path)
             fs_data = FLAG_FILE_SERIALIZE + fs.get_serialize_data()
         requirements_file_path = "-r " + requirements_file_path
-        if deploy_mode == LOCAL_DOWNLOAD_DEPLOY_MODE:
+        if deploy_mode == DISPLAY_LOCAL_INSTALL:
             self.add_pack_opt(DownloadWhlOpt(opts=ArgManager() + requirements_file_path,
                                              no_dependent=False))
             self.add_unpack_opt(LocalInstallWhlOpt(package=fs_data,
                                                    no_dependent=False))
-        elif deploy_mode == ONLINE_DEPLOY_MODE:
+        elif deploy_mode == DISPLAY_ONLINE_INSTALL:
             self.add_unpack_opt(OnlineInstallWhlOpt(package=fs_data,
                                                     no_dependent=False))
-        elif deploy_mode == LOCAL_INSTALL_DEPLOY_MODE:
+        elif deploy_mode == DISPLAY_SETUP_INSTALL:
             self.add_pack_opt(OnlineInstallWhlOpt(opts=ArgManager() + requirements_file_path,
                                                   no_dependent=False,
                                                   to_module_env_path=True))
@@ -274,10 +274,10 @@ class QPTGUIDependencyPackage(SubModule):
 
 
 class BatchInstallation(SubModule):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, name):
+        super().__init__(name=name)
         self.level = LOW_LEVEL
-        if DEFAULT_DEPLOY_MODE == LOCAL_DOWNLOAD_DEPLOY_MODE:
+        if DEFAULT_DEPLOY_MODE == DISPLAY_LOCAL_INSTALL:
             self.add_unpack_opt(BatchInstallationOpt())
 
 
@@ -299,12 +299,15 @@ class CopyWhl2Packages(SubModule):
                  whl_path,
                  level=GENERAL_LEVEL,
                  not_install=False,
-                 opt=None):
+                 opt=None,
+                 name: str = None):
         """
         适用于安装额外且单一的whl包，将whl包移动至打包后的opt/packages目录，在首次运行EXE时会自动对该包进行安装。
         :param whl_path: whl路径
         """
-        super().__init__(name=os.path.basename(whl_path).replace(".", "")[:10], level=level)
+        if name is None:
+            name = os.path.basename(whl_path).replace(".", "")[:10]
+        super().__init__(name=name, level=level)
         self.add_pack_opt(CopyWhl2PackagesOpt(whl_path))
 
         if not not_install:

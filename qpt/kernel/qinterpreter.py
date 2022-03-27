@@ -15,6 +15,40 @@ DOUBAN_PIP_SOURCE = "https://pypi.douban.com/simple"
 BFSU_PIP_SOURCE = "https://mirrors.bfsu.edu.cn/pypi/web/simple"
 DEFAULT_PIP_SOURCE = BFSU_PIP_SOURCE
 
+SIGNALS = ["=", "~", "<", ">"]
+
+QPT_DISPLAY_FLAG = "#$QPT_FLAG$"
+DISPLAY_IGNORE = "ignore"
+DISPLAY_COPY = "copy"
+DISPLAY_FORCE = "force"  # 独立安装
+DISPLAY_NET_INSTALL = "net_install"  # 打包时从第三方站点下载，部署时安装
+DISPLAY_ONLINE_INSTALL = "online_install"  # 在线安装
+DISPLAY_LOCAL_INSTALL = "local_install"  # 下载后安装
+DISPLAY_SETUP_INSTALL = "setup_install"  # 直接安装
+
+
+class DisplayFlag(dict):
+    def __init__(self):
+        super(DisplayFlag, self).__init__({"ignore": DISPLAY_IGNORE,
+                                           "copy": DISPLAY_COPY,
+                                           "force": DISPLAY_FORCE,
+                                           "net_install": DISPLAY_NET_INSTALL,
+                                           "local_install": DISPLAY_LOCAL_INSTALL,
+                                           "online_install": "online_install",
+                                           None: None})
+
+    def get_flag(self, item):
+        if DISPLAY_NET_INSTALL in item:
+            return item
+        else:
+            for flag in self.keys():
+                if flag in item:
+                    return flag
+            return None
+
+
+display_flag = DisplayFlag()
+
 
 class PIPTerminal(PTerminal):
     # ToDo 此处需要简化
@@ -51,6 +85,23 @@ class PIPTerminal(PTerminal):
             callback.handle(self.main_terminal)
 
         return closure
+
+
+def analysis_requirements_line(name: str):
+    name = name.strip("\n")
+
+    display = None
+    if QPT_DISPLAY_FLAG in name:
+        name, display = name.split(QPT_DISPLAY_FLAG)
+
+    version = ""
+
+    for _signal in SIGNALS:
+        if _signal in name:
+            version = name[name.index(_signal):]
+            name = name[:name.index(_signal)]
+            break
+    return name, version, display
 
 
 class PipTools:
@@ -106,7 +157,12 @@ class PipTools:
         package = package.replace("-", "_")
 
         if version:
-            package += "==" + version
+            for signal in SIGNALS:
+                if signal in version:
+                    package += version
+                    break
+            else:
+                package += "==" + version
 
         opts = ArgManager([act, package]) + opts
 
@@ -214,6 +270,7 @@ class PipTools:
                      f"---------------------------------------------------------------------\n"
                      f"\033[41m请在检查/修改依赖文件后\033[0m在此处按下回车键继续...\n"
                      f"请键入指令[回车键 - 一次不行可以试试按两次]:_", line_feed=False)
+
         if not action_mode:
             input()
         if return_path:
@@ -228,26 +285,22 @@ class PipTools:
             with open(file_path, "r", encoding="utf-8") as req_file:
                 data = req_file.readlines()
                 for line in data:
-                    line = line.strip("\n")
-                    if "==" in line:
-                        package, version = line.split("==")
-                    else:
-                        package = line
-                        version = None
-                    requirements[package] = version
+                    package, version, display = analysis_requirements_line(line)
+                    requirements[package] = {"version": version, "display": display_flag.get_flag(display)}
         except Exception as e:
             raise Exception(f"{file_path}文件解析失败，文件可能被其他程序占用或格式异常\n"
                             f"报错信息如下：{e}")
         return requirements
 
     @staticmethod
-    def save_requirements_file(requirements_dict, save_file_path, encoding="utf-8"):
+    def save_requirements_file(requirements: dict, save_file_path, encoding="utf-8"):
         with open(save_file_path, "w", encoding=encoding) as file:
-            for requirement in requirements_dict:
-                if requirements_dict[requirement] is not None:
-                    line = f"{requirement}=={requirements_dict[requirement]}\n"
-                else:
-                    line = requirement + "\n"
+            for requirement in requirements.items():
+                version = requirements[requirement].get("version", default="")
+                display = requirements[requirement].get("display", default="")
+                if display is None:
+                    display = ""
+                line = f"{requirement}{version}{QPT_DISPLAY_FLAG}{display}\n"
                 file.write(line)
 
 

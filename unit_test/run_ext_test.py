@@ -11,7 +11,7 @@ import os
 # os.environ["QPT_Action"] = "True"
 
 from qpt.executor import CreateExecutableModule
-from qpt.modules.package import ONLINE_DEPLOY_MODE
+from qpt.modules.package import DISPLAY_ONLINE_INSTALL
 from qpt.modules.python_env import Python37, Python38, Python39
 
 OUT_DIR_ROOT = r"M:\QPT_UT_OUT_CACHE"
@@ -83,9 +83,9 @@ class LogTest(unittest.TestCase):
     def test_m_paddlex(self):
         # GUI流程验证
         from qpt.modules.base import HIGH_LEVEL
-        from qpt.modules.package import CustomPackage, LOCAL_INSTALL_DEPLOY_MODE
-        numpy_package = CustomPackage(package="numpy", version=None, deploy_mode=LOCAL_INSTALL_DEPLOY_MODE)
-        lap_package = CustomPackage(package="lap", version=None, deploy_mode=LOCAL_INSTALL_DEPLOY_MODE)
+        from qpt.modules.package import CustomPackage, DISPLAY_SETUP_INSTALL
+        numpy_package = CustomPackage(package="numpy", version=None, deploy_mode=DISPLAY_SETUP_INSTALL)
+        lap_package = CustomPackage(package="lap", version=None, deploy_mode=DISPLAY_SETUP_INSTALL)
         module = CreateExecutableModule(work_dir="./sandbox_paddlex",
                                         launcher_py_path="./sandbox_paddlex/run.py",
                                         save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),

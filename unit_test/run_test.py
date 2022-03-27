@@ -10,7 +10,7 @@ import os
 os.environ["QPT_Action"] = "True"
 
 from qpt.executor import CreateExecutableModule
-from qpt.modules.package import ONLINE_DEPLOY_MODE
+from qpt.modules.package import DISPLAY_ONLINE_INSTALL
 from qpt.modules.python_env import *
 
 # from qpt.kernel.tools.interpreter import set_default_pip_source
@@ -106,5 +106,5 @@ class LogTest(unittest.TestCase):
                                         requirements_file="./sandbox/requirements_with_opt.txt",
                                         with_debug=True,
                                         hidden_terminal=False,
-                                        deploy_mode=ONLINE_DEPLOY_MODE)
+                                        deploy_mode=DISPLAY_ONLINE_INSTALL)
         module.make()

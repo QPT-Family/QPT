@@ -158,6 +158,7 @@ class CreateExecutableModule:
         self.add_sub_module(auto_dependency_module)
 
         # 初始化终端 - 占位 待lazy_module执行完毕后生成终端（依赖Qt lazy module）
+        # ToDo 此处可能需要发生改动，新版QPT没有依赖lazy module在runtime
         self.terminal = None
 
     def add_sub_module(self, sub_module: SubModule, lazy=False):

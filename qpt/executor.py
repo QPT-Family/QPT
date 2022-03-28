@@ -114,6 +114,7 @@ class CreateExecutableModule:
         # set_default_package_for_python_version(interpreter_module.python_version)
 
         # 避免打包虚拟环境等
+        # ToDo 后续用fnmatch来判断
         venv_dir = "-%NONE-FLAG%-"
         for root, dirs, files in os.walk(self.work_dir):
             if "pyvenv.cfg" in files:

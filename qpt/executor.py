@@ -114,6 +114,7 @@ class CreateExecutableModule:
         # set_default_package_for_python_version(interpreter_module.python_version)
 
         # 避免打包虚拟环境等
+        # ToDo 后续用fnmatch来判断
         venv_dir = "-%NONE-FLAG%-"
         for root, dirs, files in os.walk(self.work_dir):
             if "pyvenv.cfg" in files:
@@ -158,6 +159,7 @@ class CreateExecutableModule:
         self.add_sub_module(auto_dependency_module)
 
         # 初始化终端 - 占位 待lazy_module执行完毕后生成终端（依赖Qt lazy module）
+        # ToDo 此处可能需要发生改动，新版QPT没有依赖lazy module在runtime
         self.terminal = None
 
     def add_sub_module(self, sub_module: SubModule, lazy=False):

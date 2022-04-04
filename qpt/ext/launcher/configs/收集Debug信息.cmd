@@ -3,6 +3,7 @@ cd /d %~dp0
 cd ..
 set QPT_COLOR=False
 set QPT_MODE=Debug
+set PYTHONIOENCODING=utf-8
 set PYTHONPATH=./Python/resources;./Python/Lib/site-packages;./Python
 set PATH=%PATH%;./Python/resources;./Python/Lib/site-packages;./Python;./Python/Lib;./Python/Scripts
 set PROMPT=(QPT_VENV) %PROMPT%

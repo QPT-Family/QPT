@@ -100,5 +100,6 @@ class LogTest(unittest.TestCase):
                                         launcher_py_path="./sandbox_paddleocr/run.py",
                                         save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),
                                         requirements_file="./sandbox_paddleocr/requirements_with_opt.txt",
+                                        icon="./sandbox_paddleocr/favicon.ico",
                                         with_debug=True)
         module.make()

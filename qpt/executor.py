@@ -143,7 +143,7 @@ class CreateExecutableModule:
         self.sub_modules = sub_modules if sub_modules is not None else list()
 
         # 放入增强包
-        self.add_sub_module(BatchInstallation())
+        # self.add_sub_module(BatchInstallation())
         # 放入增强包
         if self.hidden_terminal:
             self.add_sub_module(QPTGUIDependencyPackage())
@@ -176,10 +176,10 @@ class CreateExecutableModule:
     def print_details(self):
         Logging.info("----------QPT执行使用了以下OP----------")
         for module in self.lazy_modules:
-            Logging.info(module.__class__.__name__ + f"执行优先级{module.level}" + f"\t{module.details}")
+            Logging.info(module.name + f"执行优先级{module.level}" + f"\t{module.details}")
         Logging.info("----------程序执行使用了以下OP----------")
         for module in self.sub_modules:
-            Logging.info(module.__class__.__name__ + f"优先级{module.level}" + f"\t{module.details}")
+            Logging.info(module.name + f"优先级{module.level}" + f"\t{module.details}")
         Logging.info("------------------------------------")
 
     def _solve_module(self, lazy=False):

@@ -96,6 +96,10 @@ class QPTMemory:
         flag = os.environ.get("QPT_Action", default=False)
         return flag
 
+    @init_wrapper()
+    def get_local_pkg_dep_dict(self):
+        return
+
 
 QPT_MEMORY = QPTMemory()
 

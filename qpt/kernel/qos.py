@@ -69,7 +69,7 @@ def set_qpt_env_var(path):
         return False
 
 
-def download(url, file_name, path=None, clean=False):
+def download(url, file_name=None, path=None, clean=False):
     """
     下载指定文件至目录
     :param url: 下载的URL
@@ -83,10 +83,15 @@ def download(url, file_name, path=None, clean=False):
         path = os.path.join(TMP_BASE_PATH, "download")
     if not os.path.exists(path):
         os.makedirs(path)
-    file_path = os.path.join(path, file_name)
+
+    if file_name:
+        file_path = os.path.join(path, file_name)
+    else:
+        file_path = path
     if not os.path.exists(file_path) or clean:
         try:
-            wget.download(url, file_path)
+            o_file_name = wget.download(url, file_path)
+            file_path = os.path.join(path, os.path.basename(o_file_name))
             return 1, file_path
         except Exception as e:
             Logging.error(f"无法下载文件，请检查网络是否可以连接以下链接\n"

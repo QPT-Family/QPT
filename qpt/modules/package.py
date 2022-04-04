@@ -12,7 +12,7 @@ from qpt.kernel.qos import FileSerialize, ArgManager
 from qpt.kernel.qlog import Logging
 from qpt.kernel.qcode import PythonPackages
 from qpt.memory import QPT_MEMORY
-from qpt.kernel.qinterpreter import DISPLAY_LOCAL_INSTALL, DISPLAY_SETUP_INSTALL, DISPLAY_ONLINE_INSTALL
+from qpt.kernel.qinterpreter import DISPLAY_LOCAL_INSTALL, DISPLAY_SETUP_INSTALL, DISPLAY_ONLINE_INSTALL, DISPLAY_COPY
 
 # 第三方库部署方式
 FLAG_FILE_SERIALIZE = "[FLAG-FileSerialize]"
@@ -49,6 +49,9 @@ class DownloadWhlOpt(SubModuleOpt):
                  find_links: str = None,
                  python_version=DEFAULT_PACKAGE_FOR_PYTHON_VERSION,
                  opts: ArgManager = None):
+        """
+        从镜像源下载该package到打包后的opt/packages目录
+        """
         super().__init__()
         if opts is None:
             opts = ArgManager()
@@ -81,6 +84,9 @@ class LocalInstallWhlOpt(SubModuleOpt):
                  static_whl: bool = False,  # 控制是否从镜像源安装
                  no_dependent=False,
                  opts: ArgManager = None):
+        """
+        从opt/packages目录中安装该packages
+        """
         super().__init__(disposable=True)
         if opts is None:
             opts = ArgManager()
@@ -122,6 +128,9 @@ class OnlineInstallWhlOpt(SubModuleOpt):
                  no_dependent=False,
                  find_links: str = None,
                  opts: ArgManager = None):
+        """
+        在线从镜像源中安装该packages
+        """
         super().__init__(disposable=True)
         if opts is None:
             opts = ArgManager()
@@ -151,6 +160,19 @@ class OnlineInstallWhlOpt(SubModuleOpt):
                                               find_links=self.find_links,
                                               no_dependent=self.no_dependent,
                                               opts=self.opts)
+
+
+class CopyLocalWhlAllFileOpt(SubModuleOpt):
+    def __init__(self, package: str):
+        super().__init__(disposable=True)
+        self.package = package
+
+    def act(self) -> None:
+        records = PythonPackages.get_package_all_file(package=self.package)
+        for record in records:
+            src_path = os.path.abspath(os.path.join(QPT_MEMORY.site_packages_path, record))
+            dst_path = os.path.abspath(os.path.join(self.site_package_path, record))
+            shutil.copy(src_path, dst_path)
 
 
 class BatchInstallationOpt(SubModuleOpt):
@@ -209,6 +231,11 @@ class CustomPackage(SubModule):
                                                   no_dependent=no_dependent,
                                                   find_links=find_links,
                                                   opts=opts))
+        elif deploy_mode == DISPLAY_COPY:
+            self.add_pack_opt(CopyLocalWhlAllFileOpt(package=package))
+
+        else:
+            raise IndexError(f"{deploy_mode}不能够被识别或未注册")
 
 
 class _RequirementsPackage(SubModule):

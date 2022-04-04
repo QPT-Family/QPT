@@ -23,7 +23,7 @@ DISPLAY_COPY = "copy"
 DISPLAY_FORCE = "force"  # 独立安装
 DISPLAY_NET_INSTALL = "net_install"  # 打包时从第三方站点下载，部署时安装
 DISPLAY_ONLINE_INSTALL = "online_install"  # 在线安装
-DISPLAY_LOCAL_INSTALL = "local_install"  # 下载后安装
+DISPLAY_LOCAL_INSTALL = "local_install"  # 本地下载后安装
 DISPLAY_SETUP_INSTALL = "setup_install"  # 直接安装
 
 
@@ -38,6 +38,8 @@ class DisplayFlag(dict):
                                            None: None})
 
     def get_flag(self, item):
+        if item is None:
+            return None
         if DISPLAY_NET_INSTALL in item:
             return item
         else:
@@ -119,7 +121,6 @@ class PipTools:
         else:
             from pip._internal.cli.main import main as pip_main
         self.pip_main = pip_main
-        self.pip_local = pip_main
         self.source = source
 
         # 安静模式
@@ -280,11 +281,14 @@ class PipTools:
 
     @staticmethod
     def analyze_requirements_file(file_path):
+        # ToDo 做个展平
         requirements = dict()
         try:
             with open(file_path, "r", encoding="utf-8") as req_file:
                 data = req_file.readlines()
                 for line in data:
+                    if "#" == line[0]:
+                        continue
                     package, version, display = analysis_requirements_line(line)
                     requirements[package] = {"version": version, "display": display_flag.get_flag(display)}
         except Exception as e:
@@ -295,12 +299,12 @@ class PipTools:
     @staticmethod
     def save_requirements_file(requirements: dict, save_file_path, encoding="utf-8"):
         with open(save_file_path, "w", encoding=encoding) as file:
-            for requirement in requirements.items():
-                version = requirements[requirement].get("version", default="")
-                display = requirements[requirement].get("display", default="")
+            for requirement, requirement_info in requirements.items():
+                version = requirement_info.get("version", "")
+                display = requirement_info.get("display", "")
                 if display is None:
                     display = ""
-                line = f"{requirement}{version}{QPT_DISPLAY_FLAG}{display}\n"
+                line = f"{requirement}{version} {QPT_DISPLAY_FLAG}{display}\n"
                 file.write(line)
 
 

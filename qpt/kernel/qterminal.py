@@ -55,7 +55,7 @@ class LoggingTerminalCallback(TerminalCallback):
         end = False
         while line:
             line = terminal.stdout.readline()
-            msg = line.decode('gb18030', errors="ignore").strip("b'").strip("\n").strip("\r")
+            msg = line.decode('utf-8', errors="ignore").strip("b'").strip("\n").strip("\r")
             if msg:
                 if msg == '---QPT OUTPUT STATUS CODE---':
                     end = True

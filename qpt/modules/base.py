@@ -54,8 +54,8 @@ class SubModuleOpt:
         使用Python语句和终端来执行操作
         Example:
             class MyOpt(SubModuleOpt):
-                def run_py(self):
-                    super().run_py()
+                def run(self):
+                    super().run()
                     # 例如新建C:/abc目录
                     import os
                     os.mkdir(r"C:/abc")
@@ -66,6 +66,9 @@ class SubModuleOpt:
                     # 例如在用户使用时为其Module所在的目录中新建abc目录
                     import os
                     os.mkdir(os.path.join(self.module_path, "abc"))
+
+            sub_module = XXXModule()
+            sub_module.add_pack_opt(MyOpt()) or sub_module.add_unpack_opt(MyOpt())
         """
         pass
 

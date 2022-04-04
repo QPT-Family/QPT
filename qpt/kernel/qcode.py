@@ -12,6 +12,8 @@ try:
     from pip._internal.utils.misc import get_installed_distributions
 except ImportError:
     from pip._internal.utils.misc import cast
+
+
     def get_installed_distributions(
             local_only=True,  # type: bool
             include_editables=True,  # type: bool
@@ -37,7 +39,6 @@ except ImportError:
             user_only=user_only,
         )
         return [cast(_Dist, dist)._dist for dist in dists]
-    
 
 from qpt.memory import QPT_MEMORY, PYTHON_IGNORE_DIRS, IGNORE_PACKAGES
 from qpt.kernel.qlog import TProgressBar
@@ -240,6 +241,41 @@ class PythonPackages:
             return requires, dep, ignore_packages
         else:
             return requires
+
+    @staticmethod
+    def get_package_all_file(package, site_package_path=None):
+        if site_package_path is None:
+            site_package_path = QPT_MEMORY.site_packages_path
+        packages_dir_list = os.listdir(site_package_path)
+
+        record_path = None
+        for package_dist in packages_dir_list:
+            if package in package_dist and PACKAGE_FLAG == package_dist[-len(PACKAGE_FLAG):]:
+                package = package_dist[:-len(PACKAGE_FLAG)]
+                name = package[:package.rfind("-")].lower()
+                if package.replace("-", "_") == name.replace("-", "_"):
+                    record_path = os.path.join(site_package_path, package_dist, "RECORD")
+                    break
+                else:
+                    metadata = os.path.join(site_package_path, package_dist, "METADATA")
+                    if os.path.exists(metadata):
+                        with open(metadata, "r", encoding="utf-8") as metadata:
+                            for metadata_line in metadata.readlines():
+                                if "Name: " == metadata_line[:6]:
+                                    name = metadata_line.strip("Name: ").strip("\n")
+                                    if package.replace("-", "_") == name.replace("-", "_"):
+                                        record_path = os.path.join(site_package_path, package_dist, "RECORD")
+                                        break
+
+        assert record_path is not None, f"{package} RECORD信息读取失败，" \
+                                        f"请在requirement.txt中取消对该依赖的#$QPT_FLAG$ copy特殊操作指令"
+        resource_list = list()
+        with open(record_path, "r", encoding="utf-8") as records:
+            data = records.readlines()
+            for record in data:
+                relative_path = record.strip("\n").split(",")[0]
+                resource_list.append(relative_path)
+        return resource_list
 
 
 if __name__ == '__main__':

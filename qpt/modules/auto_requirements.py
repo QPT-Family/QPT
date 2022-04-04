@@ -7,8 +7,8 @@ import os
 from qpt.kernel.qlog import Logging
 from qpt.kernel.qos import get_qpt_tmp_path, ArgManager, download
 from qpt.kernel.qinterpreter import display_flag, DISPLAY_IGNORE, DISPLAY_COPY, DISPLAY_FORCE, DISPLAY_NET_INSTALL, \
-    DISPLAY_LOCAL_INSTALL
-from qpt.modules.package import _RequirementsPackage, DEFAULT_DEPLOY_MODE, CustomPackage
+    DISPLAY_LOCAL_INSTALL, DISPLAY_SETUP_INSTALL, DISPLAY_ONLINE_INSTALL
+from qpt.modules.package import _RequirementsPackage, DEFAULT_DEPLOY_MODE, CustomPackage, CopyWhl2Packages
 from qpt.modules.paddle_family import PaddlePaddlePackage, PaddleOCRPackage
 from qpt.memory import QPT_MEMORY
 
@@ -39,10 +39,11 @@ class AutoRequirementsPackage(_RequirementsPackage):
                                                                   return_path=False,
                                                                   action_mode=QPT_MEMORY.action_flag)
 
-        # module_name_list = [m.name for m in module_list]
         pre_add_module = list()
         for requirement in dict(requirements):
-            requirement, version, display = requirement, requirements["version"], requirements["display"]
+            requirement, version, display = requirement, \
+                                            requirements[requirement].get("version"), \
+                                            requirements[requirement].get("display")
             # 对特殊包进行过滤和特殊化
             if requirement in SPECIAL_MODULE:
                 special_module, parameter = SPECIAL_MODULE[requirement]
@@ -52,23 +53,35 @@ class AutoRequirementsPackage(_RequirementsPackage):
                 pre_add_module.append(module)
                 requirements.pop(requirement)
             # 使用依赖文件中指定的方式封装
-            else:
-                display_mode = display_flag.get_flag(display)
-                if display_mode == DISPLAY_IGNORE:
+            elif display:
+                sub_display_mode = display_flag.get_flag(display)
+                if sub_display_mode == DISPLAY_IGNORE:
                     requirements.pop(requirement)
-                elif display_mode == DISPLAY_FORCE:
+                elif sub_display_mode == DISPLAY_FORCE:
                     pre_add_module.append(CustomPackage(package=requirement,
                                                         version=version,
                                                         deploy_mode=deploy_mode,
                                                         opts=ArgManager(["--no-deps --force-reinstall"])))
                     requirements.pop(requirement)
-                elif DISPLAY_NET_INSTALL in display_mode:
-                    _, whl = download(
-                        url=f"{display_mode[len(DISPLAY_NET_INSTALL) + 1:]}",
-                        file_name="")
-                    # ToDo 看看要不要走find link，不清楚file_name能不能拿到
-
-            # ToDo 剩下几个模式还没适配 DISPLAY_COPY,  , DISPLAY_LOCAL_INSTALL
+                elif sub_display_mode == DISPLAY_NET_INSTALL:
+                    # 从指定链接处下载whl文件
+                    _, whl_path = download(
+                        url=f"{sub_display_mode[len(DISPLAY_NET_INSTALL) + 1:]}",
+                        file_name=None)
+                    pre_add_module.append(CopyWhl2Packages(whl_path=whl_path))
+                    requirements.pop(requirement)
+                elif sub_display_mode in [DISPLAY_LOCAL_INSTALL,
+                                          DISPLAY_SETUP_INSTALL,
+                                          DISPLAY_ONLINE_INSTALL,
+                                          DISPLAY_COPY]:
+                    pre_add_module.append(CustomPackage(package=requirement,
+                                                        version=version,
+                                                        deploy_mode=sub_display_mode,
+                                                        opts=ArgManager(["--no-deps --force-reinstall"])))
+                    requirements.pop(requirement)
+                else:
+                    raise IndexError(f"当前特殊指令{display}无法识别，"
+                                     f"请在requirement.txt中修改对{requirement}依赖的#$QPT_FLAG$ copy特殊操作指令")
 
         # 保存依赖至
         requirements_path = os.path.join(get_qpt_tmp_path(), "requirements_dev.txt")

@@ -89,7 +89,7 @@ class LogTest(unittest.TestCase):
         module = CreateExecutableModule(work_dir="./sandbox_paddlex",
                                         launcher_py_path="./sandbox_paddlex/run.py",
                                         save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),
-                                        requirements_file="sandbox_paddlex/req.txt",
+                                        # requirements_file="sandbox_paddlex/req.txt",
                                         sub_modules=[numpy_package, lap_package],
                                         with_debug=True)
         module.make()

@@ -113,7 +113,8 @@ class PaddlePaddlePackage(CustomPackage):
             super().__init__("paddlepaddle",
                              version=version,
                              deploy_mode=deploy_mode,
-                             opts=opts)
+                             opts=opts,
+                             name=self.__class__.__name__)
         else:
             if version:
                 paddle_version, cuda_version = search_paddle_cuda_version(version)
@@ -146,7 +147,8 @@ class PaddleOCRPackage(CustomPackage):
         super().__init__("paddleocr",
                          version=version,
                          deploy_mode=deploy_mode,
-                         no_dependent=True)
+                         no_dependent=True,
+                         name=self.__class__.__name__)
         self.level = GENERAL_LEVEL_REDUCE - 0.1
         # 因为PaddleOCR的Requirement文件没有强制使用PaddlePaddle，但实际上需要依赖PaddlePaddle
         # ToDo 不排除用户不想用默认版本的Paddle的情况，先写死，未来再重构，直接修改Callback也是可以的
@@ -188,7 +190,8 @@ class PaddleHubPackage(CustomPackage):
                  deploy_mode=DEFAULT_DEPLOY_MODE):
         super().__init__("paddlehub",
                          version=version,
-                         deploy_mode=deploy_mode)
+                         deploy_mode=deploy_mode,
+                         name=self.__class__.__name__)
 
 
 class PaddleDetectionPackage(CustomPackage):
@@ -197,7 +200,8 @@ class PaddleDetectionPackage(CustomPackage):
                  deploy_mode=DEFAULT_DEPLOY_MODE):
         super().__init__("paddledetection",
                          version=version,
-                         deploy_mode=deploy_mode)
+                         deploy_mode=deploy_mode,
+                         name=self.__class__.__name__)
 
 
 class PaddleSegPackage(CustomPackage):
@@ -206,7 +210,8 @@ class PaddleSegPackage(CustomPackage):
                  deploy_mode=DEFAULT_DEPLOY_MODE):
         super().__init__("paddleseg",
                          version=version,
-                         deploy_mode=deploy_mode)
+                         deploy_mode=deploy_mode,
+                         name=self.__class__.__name__)
 
 
 class PaddleXPackage(CustomPackage):
@@ -215,7 +220,8 @@ class PaddleXPackage(CustomPackage):
                  deploy_mode=DEFAULT_DEPLOY_MODE):
         super().__init__("paddlex",
                          version=version,
-                         deploy_mode=deploy_mode)
+                         deploy_mode=deploy_mode,
+                         name=self.__class__.__name__)
 
 
 class PaddleGANPackage(CustomPackage):
@@ -224,4 +230,5 @@ class PaddleGANPackage(CustomPackage):
                  deploy_mode=DEFAULT_DEPLOY_MODE):
         super().__init__("paddlegan",
                          version=version,
-                         deploy_mode=deploy_mode)
+                         deploy_mode=deploy_mode,
+                         name=self.__class__.__name__)

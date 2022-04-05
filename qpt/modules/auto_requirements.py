@@ -39,11 +39,19 @@ class AutoRequirementsPackage(_RequirementsPackage):
                                                                   return_path=False,
                                                                   action_mode=QPT_MEMORY.action_flag)
 
+        flatten_requirements = QPT_MEMORY.pip_tool.flatten_requirements(dict([(_r, requirements[_r].get("version"))
+                                                                              for _r in requirements]))
+        flatten_requirements_fix = dict([(_r, {"version": flatten_requirements.get(_r),
+                                               "display": deploy_mode,
+                                               "QPT_Flag": False})
+                                         for _r in flatten_requirements])
+        flatten_requirements_fix.update(requirements)
         pre_add_module = list()
-        for requirement in dict(requirements):
-            requirement, version, display = requirement, \
-                                            requirements[requirement].get("version"), \
-                                            requirements[requirement].get("display")
+        for requirement in dict(flatten_requirements_fix):
+            requirement, version, display, qpt_flag = requirement, \
+                                                      flatten_requirements_fix[requirement].get("version"), \
+                                                      flatten_requirements_fix[requirement].get("display"), \
+                                                      flatten_requirements_fix[requirement].get("QPT_Flag")
             # 对特殊包进行过滤和特殊化
             if requirement in SPECIAL_MODULE:
                 special_module, parameter = SPECIAL_MODULE[requirement]
@@ -51,25 +59,26 @@ class AutoRequirementsPackage(_RequirementsPackage):
                 parameter["deploy_mode"] = deploy_mode if not display else display
                 module = special_module(**parameter)
                 pre_add_module.append(module)
-                requirements.pop(requirement)
+                flatten_requirements_fix.pop(requirement)
             # 使用依赖文件中指定的方式封装
-            elif display:
+            elif qpt_flag and display:
                 sub_display_mode = display_flag.get_flag(display)
                 if sub_display_mode == DISPLAY_IGNORE:
-                    requirements.pop(requirement)
+                    flatten_requirements_fix.pop(requirement)
                 elif sub_display_mode == DISPLAY_FORCE:
                     pre_add_module.append(CustomPackage(package=requirement,
                                                         version=version,
                                                         deploy_mode=deploy_mode,
-                                                        opts=ArgManager(["--no-deps --force-reinstall"])))
-                    requirements.pop(requirement)
+                                                        no_dependent=True,
+                                                        name=f"{sub_display_mode}_" + requirement))
+                    flatten_requirements_fix.pop(requirement)
                 elif sub_display_mode == DISPLAY_NET_INSTALL:
                     # 从指定链接处下载whl文件
                     _, whl_path = download(
                         url=f"{sub_display_mode[len(DISPLAY_NET_INSTALL) + 1:]}",
                         file_name=None)
                     pre_add_module.append(CopyWhl2Packages(whl_path=whl_path))
-                    requirements.pop(requirement)
+                    flatten_requirements_fix.pop(requirement)
                 elif sub_display_mode in [DISPLAY_LOCAL_INSTALL,
                                           DISPLAY_SETUP_INSTALL,
                                           DISPLAY_ONLINE_INSTALL,
@@ -77,15 +86,16 @@ class AutoRequirementsPackage(_RequirementsPackage):
                     pre_add_module.append(CustomPackage(package=requirement,
                                                         version=version,
                                                         deploy_mode=sub_display_mode,
-                                                        opts=ArgManager(["--no-deps --force-reinstall"])))
-                    requirements.pop(requirement)
+                                                        no_dependent=True,
+                                                        name=f"{sub_display_mode}_" + requirement))
+                    flatten_requirements_fix.pop(requirement)
                 else:
                     raise IndexError(f"当前特殊指令{display}无法识别，"
                                      f"请在requirement.txt中修改对{requirement}依赖的#$QPT_FLAG$ copy特殊操作指令")
 
         # 保存依赖至
         requirements_path = os.path.join(get_qpt_tmp_path(), "requirements_dev.txt")
-        QPT_MEMORY.pip_tool.save_requirements_file(requirements, requirements_path)
+        QPT_MEMORY.pip_tool.save_requirements_file(flatten_requirements_fix, requirements_path)
 
         # 执行常规的安装
         super().__init__(requirements_file_path=requirements_path,

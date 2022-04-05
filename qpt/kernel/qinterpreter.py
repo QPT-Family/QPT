@@ -3,6 +3,7 @@
 # Copyright belongs to the author.
 # Please indicate the source for reprinting.
 import os
+from collections import OrderedDict
 
 from qpt.kernel.qos import dynamic_load_package, get_qpt_tmp_path, ArgManager
 from qpt.kernel.qlog import clean_stout, Logging
@@ -13,6 +14,7 @@ TSINGHUA_PIP_SOURCE = "https://pypi.tuna.tsinghua.edu.cn/simple"
 BAIDU_PIP_SOURCE = "https://mirror.baidu.com/pypi/simple"
 DOUBAN_PIP_SOURCE = "https://pypi.douban.com/simple"
 BFSU_PIP_SOURCE = "https://mirrors.bfsu.edu.cn/pypi/web/simple"
+PYPI_PIP_SOURCE = "https://pypi.python.org/simple"
 DEFAULT_PIP_SOURCE = BFSU_PIP_SOURCE
 
 SIGNALS = ["=", "~", "<", ">"]
@@ -89,7 +91,7 @@ class PIPTerminal(PTerminal):
         return closure
 
 
-def analysis_requirements_line(name: str):
+def analysis_requirement_line(name: str):
     name = name.strip("\n")
 
     display = None
@@ -281,7 +283,6 @@ class PipTools:
 
     @staticmethod
     def analyze_requirements_file(file_path):
-        # ToDo 做个展平
         requirements = dict()
         try:
             with open(file_path, "r", encoding="utf-8") as req_file:
@@ -289,8 +290,10 @@ class PipTools:
                 for line in data:
                     if "#" == line[0]:
                         continue
-                    package, version, display = analysis_requirements_line(line)
-                    requirements[package] = {"version": version, "display": display_flag.get_flag(display)}
+                    package, version, display = analysis_requirement_line(line)
+                    requirements[package] = {"version": version,
+                                             "display": display_flag.get_flag(display),
+                                             "QPT_Flag": True if display else False}
         except Exception as e:
             raise Exception(f"{file_path}文件解析失败，文件可能被其他程序占用或格式异常\n"
                             f"报错信息如下：{e}")
@@ -302,10 +305,44 @@ class PipTools:
             for requirement, requirement_info in requirements.items():
                 version = requirement_info.get("version", "")
                 display = requirement_info.get("display", "")
-                if display is None:
-                    display = ""
-                line = f"{requirement}{version} {QPT_DISPLAY_FLAG}{display}\n"
+                qpt_flag = requirement_info.get("QPT_Flag", False)
+                if version is None or version == "":
+                    version = ""
+                else:
+                    for _signal in SIGNALS:
+                        if _signal in version:
+                            break
+                    else:
+                        version = "==" + version
+                if qpt_flag and display:
+                    line = f"{requirement}{version} {QPT_DISPLAY_FLAG}{display}\n"
+                else:
+                    line = f"{requirement}{version}\n"
                 file.write(line)
+
+    @staticmethod
+    def flatten_requirements(requirements: dict):
+        """
+        打平依赖情况
+        :param: {package: version_sig} # {QPT: ==1.0b1.dev1}
+        :return: requirements: {package: abs_version} # {QPT: 1.0b1.dev1}
+        """
+        all_req = OrderedDict()
+        packages_dist, _, dep_pkg_dict = PythonPackages.search_packages_dist_info()
+
+        def get_next_dep(dep_name: str, version=None):
+            if dep_name not in all_req:
+                all_req[dep_name] = packages_dist.get(dep_name) if version is None else version
+
+                sub_deps = dep_pkg_dict.get(dep_name.lower())
+                if sub_deps:
+                    for sub_dep in sub_deps:
+                        if sub_dep not in all_req:
+                            get_next_dep(dep_name=sub_dep, version=packages_dist.get(sub_dep))
+
+        for requirement in requirements:
+            get_next_dep(dep_name=requirement, version=requirements[requirement])
+        return all_req
 
 
 if __name__ == '__main__':

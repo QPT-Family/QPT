@@ -5,7 +5,7 @@
 
 import os
 
-M_PATH = r"M:\QPT_UT_OUT_CACHE\test_m_paddleocr\Debug"
+M_PATH = r"M:\QPT_UT_OUT_CACHE\test_module_paddle\Debug"
 os.chdir(M_PATH)
 from qpt.executor import RunExecutableModule
 

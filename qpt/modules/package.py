@@ -98,7 +98,7 @@ class LocalInstallWhlOpt(SubModuleOpt):
 
     def act(self) -> None:
         if FLAG_FILE_SERIALIZE in self.package[:32]:
-            self.opts += "-r " + FileSerialize.serialize2file(self.package.strip(FLAG_FILE_SERIALIZE))
+            self.opts += "-r " + FileSerialize.serialize2file(self.package[len(FLAG_FILE_SERIALIZE):])
             self.package = ""
         self.opts += "--target " + self.module_site_package_path
 
@@ -204,6 +204,8 @@ class CustomPackage(SubModule):
                  find_links: str = None,
                  opts: ArgManager = None,
                  name: str = None):
+        if name is None:
+            name = "NoneName_" + package
         super().__init__(name=name)
         if opts is None:
             opts = ArgManager()
@@ -255,15 +257,15 @@ class _RequirementsPackage(SubModule):
         requirements_file_path = "-r " + requirements_file_path
         if deploy_mode == DISPLAY_LOCAL_INSTALL:
             self.add_pack_opt(DownloadWhlOpt(opts=ArgManager() + requirements_file_path,
-                                             no_dependent=False))
+                                             no_dependent=True))
             self.add_unpack_opt(LocalInstallWhlOpt(package=fs_data,
-                                                   no_dependent=False))
+                                                   no_dependent=True))
         elif deploy_mode == DISPLAY_ONLINE_INSTALL:
             self.add_unpack_opt(OnlineInstallWhlOpt(package=fs_data,
-                                                    no_dependent=False))
+                                                    no_dependent=True))
         elif deploy_mode == DISPLAY_SETUP_INSTALL:
             self.add_pack_opt(OnlineInstallWhlOpt(opts=ArgManager() + requirements_file_path,
-                                                  no_dependent=False,
+                                                  no_dependent=True,
                                                   to_module_env_path=True))
 
 

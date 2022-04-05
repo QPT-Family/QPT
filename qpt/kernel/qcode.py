@@ -101,14 +101,14 @@ class PythonPackages:
                         if "/" in top:
                             top = top.split("/")[-1]
                         tops_dist[top.strip("\n").lower()] = name
-                packages_dist[name] = version
+                packages_dist[name.lower()] = version
         return packages_dist, tops_dist, dep_pkg_dict
 
     @staticmethod
     def search_dep():
         """
         获取当前已安装的包以及其依赖
-        :return: 所有包与其依赖的包版本字典所构成的字典
+        :return: 所有包与其依赖的包版本字典所构成的字典{package1: {sub_package: version}, ...}
         """
         pkgs = get_installed_distributions()
         pkg_dict = dict()

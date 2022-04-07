@@ -4,7 +4,7 @@
 ![GitHub forks](https://img.shields.io/github/forks/GT-ZhangAcer/QPT)
 ![GitHub Repo stars](https://img.shields.io/github/stars/GT-ZhangAcer/QPT)
 ![GitHub](https://img.shields.io/github/license/GT-ZhangAcer/QPT)
-![](https://img.shields.io/badge/%E6%B7%B1%E5%BA%A6%E9%80%82%E9%85%8D->=Win10+-9cf)
+![](https://img.shields.io/badge/%E6%B7%B1%E5%BA%A6%E9%80%82%E9%85%8D-Win10_1608+-9cf)
 [![QQGroup](https://img.shields.io/badge/QQ群-1128826410-9cf?logo=tencent-qq&logoColor=000&logoWidth=15)](https://jq.qq.com/?_wv=1027&k=49HB5ymm)
 
 
@@ -20,7 +20,7 @@ QPT是一款可以“模拟”开发环境的多功能封装工具，最短只�
 
 > 当前版本为尝鲜版本，仅具备基本功能，而且可能会有未测试出的Bug，建议在指导下投入生产环境。  
 
-> 当前仅深度适配Win7 SP1+、Windows10、Windows11系统环境，如您的系统环境为盗版且核心组件被篡改，那么将不能保证QPT可以正常运行。（一般Windows10之后就很少有这种情况了）
+> 当前仅深度适配Windows10、Windows11系统环境，如您的系统环境为盗版Win7且核心组件被篡改，那么将不能保证QPT可以在Win7上正常运行。
 
 * 使用QPT的优势
   ```

@@ -12,17 +12,16 @@
 
 QPT是一款可以“模拟”开发环境的多功能封装工具，最短只需一行命令即可将普通的Python脚本打包成EXE可执行程序，并选择性添加CUDA和NoAVX的支持，尽可能兼容更多的用户环境。 
 
-> 如果对您有帮助，欢迎来点个⭐Star吧
+<sup>如果对您有帮助，欢迎来点个⭐Star吧</sup>
 
 ### 版本说明
-#### EAP - The Early Access Program
-> 当前版本为V1.0b3版本。[更新日志](RELEASE.MD)  
+#### EAP - The Early Access Program  [更新日志](RELEASE.MD) | [开发进度](https://github.com/orgs/QPT-Family/projects/3/views/3?layout=board)    
 
-> 当前版本为尝鲜版本，仅具备基本功能，而且可能会有未测试出的Bug，建议在指导下投入生产环境。  
+`当前版本为V1.0b3尝鲜版本，仅具备基本功能，而且可能会有未测试出的Bug，建议在指导下投入生产环境。`  
 
-> 当前仅深度适配Windows10、Windows11系统环境，如您的系统环境为盗版Win7且核心组件被篡改，那么将不能保证QPT可以在Win7上正常运行。
+`当前仅深度适配Windows10、Windows11系统环境，如您的系统环境为盗版Win7且核心组件被篡改，那么将不能保证QPT可以在Win7上正常运行。`  
 
-* 使用QPT的优势
+* QPT的便利
   ```
   【可定制兼容方案】在打包形如PaddlePaddle深度学习Python库时也可流畅打包，通过自定义SubModule来让QPT来捕捉你的习惯。  
   【解释/命令双模式】不喜欢用命令打包也木有问题，Python语句照样可以轻松打包。  

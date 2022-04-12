@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: 我确定这是个Bug
-title: "【可能的Bug】"
+title: "[Bug report]"
 labels: bug
 assignees: GT-ZhangAcer
 

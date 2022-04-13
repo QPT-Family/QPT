@@ -2,7 +2,7 @@
 name: Bug report
 about: 我确定这是个Bug
 title: "[Bug report]"
-labels: bug
+labels: 暂未标记
 assignees: GT-ZhangAcer
 
 ---

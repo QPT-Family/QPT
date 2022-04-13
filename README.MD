@@ -95,7 +95,7 @@ QPT是一款可以“模拟”开发环境的多功能封装工具，最短只�
     --help                Show this message and exit.
   ```
 
-## 进阶使用QPT
+## 进阶使用QPT/FAQ
 - [x] [1. 更改QPT全局镜像源](examples/advanced/更换镜像源.md)
 - [x] [2. 隐藏运行时的终端窗口](examples/advanced/隐藏控制台窗口.md)
 - [x] [3. 能够更快定位用户问题的日志系统](examples/advanced/收集用于Debug的用户日志.md)
@@ -105,14 +105,15 @@ QPT是一款可以“模拟”开发环境的多功能封装工具，最短只�
 - [ ] [7. 打包PaddleOCR、PaddleX等业务程序](https://aistudio.baidu.com/aistudio/projectdetail/3571518)
 
 完整进阶使用文档详见[examples/advanced](examples/advanced)
-## 高阶开发手册
+
+## 高阶开发手册/项目贡献指南
 预计V1.0RC版本发布
 ## 设计思想  
 
 
 ### 发版安排 - 随时可能咕咕咕
 
-> 本项目并不是大团队维护的项目，没有组织，没有纪律，如有特殊需求可考虑PR代码，维护者并不会按照计划外的意愿进行维护，随时可能咕咕咕，故入坑需谨慎。
+`!!!本项目并不是大团队维护的项目，没有组织，没有纪律，如有特殊需求可考虑PR代码，维护者并不会按照计划外的意愿进行维护，随时可能咕咕咕，故入坑需谨慎!!!。`
 
 - [x] 2021.6上旬    QPT V1.0 Alpha版本发布 - 确定初始架构，保证可以凑合用   
 - [x] 2021.8       QPT V1.0 Beta版本发布 - 调整架构，完善兼容性   

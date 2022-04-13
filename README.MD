@@ -72,7 +72,7 @@ QPT是一款可以“模拟”开发环境的多功能封装工具，最短只�
 注意：使用命令打包的前提是当前**默认Python环境**中使用pip安装了`qpt`，否则可能存在形如`qpt不是内部或外部命令,也不是可运行的程序`的报错信息。此外，若需要自动搜索依赖，强烈建议将QPT安装在开发环境，并且在开发环境中执行QPT，因为QPT会在搜索文件的import和pip list进行比对来确保搜索结果精确。  
 
 * 打开cmd/终端并输入以下命令即可完成打包：  
-  ```python
+  ```pwsh
   chcp 65001
   qpt.exe -f ./sample_program -p ./sample_program/run.py -s ./out -h False
   ``` 
@@ -127,16 +127,12 @@ QPT是一款可以“模拟”开发环境的多功能封装工具，最短只�
 
 ## 社区相关
 ### 这些项目也在用
-以下为内测QPT提供支持的开源项目，在此非常感谢这些作者为QPT提供的宝贵建议以及多次的调试与沟通，这也是QPT走向成熟的关键，同时也要感谢各位大佬~~在面对Bug时的不杀之恩。~~  
+以下为内测初期QPT提供支持的开源项目，在此非常感谢这些作者与测试组用户为QPT提供的宝贵建议以及多次的调试与沟通，这也是QPT走向成熟的关键，同时也要感谢各位大佬~~在面对Bug时的不杀之恩。~~   
 1. 交互式语义分割标注软件 - [PaddleCV-SIG/iann](https://github.com/PaddleCV-SIG/iann)
 2. 景观健康效益辅助评估工具 - [JiehangXie/Landscape-Heath-Score](https://github.com/JiehangXie/Landscape-Heath-Score)
 3. 团子翻译器-OCR部分 - [PantsuDango/Dango-Translator](https://github.com/PantsuDango/Dango-Translator)
 
 ### 社区支持
-
-#### Jetbrains 全家桶支持
-本项目开发所使用的IDE由Jetbrains支持。
-<div align=center><img alt="https://jb.gg/OpenSource" src="ext/img/jetbrains.png" width="80" /></div>
 
 #### 来一杯咖啡☕
 一杯咖啡提神醒脑，代码更新会更快更好！捐赠部分资金将用于社区维护，如您参与项目日常开发，也将会获得相关社区激励。    
@@ -154,7 +150,11 @@ QPT是一款可以“模拟”开发环境的多功能封装工具，最短只�
 
 完整捐赠名单&规则详见[捐赠致谢.MD](https://github.com/QPT-Family/.github/blob/%E5%BC%80%E5%8F%91%E5%88%86%E6%94%AF/%E6%8D%90%E8%B5%A0%E8%87%B4%E8%B0%A2.MD)
 
-<div align=center><img width="490" alt="图片" src="https://cdn.jsdelivr.net/gh/GT-ZhangAcer/GT-ZhangAcer/d.jpg"></div>
+<div align=center><img width="490" alt="图片" src="https://cdn.jsdelivr.net/gh/GT-ZhangAcer/GT-ZhangAcer/d.jpg"></div>  
+
+#### Jetbrains 全家桶支持
+本项目开发所使用的IDE由[Jetbrains](https://jb.gg/OpenSource)支持。
+<div align=center><img alt="https://jb.gg/OpenSource" src="ext/img/jetbrains.png" width="80" /></div>
 
 ### 开源协议
 本项目使用GNU LESSER GENERAL PUBLIC LICENSE(LGPL)开源协议。  

@@ -11,8 +11,8 @@ assignees: GT-ZhangAcer
 A clear and concise description of what the bug is.
 
 **基本信息**
-QPT版本：
-操作系统版本：
+QPT版本：（如非最新版本，请优先进行升级，不接受测试版issue）
+操作系统版本：（目前仅接受Windows 10 1607+的操作系统，不接受WindowsXP、7、8的Issue）
 CPU型号或AVX支持情况：  
 
 **复现步骤/报错截图**

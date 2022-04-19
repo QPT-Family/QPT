@@ -58,15 +58,22 @@ body:
       ```  
       
       ↓建议在此处粘贴完整Requirements（Python第三方依赖）列表信息↓  
+      
       Example:  
+      
       paddlepaddle==2.2.2  
+      
       opencv-python>=4.1  
+      
       ...  
+      
       ↑建议在此处粘贴完整Requirements（Python第三方依赖）列表信息↑  
+      
       
       ```  
         
-      ## 【必须】完整打包日志 
+      ## 【必须】完整打包日志   
+      
       ```  
       
       ↓建议在此处粘贴完整日志↓  

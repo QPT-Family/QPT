@@ -1,5 +1,5 @@
 ---
-name: \[高阶Issue]Report issue
+name: [高阶Issue]Report issue
 about: 我确定这是个Bug or 遇到了报错/使用问题
 title: "[Report]"
 labels: Report

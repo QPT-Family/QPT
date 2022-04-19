@@ -1,7 +1,8 @@
 name: "[测试版]Report issue"
 description: "我确定这是个Bug or 遇到了报错/使用问题"
 labels: [Report]
-assgin: [GT-ZhangAcer]
+assignees: 
+  - GT-ZhangAcer
 
 body:
 - type: markdown

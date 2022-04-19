@@ -9,5 +9,4 @@ jobs:
     - uses: actions/first-interaction@v1
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
-        issue-message: "Hi，开发者朋友，鉴于您是首次在QPT下新增Issue，请务必参考给定的Issue模板进行Issue的新增。虽然形如版本号、打包日志等信息可能对你并不重要，但如未提供则可能会严重拖慢Issue的解决效率，因为他们对于QPT的维护者而言非常重要！"
-        issue-message: "如您未按Issue模板进行内容补充，可关闭此Issue或Edit该Issue，社区维护者会对低效Issue直接Close，请悉知！"
+        issue-message: "Hi，开发者朋友，鉴于您是首次在QPT下新增Issue，请务必参考给定的Issue模板进行Issue的新增。\n  虽然形如版本号、打包日志等信息可能对你并不重要，但如未提供则可能会严重拖慢Issue的解决效率，因为他们对于QPT的维护者而言非常重要！\n 如您未按Issue模板进行内容补充，可关闭此Issue或Edit该Issue，社区维护者会对低效Issue直接Close，请悉知！"

@@ -22,12 +22,12 @@ body:
     description: "请填写您遇到问题的操作系统版本"
     multiple: false
     options:
-      - "Windows 11"
-      - "Windows 10"
-      - "Windows 8"
-      - "Windows 7"
-      - "Windows XP"
-      - "非上述版本，将在备注列表中提供"
+      - Windows 11
+      - Windows 10
+      - Windows 8
+      - Windows 7
+      - Windows XP
+      - 非上述版本，将在备注列表中提供
   validations:
     required: true
 - type: input

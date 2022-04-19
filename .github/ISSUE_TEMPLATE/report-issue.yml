@@ -34,7 +34,7 @@ body:
       - Windows 8
       - Windows 7
       - Windows XP
-      - 非上述版本，将在备注列表中提供
+      - 非上述版本，将在核心信息中提供
   validations:
     required: true
 - type: input

@@ -47,7 +47,7 @@ body:
   id: "Kernel_Info"
   attributes:
     label: "核心信息填写"  
-    placeholder: |
+    value: >
       **复现步骤/报错截图**
       步骤描述：  
       Requirements文件内容： 必须

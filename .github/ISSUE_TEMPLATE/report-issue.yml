@@ -63,7 +63,9 @@ body:
       Example:  
         
       paddlepaddle==2.2.2  
+      
       opencv-python>=4.1  
+      
       ...  
         
       ↑建议在此处粘贴完整Requirements（Python第三方依赖）列表信息↑  

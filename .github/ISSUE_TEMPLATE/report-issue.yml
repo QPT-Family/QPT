@@ -11,6 +11,7 @@ body:
       ## Issue创建指南  
       
       Hi开发者，当您在使用QPT时如遇到了报错或无法正常使用的问题时，可以通过该模板进行构建，社区维护者将对符合模板要求的Issue进行回复与技术支持，并不会对不符合要求的Issue进行答复，请悉知。  
+      
       当然，该项目仅为社区作品，无团队组织、无直接经济收益，并不会为所有使用者保证其质量，沟通时还请注意开源礼仪。   
 - type: input
   id: "QPT_Version"
@@ -48,9 +49,12 @@ body:
   attributes:
     label: "核心信息填写"  
     value: >
-      **复现步骤/报错截图**
+      **复现步骤/报错截图**  
+      
       步骤描述：  
-      Requirements文件内容： 必须
+      
+      Requirements文件内容： 必须  
+      
       ```
       ↓建议在此处粘贴完整Requirements（Python第三方依赖）列表信息↓
       Example:

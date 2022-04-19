@@ -1,0 +1,69 @@
+name: [测试版]Report issue
+description: 我确定这是个Bug or 遇到了报错/使用问题
+labels: [Report]
+
+body:
+- type: markdown
+  attributes:
+    value: >
+      ## Issue创建指南
+      Hi开发者，当您在使用QPT时如遇到了报错或无法正常使用的问题时，可以通过该模板进行构建，社区维护者将对符合模板要求的Issue进行回复与技术支持，并不会对不符合要求的Issue进行答复，请悉知。  
+      当然，该项目仅为社区作品，无团队组织、无直接经济收益，并不会为所有使用者保证其质量，沟通时还请注意开源礼仪。   
+- type: input
+  attributes:
+    label: "QPT版本"
+    description: "请提供您所使用的QPT详细版本号，可选择pip中提供的版本进行填写。"
+    placeholder: "例如1.0b1.dev0"
+  validations:
+    required: true
+- type: dropdown
+  attributes:
+    label: "操作系统版本"
+    description: "请填写您遇到问题的操作系统版本"
+    multiple: false
+    options:
+      - "Windows 11"
+      - "Windows 10"
+      - "Windows 8"
+      - "Windows 7"
+      - "Windows XP"
+      - "非上述版本，将在备注列表中提供"
+  validations:
+    required: true
+- type: input
+  attributes:
+    label: "CPU型号"
+    description: "如您打包的是深度学习/AVX相关程序，请务必填写CPU型号以保证Issue顺利解决"
+    placeholder: "例如AMD R5 1400"
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: "核心信息填写"  
+    placeholder: |
+      **复现步骤/报错截图**
+      步骤描述：  
+      Requirements文件内容： 必须
+      ```
+      ↓建议在此处粘贴完整Requirements（Python第三方依赖）列表信息↓
+
+      ↑建议在此处粘贴完整Requirements（Python第三方依赖）列表信息↑
+      ```
+      完整打包日志：  必须  
+      ```
+      ↓建议在此处粘贴完整日志↓
+
+      ↑建议在此处粘贴完整日志↑
+      ```
+
+      完整运行日志：（如打包时已报错，此处可选）  
+      ```
+      ↓建议在此处粘贴完整日志↓
+
+      ↑建议在此处粘贴完整日志↑
+      ```
+      
+      其他信息：  
+      
+  validations:
+    required: true 

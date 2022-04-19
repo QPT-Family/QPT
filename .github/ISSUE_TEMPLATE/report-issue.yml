@@ -1,4 +1,5 @@
 name: "[标准Issue]Report issue"
+title: "[Report]→请在此处填写Issue标题←"
 description: "我确定这是个Bug or 遇到了报错/使用问题"
 labels: [Report]
 assignees: 

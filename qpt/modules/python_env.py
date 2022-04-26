@@ -20,6 +20,9 @@ PYTHON_ENV_MODE_PACKAGE_VOLUME_FIRST = "[暂不支持]封装后保留压缩的Py
 PYTHON_ENV_MODE_ONLINE_INSTALLATION = "[暂不支持]不封装Python环境，用户使用时在线进行下载并部署"
 DEFINE_PYTHON_ENV_MODE = PYTHON_ENV_MODE_SPEED_FIRST
 
+# 增加Key时，需要维护
+# https://github.com/QPT-Family/QPT/blob/%E5%BC%80%E5%8F%91%E5%88%86%E6%94%AF/examples/advanced/%E6%89%93%E5%8C%85%E5%85%BC%E5%AE%B9%E6%80%A7%E6%9B%B4%E5%BC%BA%E7%9A%84Python%E8%A7%A3%E9%87%8A%E5%99%A8.md
+# 以及下方BasePythonEnv的信息提示和class
 RESOURCES_URLS = {"Python3.7Env-Win": "https://bj.bcebos.com/v1/ai-studio-online/470b6a91063f425db72ddece0931bcc56"
                                       "6950d67f3914339b40beea878461f3b?responseContentDisposition=attachment%3B%20"
                                       "filename%3DPython37.zip",
@@ -109,12 +112,14 @@ class BasePythonEnv(SubModule):
             else:
                 Logging.warning(f"----------------------------------------------------------------------\n"
                                 f"未在QPT中找到{resources_name}镜像，QPT目前提供的Python镜像版本有限，\n"
-                                f"请尽可能使用Python3.7/Python3.8/Python3.9等主流Python版本进行打包，兼容性如下。\n"
+                                f"请尽可能使用Python3.7~Python3.10等主流Python版本进行打包，兼容性如下。\n"
                                 f"----------------------------------------------------------------------\n"
                                 f"Python版本|XP Win7 Win8.1 Win10+\n"
                                 f"Python37 | X   1     1      1  \n"
                                 f"Python38 | X   1     -      1  \n"
                                 f"Python39 | X   X     -      1  \n"
+                                f"..."
+                                f"完整兼容性说明详见：https://github.com/QPT-Family/QPT/blob/开发分支/examples/advanced/打包兼容性更强的Python解释器.md"
                                 f"----------------------------------------------------------------------\n"
                                 f"已强制设置目标版本号为{DEFAULT_PYTHON_IMAGE_VERSION}，请检查存在以下兼容性问题：\n"
                                 f"1. 需考虑待打包的代码是否兼容该Python版本\n"

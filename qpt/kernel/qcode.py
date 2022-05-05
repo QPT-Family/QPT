@@ -73,19 +73,19 @@ class PythonPackages:
         for package_dist in packages_dir_list:
             if PACKAGE_FLAG == package_dist[-len(PACKAGE_FLAG):]:
                 package = package_dist[:-len(PACKAGE_FLAG)]
-                name = package[:package.rfind("-")].lower()
-                # 对name修复可能的下划线情况
-                if name.replace("_", "-") in dep_pkg_dict:
-                    name = name.replace("_", "-")
-                # 修复~的情况
-                if "~" == name[:1]:
-                    metadata = os.path.join(site_package_path, package_dist, "METADATA")
-                    if os.path.exists(metadata):
-                        with open(metadata, "r", encoding="utf-8") as metadata:
-                            for metadata_line in metadata.readlines():
-                                if "Name: " == metadata_line[:6]:
-                                    name = metadata_line.strip("Name: ").strip("\n")
-                                    break
+                # name = package[:package.rfind("-")].lower()
+                # # 对name修复可能的下划线情况
+                # if name.replace("_", "-") in dep_pkg_dict:
+                #     name = name.replace("_", "-")
+                # # 修复~的情况
+                # if "~" == name[:1]:
+                metadata = os.path.join(site_package_path, package_dist, "METADATA")
+                if os.path.exists(metadata):
+                    with open(metadata, "r", encoding="utf-8") as metadata:
+                        for metadata_line in metadata.readlines():
+                            if "Name: " == metadata_line[:6]:
+                                name = metadata_line.strip("Name: ").strip("\n")
+                                break
 
                 version = package[package.rfind("-") + 1:]
                 top_file_path = os.path.join(site_package_path, package_dist, "top_level.txt")

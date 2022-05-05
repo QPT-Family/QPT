@@ -92,7 +92,7 @@ class AutoRequirementsPackage(_RequirementsPackage):
                 else:
                     raise IndexError(f"当前特殊指令{display}无法识别，"
                                      f"请在requirement.txt中修改对{requirement}依赖的#$QPT_FLAG$ copy特殊操作指令")
-
+                # ToDo 考虑特殊指令的依赖
         # 保存依赖至
         requirements_path = os.path.join(get_qpt_tmp_path(), "requirements_dev.txt")
         QPT_MEMORY.pip_tool.save_requirements_file(flatten_requirements_fix, requirements_path)

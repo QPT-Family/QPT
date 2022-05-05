@@ -167,6 +167,7 @@ class CreateExecutableModule:
         为Module添加子模块
         """
         module = sub_module.get_all_module()
+        # 判断是否包含子模块，若包含则获取子模块的子模块
         if len(module) > 1:
             for em in module[1:]:
                 self.add_sub_module(em)

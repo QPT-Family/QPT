@@ -8,7 +8,7 @@ from collections import OrderedDict
 from qpt.kernel.qos import dynamic_load_package, get_qpt_tmp_path, ArgManager
 from qpt.kernel.qlog import clean_stout, Logging
 from qpt.kernel.qterminal import PTerminal, TerminalCallback, LoggingTerminalCallback
-from qpt.kernel.qcode import PythonPackages
+from qpt.kernel.qcode import intelligent_analysis, search_packages_dist_info
 
 TSINGHUA_PIP_SOURCE = "https://pypi.tuna.tsinghua.edu.cn/simple"
 BAIDU_PIP_SOURCE = "https://mirror.baidu.com/pypi/simple"
@@ -237,7 +237,7 @@ class PipTools:
         if save_file_path is None:
             save_file_path = os.path.join(analyze_path, "requirements_with_opt.txt")
 
-        requires, dep, ignore_requires = PythonPackages.intelligent_analysis(analyze_path, return_all_info=True)
+        requires, dep, ignore_requires = intelligent_analysis(analyze_path, return_all_info=True)
 
         with open(save_file_path, "w", encoding="utf-8") as req_file:
             req_file.write("# Here is the list of packages automatically derived by QPT\n"
@@ -328,7 +328,7 @@ class PipTools:
         :return: requirements: {package: abs_version} # {QPT: 1.0b1.dev1}
         """
         all_req = OrderedDict()
-        packages_dist, _, dep_pkg_dict = PythonPackages.search_packages_dist_info()
+        packages_dist, _, dep_pkg_dict = search_packages_dist_info()
 
         def get_next_dep(dep_name: str, version=None):
             if dep_name not in all_req:

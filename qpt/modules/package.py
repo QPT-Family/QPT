@@ -10,7 +10,7 @@ from qpt.version import version as qpt_version
 from qpt.modules.base import SubModule, SubModuleOpt, TOP_LEVEL_REDUCE, LOW_LEVEL, GENERAL_LEVEL
 from qpt.kernel.qos import FileSerialize, ArgManager
 from qpt.kernel.qlog import Logging
-from qpt.kernel.qcode import PythonPackages
+from qpt.kernel.qpackage import get_package_all_file, search_packages_dist_info
 from qpt.memory import QPT_MEMORY
 from qpt.kernel.qinterpreter import DISPLAY_LOCAL_INSTALL, DISPLAY_SETUP_INSTALL, DISPLAY_ONLINE_INSTALL, DISPLAY_COPY
 
@@ -168,7 +168,7 @@ class CopyLocalWhlAllFileOpt(SubModuleOpt):
         self.package = package
 
     def act(self) -> None:
-        records = PythonPackages.get_package_all_file(package=self.package)
+        records = get_package_all_file(package=self.package)
         for record in records:
             src_path = os.path.abspath(os.path.join(QPT_MEMORY.site_packages_path, record))
             dst_path = os.path.abspath(os.path.join(self.site_package_path, record))
@@ -185,7 +185,7 @@ class BatchInstallationOpt(SubModuleOpt):
             self.path = os.path.join(self.module_path, QPT_MEMORY.get_down_packages_relative_path)
 
         # 模糊匹配
-        ready_list = " ".join([k.lower() for k in PythonPackages.search_packages_dist_info()[0].keys()])
+        ready_list = " ".join([k.lower() for k in search_packages_dist_info()[0].keys()])
         whl_list = [whl for whl in os.listdir(self.path)
                     if whl.split("-")[0].lower() not in ready_list]
         Logging.info(f"需要补充的安装包数量为：{len(whl_list)}")

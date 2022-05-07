@@ -111,7 +111,7 @@ def check_bit():
 
 def check_os():
     p_os = QPT_MEMORY.platform_os
-    # assert "Windows" in p_os, "当前QPT只支持Windows系统"
+    assert "Windows" in p_os, "当前QPT只支持Windows系统"
 
 
 IGNORE_ENV_FIELD = ["conda", "Conda", "Python", "python"]

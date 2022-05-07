@@ -6,7 +6,7 @@
 import os
 import ast
 
-from qpt.memory import QPT_MEMORY, PYTHON_IGNORE_DIRS, IGNORE_PACKAGES
+from qpt.memory import PYTHON_IGNORE_DIRS, IGNORE_PACKAGES
 from qpt.kernel.qlog import TProgressBar
 from qpt.kernel.qpackage import WhlDict, search_packages_dist_info
 

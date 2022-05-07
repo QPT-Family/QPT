@@ -6,7 +6,6 @@
 ![GitHub](https://img.shields.io/github/license/GT-ZhangAcer/QPT)
 ![](https://img.shields.io/badge/%E6%B7%B1%E5%BA%A6%E9%80%82%E9%85%8D-Win10_1607+-9cf)
 [![QQGroup](https://img.shields.io/badge/QQ群-1128826410-9cf?logo=tencent-qq&logoColor=000&logoWidth=15)](https://jq.qq.com/?_wv=1027&k=49HB5ymm)  
-
 [![LGTM](https://img.shields.io/lgtm/grade/python/g/QPT-Family/QPT.svg)](https://lgtm.com/projects/g/QPT-Family/QPT)
 
 

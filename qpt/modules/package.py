@@ -6,13 +6,13 @@
 import os
 import shutil
 
-from qpt.version import version as qpt_version
-from qpt.modules.base import SubModule, SubModuleOpt, TOP_LEVEL_REDUCE, LOW_LEVEL, GENERAL_LEVEL
-from qpt.kernel.qos import FileSerialize, ArgManager
+from qpt.kernel.qinterpreter import DISPLAY_LOCAL_INSTALL, DISPLAY_SETUP_INSTALL, DISPLAY_ONLINE_INSTALL, DISPLAY_COPY
 from qpt.kernel.qlog import Logging
+from qpt.kernel.qos import FileSerialize, ArgManager
 from qpt.kernel.qpackage import get_package_all_file, search_packages_dist_info
 from qpt.memory import QPT_MEMORY
-from qpt.kernel.qinterpreter import DISPLAY_LOCAL_INSTALL, DISPLAY_SETUP_INSTALL, DISPLAY_ONLINE_INSTALL, DISPLAY_COPY
+from qpt.modules.base import SubModule, SubModuleOpt, TOP_LEVEL_REDUCE, LOW_LEVEL, GENERAL_LEVEL
+from qpt.version import version as qpt_version
 
 # 第三方库部署方式
 FLAG_FILE_SERIALIZE = "[FLAG-FileSerialize]"

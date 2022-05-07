@@ -1,10 +1,10 @@
-import subprocess
 import os
+import subprocess
 import zipfile
 
 from qpt.kernel.qlog import Logging
 from qpt.kernel.qos import download, TMP_BASE_PATH
-from qpt.memory import QPT_MEMORY, QPT_MODE
+from qpt.memory import QPT_MEMORY
 
 TERMINAL_NAME = "powershell"
 

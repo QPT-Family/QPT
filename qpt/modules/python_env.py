@@ -2,10 +2,10 @@ import os
 import sys
 import zipfile
 
-from qpt.modules.base import SubModule, SubModuleOpt, TOP_LEVEL
 from qpt.kernel.qlog import Logging
 from qpt.kernel.qos import download, get_qpt_tmp_path, copytree
 from qpt.memory import QPT_MEMORY
+from qpt.modules.base import SubModule, SubModuleOpt, TOP_LEVEL
 
 """
 Python镜像打包指南

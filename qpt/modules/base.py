@@ -3,9 +3,9 @@
 # Copyright belongs to the author.
 # Please indicate the source for reprinting.
 
+import datetime
 import os
 import pickle
-import datetime
 from distutils.sysconfig import get_python_lib
 
 from qpt.kernel.qlog import Logging

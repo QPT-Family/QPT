@@ -3,11 +3,13 @@
 # Copyright belongs to the author.
 # Please indicate the source for reprinting.
 import traceback
+
 from qpt.kernel.qos import Logging
 
 SUPPORT_AVX = None
 try:
     from paddle.fluid.core_avx import *
+
     SUPPORT_AVX = True
 except Exception as e:
     Logging.warning(str(e))

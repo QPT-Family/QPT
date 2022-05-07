@@ -3,8 +3,8 @@
 # Copyright belongs to the author.
 # Please indicate the source for reprinting.
 
-import platform
 import os
+import platform
 from distutils.sysconfig import get_python_lib
 
 from qpt.kernel.qlog import Logging

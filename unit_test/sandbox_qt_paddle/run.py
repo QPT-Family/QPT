@@ -5,8 +5,8 @@
 
 import sys
 
-from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox
 import paddle
+from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox
 from paddle.utils.install_check import run_check
 
 run_check()

@@ -3,12 +3,12 @@
 # Copyright belongs to the author.
 # Please indicate the source for reprinting.
 
-import os
 import ast
+import os
 
-from qpt.memory import PYTHON_IGNORE_DIRS, IGNORE_PACKAGES
 from qpt.kernel.qlog import TProgressBar
 from qpt.kernel.qpackage import WhlDict, search_packages_dist_info
+from qpt.memory import PYTHON_IGNORE_DIRS, IGNORE_PACKAGES
 
 
 def search_import_in_text(contents):

@@ -3,7 +3,7 @@
 # Copyright belongs to the author.
 # Please indicate the source for reprinting.
 
-from paddleocr import PaddleOCR, draw_ocr
+from paddleocr import PaddleOCR
 
 # Paddleocr目前支持的多语言语种可以通过修改lang参数进行切换
 # 例如`ch`, `en`, `fr`, `german`, `korean`, `japan`

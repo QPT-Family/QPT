@@ -2,9 +2,8 @@
 # Datetime:2021/7/3 
 # Copyright belongs to the author.
 # Please indicate the source for reprinting.
-import unittest
-import sys
 import os
+import unittest
 
 # 测试Action 模式
 os.environ["QPT_Action"] = "True"

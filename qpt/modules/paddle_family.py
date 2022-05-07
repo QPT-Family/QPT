@@ -6,12 +6,12 @@
 import os
 import sys
 
-from qpt.kernel.qos import download
 from qpt.kernel.qlog import Logging
-from qpt.modules.base import SubModule, SubModuleOpt, GENERAL_LEVEL_REDUCE, LOW_LEVEL_REDUCE, HIGH_LEVEL_REDUCE
-from qpt.modules.package import CustomPackage, DEFAULT_DEPLOY_MODE, CopyWhl2Packages, ArgManager
-from qpt.modules.cuda import CopyCUDAPackage
+from qpt.kernel.qos import download
 from qpt.memory import QPT_MEMORY
+from qpt.modules.base import SubModule, SubModuleOpt, GENERAL_LEVEL_REDUCE, LOW_LEVEL_REDUCE
+from qpt.modules.cuda import CopyCUDAPackage
+from qpt.modules.package import CustomPackage, DEFAULT_DEPLOY_MODE, CopyWhl2Packages, ArgManager
 
 
 class SetPaddleFamilyEnvValueOpt(SubModuleOpt):

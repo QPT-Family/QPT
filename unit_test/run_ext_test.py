@@ -3,16 +3,14 @@
 # Copyright belongs to the author.
 # Please indicate the source for reprinting.
 
-import unittest
-import sys
 import os
+import sys
+import unittest
+
+from qpt.executor import CreateExecutableModule
 
 # 测试Action 模式
 # os.environ["QPT_Action"] = "True"
-
-from qpt.executor import CreateExecutableModule
-from qpt.modules.package import DISPLAY_ONLINE_INSTALL
-from qpt.modules.python_env import Python37, Python38, Python39
 
 OUT_DIR_ROOT = r"M:\QPT_UT_OUT_CACHE"
 
@@ -82,7 +80,6 @@ class LogTest(unittest.TestCase):
 
     def test_m_paddlex(self):
         # GUI流程验证
-        from qpt.modules.base import HIGH_LEVEL
         from qpt.modules.package import CustomPackage, DISPLAY_SETUP_INSTALL
         numpy_package = CustomPackage(package="numpy", version=None, deploy_mode=DISPLAY_SETUP_INSTALL)
         lap_package = CustomPackage(package="lap", version=None, deploy_mode=DISPLAY_SETUP_INSTALL)

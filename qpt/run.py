@@ -1,7 +1,6 @@
 import os
 import sys
 
-
 from qpt.memory import QPT_MEMORY
 
 IGNORE_ENV_FIELD = ["conda", "Conda", "Python", "python"]

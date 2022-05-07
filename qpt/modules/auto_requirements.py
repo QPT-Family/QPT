@@ -4,13 +4,13 @@
 # Please indicate the source for reprinting.
 import os
 
-from qpt.kernel.qlog import Logging
-from qpt.kernel.qos import get_qpt_tmp_path, ArgManager, download
 from qpt.kernel.qinterpreter import display_flag, DISPLAY_IGNORE, DISPLAY_COPY, DISPLAY_FORCE, DISPLAY_NET_INSTALL, \
     DISPLAY_LOCAL_INSTALL, DISPLAY_SETUP_INSTALL, DISPLAY_ONLINE_INSTALL
+from qpt.kernel.qlog import Logging
+from qpt.kernel.qos import get_qpt_tmp_path, download
+from qpt.memory import QPT_MEMORY
 from qpt.modules.package import _RequirementsPackage, DEFAULT_DEPLOY_MODE, CustomPackage, CopyWhl2Packages
 from qpt.modules.paddle_family import PaddlePaddlePackage, PaddleOCRPackage
-from qpt.memory import QPT_MEMORY
 
 
 class AutoRequirementsPackage(_RequirementsPackage):

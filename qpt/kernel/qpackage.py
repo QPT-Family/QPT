@@ -3,8 +3,9 @@
 # Copyright belongs to the author.
 # Please indicate the source for reprinting.
 
-import os
 import copy
+import os
+
 from pip._internal.metadata.pkg_resources import Distribution
 
 # 对pip低版本做兼容
@@ -178,5 +179,3 @@ if __name__ == '__main__':
     print("------当前环境下包安装情况以及对应表------")
     for _i in search_packages_dist_info():
         print("TEST_A", _i)
-
-

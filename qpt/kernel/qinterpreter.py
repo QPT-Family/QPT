@@ -5,10 +5,10 @@
 import os
 from collections import OrderedDict
 
-from qpt.kernel.qos import dynamic_load_package, get_qpt_tmp_path, ArgManager
-from qpt.kernel.qlog import clean_stout, Logging
-from qpt.kernel.qterminal import PTerminal, TerminalCallback, LoggingTerminalCallback
 from qpt.kernel.qcode import intelligent_analysis, search_packages_dist_info
+from qpt.kernel.qlog import clean_stout, Logging
+from qpt.kernel.qos import dynamic_load_package, get_qpt_tmp_path, ArgManager
+from qpt.kernel.qterminal import PTerminal, TerminalCallback, LoggingTerminalCallback
 
 TSINGHUA_PIP_SOURCE = "https://pypi.tuna.tsinghua.edu.cn/simple"
 BAIDU_PIP_SOURCE = "https://mirror.baidu.com/pypi/simple"

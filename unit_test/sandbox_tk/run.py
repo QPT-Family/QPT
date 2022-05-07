@@ -4,6 +4,7 @@
 # Please indicate the source for reprinting.
 
 import tkinter
+
 top = tkinter.Tk()
 # 进入消息循环
 top.mainloop()

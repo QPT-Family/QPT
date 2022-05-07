@@ -3,32 +3,30 @@
 # Copyright belongs to the author.
 # Please indicate the source for reprinting.
 
-import os
-import sys
-import shutil
 import base64
 import datetime
+import os
+import shutil
+import sys
 import tempfile
-
 from typing import List
 
 import qpt
-from qpt.memory import QPT_MEMORY
-from qpt.version import version as qpt_v
-from qpt.modules.base import SubModule
-from qpt.modules.python_env import BasePythonEnv, AutoPythonEnv
-from qpt.modules.package import QPTDependencyPackage, QPTGUIDependencyPackage, \
-    DEFAULT_DEPLOY_MODE, \
-    set_default_deploy_mode, BatchInstallation
-from qpt.modules.auto_requirements import AutoRequirementsPackage
-
+from qpt.gui.tk_progressbar import get_func_bind_progressbar
 from qpt.kernel.qlog import Logging, TProgressBar, set_logger_file
 from qpt.kernel.qos import clean_qpt_cache, copytree, check_warning_char, StdOutLoggerWrapper, warning_msg_box
-from qpt.kernel.qterminal import PTerminal, RunTerminalCallback
-from qpt.smart_opt import set_default_pip_lib
-from qpt.memory import QPT_MODE, check_all, get_env_vars, CheckRun
 from qpt.kernel.qpe import make_icon
-from qpt.gui.tk_progressbar import get_func_bind_progressbar
+from qpt.kernel.qterminal import PTerminal, RunTerminalCallback
+from qpt.memory import QPT_MEMORY
+from qpt.memory import QPT_MODE, CheckRun
+from qpt.modules.auto_requirements import AutoRequirementsPackage
+from qpt.modules.base import SubModule
+from qpt.modules.package import QPTDependencyPackage, QPTGUIDependencyPackage, \
+    DEFAULT_DEPLOY_MODE, \
+    set_default_deploy_mode
+from qpt.modules.python_env import BasePythonEnv, AutoPythonEnv
+from qpt.smart_opt import set_default_pip_lib
+from qpt.version import version as qpt_v
 
 __all__ = ["CreateExecutableModule", "RunExecutableModule"]
 

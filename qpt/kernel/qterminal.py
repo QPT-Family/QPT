@@ -157,6 +157,8 @@ class Terminal:
 
 class PTerminal(Terminal):
     def __init__(self, shell_mode=True, cwd="./"):
+        # ToDo 增加分离Flag，使得
+        # https://docs.python.org/zh-cn/3/library/subprocess.html?highlight=subprocess%20popen#subprocess.CREATE_NEW_CONSOLE
         self.shell_mode = shell_mode
         self.first_flag = True
         super(PTerminal, self).__init__(cwd=cwd)

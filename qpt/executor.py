@@ -45,21 +45,29 @@ class CreateExecutableModule:
                  hidden_terminal: bool = False,
                  with_debug: bool = False):
         self.with_debug = with_debug
+        self.work_dir = work_dir
 
         # 初始化路径成员变量
-        self.launcher_py_path = os.path.relpath(launcher_py_path, work_dir)
-        if self.launcher_py_path[:1] == "\\":
-            self.launcher_py_path = self.launcher_py_path[1:]
-        #         assert "." not in self.launcher_py_path.strip(".py"), \
-        #             f"{self.launcher_py_path}中的路径或文件名中出现了除“.py”以外的“.”符号，请保证路径和文件中没有除“.py”以外的“.”符号\n" \
-        #             f"例如：C:/123.445/run.py 中123.445文件夹包含了“.”符号，该符号将可能导致Python程序运行终止，请修改该类情况！"
-        assert " " not in self.launcher_py_path, \
-            f"{self.launcher_py_path}中的路径或文件名中出现了空格符号，请删去文件夹或文件名中的空格\n" \
-            f"例如：C:/123 445/run.py 中123 445文件夹包含了空格符号，该符号将可能导致Python程序运行终止，请修改该类情况！"
+        # 主程序文件变量
+        self.launcher_py_path = list()
 
-        self.work_dir = work_dir
-        assert os.path.exists(os.path.join(self.work_dir, self.launcher_py_path)), \
-            f"请检查{launcher_py_path}文件是否存在{self.work_dir}目录"
+        def make_launcher_py_path(lp_path):
+            _launcher_py_path = os.path.relpath(lp_path, work_dir)
+            if _launcher_py_path[:1] == "\\":
+                _launcher_py_path = _launcher_py_path[1:]
+
+            assert " " not in _launcher_py_path, \
+                f"{_launcher_py_path}中的路径或文件名中出现了空格符号，请删去文件夹或文件名中的空格\n" \
+                f"例如：C:/123 445/run.py 中123 445文件夹包含了空格符号，该符号将可能导致Python程序运行终止，请修改该类情况！"
+            assert os.path.exists(os.path.join(self.work_dir, _launcher_py_path)), \
+                f"请检查{lp_path}文件是否存在{self.work_dir}目录"
+            return _launcher_py_path
+
+        if isinstance(launcher_py_path, list):
+            for lpp in launcher_py_path:
+                self.launcher_py_path.append(make_launcher_py_path(lp_path=lpp))
+        else:
+            self.launcher_py_path.append(make_launcher_py_path(lp_path=launcher_py_path))
 
         self.save_path = save_path
         if not os.path.exists(self.save_path):
@@ -336,7 +344,14 @@ class CreateExecutableModule:
 
 
 class RunExecutableModule:
-    def __init__(self, module_path):
+    def __init__(self,
+                 module_path: str,
+                 run_id: int = 0):
+        """
+        执行器入口
+        :param module_path: 封装后Module路径，例如Debug/Release文件夹的路径
+        :param run_id: 待执行的主程序id，默认为0代表第一个程序
+        """
         # 初始化Module信息
         self.base_dir = os.path.abspath(module_path)
         self.config_path = os.path.join(self.base_dir, "configs")
@@ -389,10 +404,13 @@ class RunExecutableModule:
 
         try:
             with open(self.config_file_path, "r", encoding="utf-8") as config_file:
+                # ToDo 此处会有注入漏洞
                 self.configs = eval(config_file.read())
         except Exception as e:
             Logging.error("请检查杀毒软件、防火墙等限制策略，当前程序无法正常访问Config.gt文件，完整报错如下：\n" + str(e))
 
+        # 获取py文件位置
+        self.main_py_path = self.configs["launcher_py_path"][0]
         # 获取GUI选项
         self.hidden_terminal = self.configs["hidden_terminal"]
 
@@ -483,7 +501,7 @@ class RunExecutableModule:
 
         # 执行主程序
         run_shell = f'cd "{self.work_dir}";' + './../Python/python.exe "' + \
-                    os.path.abspath(os.path.join(self.work_dir, self.configs["launcher_py_path"])) + '"'
+                    os.path.abspath(os.path.join(self.work_dir, self.main_py_path)) + '"'
         # start -NoNewWindow 看看要不要从输入符号入手
         self.auto_terminal.shell(run_shell, callback=RunTerminalCallback())
         # main_lib_path = self.configs["launcher_py_path"].replace(".py", "")

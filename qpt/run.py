@@ -2,6 +2,7 @@ import os
 import sys
 
 from qpt.memory import QPT_MEMORY
+# ToDo 多程序入口可考虑在import run之前加环境变量
 
 IGNORE_ENV_FIELD = ["conda", "Conda", "Python", "python"]
 interpreter_dir = os.path.dirname(sys.executable)

@@ -232,6 +232,12 @@ class CreateExecutableModule:
         assert os.path.exists(self.work_dir), f"{os.path.abspath(self.work_dir)}不存在，请检查该路径是否正确"
         Logging.info("正在复制相关文件，可能会耗时较长")
         copytree(self.work_dir, self.resources_path, ignore_dirs=self.ignore_dirs)
+        # 对主程序加入wrapper代码
+        for main_py in self.launcher_py_path:
+            with open(os.path.join(self.resources_path, main_py), "r+", encoding="utf-8") as _f:
+                _data = _f.read()
+                _f.seek(0, 0)
+                _f.write("from qpt.run_wrapper import wrapper\nwrapper()\n" + _data)
 
         # QPT的dev模式
         if self.with_debug:
@@ -410,7 +416,7 @@ class RunExecutableModule:
             Logging.error("请检查杀毒软件、防火墙等限制策略，当前程序无法正常访问Config.gt文件，完整报错如下：\n" + str(e))
 
         # 获取py文件位置
-        self.main_py_path = self.configs["launcher_py_path"][0]
+        self.main_py_path = self.configs["launcher_py_path"][run_id]
         # 获取GUI选项
         self.hidden_terminal = self.configs["hidden_terminal"]
 

@@ -106,7 +106,6 @@ class AutoRequirementsPackage(_RequirementsPackage):
 
 # 自动推理依赖时需要特殊处理的Module配置列表 格式{包名: (Module, Module参数字典)}
 # version、deploy_mode 为必填字段
-# ToDo 小心 DEFAULT_DEPLOY_MODE 不在mem中可能会有问题
 SPECIAL_MODULE = {"paddlepaddle": (PaddlePaddlePackage, {"version": None,
                                                          "include_cuda": False,
                                                          "deploy_mode": DEFAULT_DEPLOY_MODE}),

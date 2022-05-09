@@ -332,18 +332,14 @@ class PipTools:
 
         def get_next_dep(dep_name: str, version=None):
             if dep_name not in all_req:
-                all_req[dep_name] = packages_dist.get(dep_name) if version is None else version
+                all_req[dep_name] = packages_dist[dep_name] if version is None else version
 
-                sub_deps = dep_pkg_dict.get(dep_name.lower())
+                sub_deps = dep_pkg_dict[dep_name]
                 if sub_deps:
-                    for sub_dep in sub_deps:
+                    for sub_dep in sub_deps.keys():
                         if sub_dep not in all_req:
-                            get_next_dep(dep_name=sub_dep, version=packages_dist.get(sub_dep))
+                            get_next_dep(dep_name=sub_dep, version=packages_dist[sub_dep])
 
         for requirement in requirements:
             get_next_dep(dep_name=requirement, version=requirements[requirement])
         return all_req
-
-
-if __name__ == '__main__':
-    pass

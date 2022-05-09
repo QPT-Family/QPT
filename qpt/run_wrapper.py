@@ -17,10 +17,20 @@ def __compatible_input():
     """
     import builtins
 
-    def wrapper(__prompt):
+    ori_input = builtins.__dict__["input"]
+
+    def _wrapper(__prompt):
         print(__COMPATIBLE_INPUT_START_FLAG + str(__prompt) + __COMPATIBLE_INPUT_END_FLAG)
+        raw = ori_input()
+        return raw
 
-    builtins.__dict__["input"] = wrapper
+    # ToDo https: // blog.csdn.net / qq_43395215 / article / details / 106409275
+    builtins.__dict__["input"] = _wrapper
 
 
-__compatible_input()
+def wrapper():
+    __compatible_input()
+
+
+if __name__ == '__main__':
+    wrapper()

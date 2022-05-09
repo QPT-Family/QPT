@@ -106,8 +106,8 @@ def intelligent_analysis(path, return_all_info=False):
         ignore_packages = dict()
         top_dep_flatten = set(IGNORE_PACKAGES)
         for top_dep in top_deps.values():
-            top_dep_flatten = top_dep_flatten.union(top_dep)
-        for install_package in install_dict:
+            top_dep_flatten = top_dep_flatten.union(top_dep.keys())
+        for install_package in install_dict.keys():
             # 若安装的Python包不在搜索结果中，且不属于子依赖，则加入返回列表
             if install_package not in requires and install_package not in top_dep_flatten:
                 ignore_packages[install_package] = install_dict[install_package]

@@ -72,7 +72,7 @@ class WhlDict:
         self.dict[self.norm_name(key)] = value
 
     def __getitem__(self, key):
-        return self.dict[self.norm_name(key)]
+        return self.dict.get(self.norm_name(key))
 
     def __contains__(self, key):
         return True if self.norm_name(key) in self.dict else False

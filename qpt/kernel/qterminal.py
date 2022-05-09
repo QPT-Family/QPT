@@ -62,7 +62,7 @@ class LoggingTerminalCallback(TerminalCallback):
             line = terminal.stdout.readline()
             msg = line.decode('utf-8', errors="ignore").strip("b'").strip("\n").strip("\r")
             if msg:
-                if msg == '---QPT OUTPUT STATUS CODE---':
+                if msg == "---QPT OUTPUT STATUS CODE---":
                     end = True
                     continue
                 if msg == "\r" or msg == "\n":
@@ -120,9 +120,9 @@ class RunTerminalCallback(LoggingTerminalCallback):
             "---QPT COMPATIBLE_INPUT_END_FLAG---"
         ):
             prompt = msg[37:-35]
-            raw = input(prompt)
-            terminal.main_terminal.stdin.write(raw.encode("utf-8", errors="ignore"))
-            return raw
+            raw = input(prompt + "\n>>> ") + "\n---QPT OUTPUT STATUS CODE---\n"
+            terminal.stdin.write(raw.encode("utf-8", errors="ignore"))
+            return ""
         else:
             return msg
 

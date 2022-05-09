@@ -17,6 +17,7 @@ class TerminalCallback:
         self.cache = ""
         self.error_fitter = list()
         self.normal_fitter = list()
+        self.fitters = list()
 
     def handle(self, terminal=None):
         """
@@ -49,6 +50,10 @@ class MessageBoxTerminalCallback(TerminalCallback):
 
 
 class LoggingTerminalCallback(TerminalCallback):
+    """
+    ToDo 后期需要重构，功能太多，失去了原有设计思路，未来给handle里加个List[funcs]做个过滤器输入入口
+    """
+
     def handle(self, terminal=None):
         assert terminal, "此处需要terminal"
         line = True
@@ -81,6 +86,9 @@ class LoggingTerminalCallback(TerminalCallback):
                         self.error_func()
                         break
                 self.cache += msg + "\n"
+                if len(self.fitters) > 0:
+                    for fitter_func in self.fitters:
+                        msg = fitter_func(msg, terminal)
                 self.print_func(msg)
 
     @staticmethod
@@ -97,6 +105,27 @@ class LoggingTerminalCallback(TerminalCallback):
 
 
 class RunTerminalCallback(LoggingTerminalCallback):
+    def __init__(self):
+        super(RunTerminalCallback, self).__init__()
+        self.fitters.append(self.input_fitter)
+
+    @staticmethod
+    def input_fitter(msg: str, terminal):
+        """
+        当Python程序发出---QPT COMPATIBLE_INPUT_START_FLAG---信号后，主进程拉取input请求并传递给子进程
+        """
+        if msg.startswith(
+                "---QPT COMPATIBLE_INPUT_START_FLAG---"
+        ) and msg.endswith(
+            "---QPT COMPATIBLE_INPUT_END_FLAG---"
+        ):
+            prompt = msg[37:-35]
+            raw = input(prompt)
+            terminal.main_terminal.stdin.write(raw.encode("utf-8", errors="ignore"))
+            return raw
+        else:
+            return msg
+
     @staticmethod
     def print_func(msg):
         print(msg)

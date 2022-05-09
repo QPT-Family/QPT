@@ -1,3 +1,5 @@
+# run 负责包装主程序在运行前QPT要执行的动作
+
 import os
 import sys
 

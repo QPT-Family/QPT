@@ -162,6 +162,10 @@ class OnlineInstallWhlOpt(SubModuleOpt):
 
 class CopyLocalPackageAllFileOpt(SubModuleOpt):
     def __init__(self, package: str):
+        """
+        对指定Python包的所以相关文件进行复制，可以避免需要编译的包在客户端编译
+        :param package: Python包名
+        """
         super().__init__(disposable=True)
         self.package = package
 
@@ -189,9 +193,12 @@ class CopyLocalPackageAllFileOpt(SubModuleOpt):
                 shutil.copy(src_path, dst_path)
 
 
-class BatchInstallationOpt(SubModuleOpt):
+class SupplementaryPackageCheckOpt(SubModuleOpt):
     def __init__(self, path=None):
-        super(BatchInstallationOpt, self).__init__(disposable=True)
+        """
+        指定目录，检测目录中是否有Python包安装被遗漏
+        """
+        super().__init__(disposable=True)
         self.path = path
 
     def act(self) -> None:
@@ -218,6 +225,16 @@ class CustomPackage(SubModule):
                  find_links: str = None,
                  opts: ArgManager = None,
                  name: str = None):
+        """
+        基础Python包SubModule
+        :param package: Python包名
+        :param version: 版本号
+        :param deploy_mode: 部署模式
+        :param no_dependent: 是否包含依赖
+        :param find_links: 同pip -f
+        :param opts: pip附加命令
+        :param name: SubModule name
+        """
         if name is None:
             name = "NoneName_" + package
         super().__init__(name=name)
@@ -285,6 +302,9 @@ class _RequirementsPackage(SubModule):
 
 class QPTDependencyPackage(SubModule):
     def __init__(self):
+        """
+        QPT依赖相关SubModule
+        """
         self.level = TOP_LEVEL_REDUCE
         super().__init__(name=None)
         kernel_dependency_path = os.path.join(os.path.split(__file__)[0], "kernel_dependency.txt")
@@ -307,6 +327,9 @@ class QPTDependencyPackage(SubModule):
 
 class QPTGUIDependencyPackage(SubModule):
     def __init__(self):
+        """
+        QPT GUI依赖相关SubModule
+        """
         self.level = TOP_LEVEL_REDUCE
         super().__init__(name=None)
         kernel_dependency_path = os.path.join(os.path.split(__file__)[0], "kernel_dependency_GUI.txt")
@@ -316,12 +339,24 @@ class QPTGUIDependencyPackage(SubModule):
                                               to_module_env_path=True))
 
 
-class BatchInstallation(SubModule):
+class SupplementaryPackageCheck(SubModule):
     def __init__(self, name):
+        """
+        指定目录，检测目录中是否有Python包安装被遗漏
+        """
         super().__init__(name=name)
         self.level = LOW_LEVEL
         if DEFAULT_DEPLOY_MODE == DISPLAY_LOCAL_INSTALL:
-            self.add_unpack_opt(BatchInstallationOpt())
+            self.add_unpack_opt(SupplementaryPackageCheckOpt())
+
+
+class CompileCompatibilityCheck(SubModule):
+    def __init__(self):
+        """
+        待建设，二进制包检查 -> 当前难点1. 无法提前得知哪些Python包是非二进制发版 2. 纯离线模式要如何做
+        """
+        super().__init__()
+        pass
 
 
 class CopyWhl2PackagesOpt(SubModuleOpt):

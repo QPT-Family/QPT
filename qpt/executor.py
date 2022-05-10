@@ -150,7 +150,7 @@ class CreateExecutableModule:
         self.sub_modules = sub_modules if sub_modules is not None else list()
 
         # 放入增强包
-        # self.add_sub_module(BatchInstallation())
+        # self.add_sub_module(SupplementaryPackageCheck())
         # 放入增强包
         if self.hidden_terminal:
             self.add_sub_module(QPTGUIDependencyPackage())

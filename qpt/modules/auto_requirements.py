@@ -39,13 +39,19 @@ class AutoRequirementsPackage(_RequirementsPackage):
                                                                   return_path=False,
                                                                   action_mode=QPT_MEMORY.action_flag)
 
+        # ToDo 使用WhlDict代替dict + 在自动安装的时候，先考虑本地是否已经安装
+        # 获取所有Python依赖情况
         flatten_requirements = QPT_MEMORY.pip_tool.flatten_requirements(dict([(_r, requirements[_r].get("version"))
                                                                               for _r in requirements]))
+        # 写入全局部署方式信息
         flatten_requirements_fix = dict([(_r, {"version": flatten_requirements.get(_r),
                                                "display": deploy_mode,
                                                "QPT_Flag": False})
                                          for _r in flatten_requirements])
+
         flatten_requirements_fix.update(requirements)
+
+        # pop特殊的依赖包
         pre_add_module = list()
         for requirement in dict(flatten_requirements_fix):
             requirement, version, display, qpt_flag = requirement, \
@@ -92,7 +98,8 @@ class AutoRequirementsPackage(_RequirementsPackage):
                 else:
                     raise IndexError(f"当前特殊指令{display}无法识别，"
                                      f"请在requirement.txt中修改对{requirement}依赖的#$QPT_FLAG$ copy特殊操作指令")
-                # ToDo 考虑特殊指令的依赖
+                # ToDo 考虑特殊指令的依赖 例如-f 等
+
         # 保存依赖至
         requirements_path = os.path.join(get_qpt_tmp_path(), "requirements_dev.txt")
         QPT_MEMORY.pip_tool.save_requirements_file(flatten_requirements_fix, requirements_path)

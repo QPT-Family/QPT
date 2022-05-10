@@ -72,6 +72,9 @@ class BaseLogging:
 
 
 class LoggingColor(BaseLogging):
+    """
+    line_feed为是否换行
+    """
     @staticmethod
     def info(msg: str, line_feed=True):
         msg = "\033[34m" + msg + "\033[0m"

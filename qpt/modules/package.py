@@ -162,17 +162,33 @@ class OnlineInstallWhlOpt(SubModuleOpt):
                                               opts=self.opts)
 
 
-class CopyLocalWhlAllFileOpt(SubModuleOpt):
+class CopyLocalPackageAllFileOpt(SubModuleOpt):
     def __init__(self, package: str):
         super().__init__(disposable=True)
         self.package = package
 
     def act(self) -> None:
+        # Package文件缺失时仅警告一次
+        missing_file_warning_flag = True
+
+        # 获取文件列表
         records = get_package_all_file(package=self.package)
         for record in records:
+            # 过滤cache
+            if record.endswith(".pyc"):
+                continue
+
             src_path = os.path.abspath(os.path.join(QPT_MEMORY.site_packages_path, record))
-            dst_path = os.path.abspath(os.path.join(self.site_package_path, record))
-            shutil.copy(src_path, dst_path)
+            # 检查对应文件是否存在
+            if not os.path.exists(src_path):
+                if missing_file_warning_flag:
+                    Logging.warning(f"[SubModule]{self.name}\t| {self.package}\t可能存在文件缺失")
+                    missing_file_warning_flag = False
+                Logging.debug(f"[SubModule]{self.name}\t| {self.package}\t{src_path}文件缺失")
+                continue
+            else:
+                dst_path = os.path.abspath(os.path.join(self.site_package_path, record))
+                shutil.copy(src_path, dst_path)
 
 
 class BatchInstallationOpt(SubModuleOpt):
@@ -234,7 +250,7 @@ class CustomPackage(SubModule):
                                                   find_links=find_links,
                                                   opts=opts))
         elif deploy_mode == DISPLAY_COPY:
-            self.add_pack_opt(CopyLocalWhlAllFileOpt(package=package))
+            self.add_pack_opt(CopyLocalPackageAllFileOpt(package=package))
 
         else:
             raise IndexError(f"{deploy_mode}不能够被识别或未注册")

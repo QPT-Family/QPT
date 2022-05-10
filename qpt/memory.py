@@ -12,7 +12,7 @@ from qpt.kernel.qlog import Logging
 
 def init_wrapper(var=True):
     """
-    缓存器
+    缓存器，若为首次运行则会初始化，后续无特殊情况
     :param var: 是否未包含参数
     """
 
@@ -97,8 +97,9 @@ class QPTMemory:
         return flag
 
     @init_wrapper()
-    def get_local_pkg_dep_dict(self):
-        return
+    def get_local_pkg_dict(self):
+        from qpt.kernel.qpackage import search_dep
+        return search_dep()
 
 
 QPT_MEMORY = QPTMemory()
@@ -111,7 +112,7 @@ def check_bit():
 
 def check_os():
     p_os = QPT_MEMORY.platform_os
-    assert "Windows" in p_os, "当前QPT只支持Windows系统"
+    # assert "Windows" in p_os, "当前QPT只支持Windows系统"
 
 
 IGNORE_ENV_FIELD = ["conda", "Conda", "Python", "python"]

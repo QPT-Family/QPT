@@ -6,43 +6,36 @@
 import copy
 import os
 
-from pip._internal.metadata.pkg_resources import Distribution
-
-# 对pip低版本做兼容
-try:
-    from pip._internal.utils.misc import get_installed_distributions
-except ImportError:
-    from pip._internal.utils.misc import cast
-
-
-    def get_installed_distributions(
-            local_only=True,
-            include_editables=True,
-            editables_only=False,
-            user_only=False,
-            paths=None):
-        """Return a list of installed Distribution objects.
-        Left for compatibility until direct pkg_resources uses are refactored out.
-        """
-        from pip._internal.metadata import get_default_environment, get_environment
-        from pip._internal.metadata.pkg_resources import Distribution as _Dist
-
-        if paths is None:
-            env = get_default_environment()
-        else:
-            env = get_environment(paths)
-        dists = env.iter_installed_distributions(
-            local_only=local_only,
-            skip={"python", "wsgiref", "argparse"},
-            include_editables=include_editables,
-            editables_only=editables_only,
-            user_only=user_only,
-        )
-        return [cast(_Dist, dist)._dist for dist in dists]
+from pip._internal.metadata import get_default_environment, get_environment
+from pip._internal.metadata.pkg_resources import Distribution as _Dist
+from pip._internal.utils.misc import cast
 
 from qpt.memory import QPT_MEMORY
-
 PACKAGE_FLAG = ".dist-info"
+
+
+def get_installed_distributions(
+        local_only=True,
+        include_editables=True,
+        editables_only=False,
+        user_only=False,
+        paths=None):
+    """Return a list of installed Distribution objects.
+    Left for compatibility until direct pkg_resources uses are refactored out.
+    """
+
+    if paths is None:
+        env = get_default_environment()
+    else:
+        env = get_environment(paths)
+    dists = env.iter_installed_distributions(
+        local_only=local_only,
+        skip={"python", "wsgiref", "argparse"},
+        include_editables=include_editables,
+        editables_only=editables_only,
+        user_only=user_only,
+    )
+    return [cast(_Dist, dist).dist for dist in dists]
 
 
 class WhlDict:
@@ -81,6 +74,13 @@ class WhlDict:
         return str(self.dict)
 
 
+def search_pkg():
+    from pip._internal.metadata import get_default_environment
+
+    pkgs = get_default_environment().iter_distributions()
+    for pkg in pkgs:
+        pass
+
 def search_dep():
     """
     获取当前已安装的包以及其依赖
@@ -105,42 +105,35 @@ def search_dep():
     return pkg_dict
 
 
-def search_packages_dist_info(site_package_path=None):
+def search_packages_dist_info():
     """
-    获取对应site_package_path下所有Python包的版本号以及TopName
-    :param site_package_path:检索的路径
+    获取当前环境下所有Python包的版本号以及TopName | ToDo 增加自定义路径
     :return:所有包名与包版本字典、所有包import名与包名字典、所有包与其依赖的包版本字典所构成的字典
     """
     # 获取依赖列表
     dep_pkg_dict = search_dep()
 
-    # 获取当前环境下安装的文件列表
-    if site_package_path is None:
-        site_package_path = QPT_MEMORY.site_packages_path
-    packages_dir_list = os.listdir(site_package_path)
     packages_dist = WhlDict()
     tops_dist = WhlDict()
-    for package_dist in packages_dir_list:
-        if package_dist.endswith(PACKAGE_FLAG):
-            metadata = Distribution.from_directory(os.path.join(site_package_path, package_dist))
-            name = metadata.raw_name
-            version = metadata.version.base_version
+    for package_dist in get_default_environment().iter_distributions():
+        name = package_dist.raw_name
+        version = package_dist.version.public
 
-            top_file_path = os.path.join(site_package_path, package_dist, "top_level.txt")
-            if os.path.exists(top_file_path):
-                with open(top_file_path, "r", encoding="utf-8") as top_file:
-                    tops = top_file.readlines()
+        top_file_path = os.path.join(package_dist.info_location, "top_level.txt")
+        if os.path.exists(top_file_path):
+            with open(top_file_path, "r", encoding="utf-8") as top_file:
+                tops = top_file.readlines()
 
-                for top in tops:
-                    # 避免路径导入
-                    if "\\" in top:
-                        top = top.split("\\")[-1]
-                    # 兼容Linux
-                    if "/" in top:
-                        top = top.split("/")[-1]
-                    tops_dist[top.strip("\n")] = name
+            for top in tops:
+                # 避免路径导入
+                if "\\" in top:
+                    top = top.split("\\")[-1]
+                # 兼容Linux
+                if "/" in top:
+                    top = top.split("/")[-1]
+                tops_dist[top.strip("\n")] = name
 
-            packages_dist[name] = version
+        packages_dist[name] = version
 
     return packages_dist, tops_dist, dep_pkg_dict
 

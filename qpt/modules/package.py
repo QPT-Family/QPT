@@ -18,8 +18,6 @@ from qpt.version import version as qpt_version
 FLAG_FILE_SERIALIZE = "[FLAG-FileSerialize]"
 DEFAULT_DEPLOY_MODE = DISPLAY_LOCAL_INSTALL
 
-# 第三方库下载版本
-PACKAGE_FOR_PYTHON38_VERSION = "3.8"
 DEFAULT_PACKAGE_FOR_PYTHON_VERSION = None  # None表示不设置
 
 

@@ -193,7 +193,7 @@ class CopyLocalPackageAllFileOpt(SubModuleOpt):
                 shutil.copy(src_path, dst_path)
 
 
-class SupplementaryPackageCheckOpt(SubModuleOpt):
+class CheckNotSetupOpt(SubModuleOpt):
     def __init__(self, path=None):
         """
         指定目录，检测目录中是否有Python包安装被遗漏
@@ -339,7 +339,7 @@ class QPTGUIDependencyPackage(SubModule):
                                               to_module_env_path=True))
 
 
-class SupplementaryPackageCheck(SubModule):
+class CheckNotSetupPackage(SubModule):
     def __init__(self, name):
         """
         指定目录，检测目录中是否有Python包安装被遗漏
@@ -347,10 +347,10 @@ class SupplementaryPackageCheck(SubModule):
         super().__init__(name=name)
         self.level = LOW_LEVEL
         if DEFAULT_DEPLOY_MODE == DISPLAY_LOCAL_INSTALL:
-            self.add_unpack_opt(SupplementaryPackageCheckOpt())
+            self.add_unpack_opt(CheckNotSetupOpt())
 
 
-class CompileCompatibilityCheck(SubModule):
+class CheckCompileCompatibility(SubModule):
     def __init__(self):
         """
         待建设，二进制包检查 -> 当前难点1. 无法提前得知哪些Python包是非二进制发版 2. 纯离线模式要如何做

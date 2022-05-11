@@ -1,4 +1,3 @@
-import os
 from qpt.executor import RunExecutableModule
 
 if __name__ == '__main__':

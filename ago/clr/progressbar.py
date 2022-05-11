@@ -3,7 +3,6 @@
 # Copyright belongs to the author.
 # Please indicate the source for reprinting.
 
-import time
 import clr
 
 clr.AddReference("PresentationFramework.Classic, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35")
@@ -11,7 +10,6 @@ clr.AddReference("PresentationCore, Version=3.0.0.0, Culture=neutral, PublicKeyT
 
 from System.Windows import Application
 from System.Windows import Window
-from System.Windows import MessageBox
 from System.Windows import LogicalTreeHelper
 from System.Windows.Markup import XamlReader
 from System.Threading import Thread

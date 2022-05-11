@@ -1,5 +1,6 @@
-import paddle
 import sys
+
+import paddle
 from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox
 
 

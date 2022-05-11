@@ -50,6 +50,8 @@ if __name__ == '__main__':
                  interpreter_module=Python37())
     module.make()
 ```
+
 这样GT就在Python3.10的解释器环境下打包出支持Python3.7的软件包，但仍需要注意的是：
+
 1. 需考虑待打包的代码是否兼容该Python版本。
 2. 该Python版本是否可以在目标用户操作系统上执行。

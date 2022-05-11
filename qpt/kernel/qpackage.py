@@ -11,6 +11,7 @@ from pip._internal.metadata.pkg_resources import Distribution as _Dist
 from pip._internal.utils.misc import cast
 
 from qpt.memory import QPT_MEMORY
+
 PACKAGE_FLAG = ".dist-info"
 
 
@@ -73,13 +74,6 @@ class WhlDict:
     def __repr__(self):
         return str(self.dict)
 
-
-def search_pkg():
-    from pip._internal.metadata import get_default_environment
-
-    pkgs = get_default_environment().iter_distributions()
-    for pkg in pkgs:
-        pass
 
 def search_dep():
     """

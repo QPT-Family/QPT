@@ -119,9 +119,10 @@ class RunTerminalCallback(LoggingTerminalCallback):
         ) and msg.endswith(
             "---QPT COMPATIBLE_INPUT_END_FLAG---"
         ):
-            prompt = msg[37:-35]
-            raw = input(prompt + "\n>>> ") + "\n---QPT OUTPUT STATUS CODE---\n"
-            terminal.stdin.write(raw.encode("utf-8", errors="ignore"))
+            _path, prompt = msg[37:-35].split("---QPT COMPATIBLE_INPUT_SPLIT_FLAG---")
+            raw = input(prompt)
+            with open(_path, "wb") as f:
+                f.write(raw.encode("utf-8"))
             return ""
         else:
             return msg

@@ -1,9 +1,7 @@
 # Author: Acer Zhang
-# Datetime: 2022/5/9 
+# Datetime: 2022/5/11 
 # Copyright belongs to the author.
 # Please indicate the source for reprinting.
-
-# run wrapper负责包装主程序在运行前预热动作
 
 __COMPATIBLE_INPUT_START_FLAG = "---QPT COMPATIBLE_INPUT_START_FLAG---"  # 37
 __COMPATIBLE_INPUT_END_FLAG = "---QPT COMPATIBLE_INPUT_END_FLAG---"  # 35
@@ -49,6 +47,8 @@ def wrapper():
     __compatible_input()
 
 
-if __name__ == '__main__':
-    wrapper()
-    input("测试")
+wrapper()
+print("开始")
+x = input("请输入")
+print(x)
+exit(0)

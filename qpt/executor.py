@@ -232,7 +232,7 @@ class CreateExecutableModule:
         assert os.path.exists(self.work_dir), f"{os.path.abspath(self.work_dir)}不存在，请检查该路径是否正确"
         Logging.info("正在复制相关文件，可能会耗时较长")
         copytree(self.work_dir, self.resources_path, ignore_dirs=self.ignore_dirs)
-        # 对主程序加入wrapper代码
+        # 对主程序加入wrapper代码 | ToDo 此处会有pyd的不兼容性 后期支持pyd后有望避免
         for main_py in self.launcher_py_path:
             with open(os.path.join(self.resources_path, main_py), "r+", encoding="utf-8") as _f:
                 _data = _f.read()

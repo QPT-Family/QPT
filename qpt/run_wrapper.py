@@ -27,19 +27,25 @@ def __compatible_input():
     _path = os.path.join(_path, str(uuid.uuid4()) + ".txt")
 
     def _wrapper(__prompt):
+        # 向主进程抛出input信号
         print(__COMPATIBLE_INPUT_START_FLAG +
               _path +
               __COMPATIBLE_INPUT_SPLIT_FLAG +
               str(__prompt) +
               __COMPATIBLE_INPUT_END_FLAG)
 
+        # 检测用户是否写入文件
         while True:
             if os.path.exists(_path):
                 break
             else:
                 time.sleep(0.2)
+
+        # 读取用户的输入情况
         with open(_path, "rb") as f:
             raw = f.read().decode("utf-8")
+        # 读完就扔
+        os.remove(_path)
         return raw
 
     builtins.__dict__["input"] = _wrapper

@@ -112,7 +112,7 @@ class RunTerminalCallback(LoggingTerminalCallback):
     @staticmethod
     def input_fitter(msg: str, terminal):
         """
-        当Python程序发出---QPT COMPATIBLE_INPUT_START_FLAG---信号后，主进程拉取input请求并传递给子进程
+        当Python程序发出---QPT COMPATIBLE_INPUT_START_FLAG---信号后，主进程拉取input请求并传递用户输入情况给子进程
         """
         if msg.startswith(
                 "---QPT COMPATIBLE_INPUT_START_FLAG---"

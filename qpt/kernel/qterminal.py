@@ -37,6 +37,10 @@ class TerminalCallback:
         """
         raise NotImplementedError(f"{self.__class__.__name__}中未定义error_func方法")
 
+    @staticmethod
+    def print_func(msg):
+        print(msg)
+
 
 class MessageBoxTerminalCallback(TerminalCallback):
     def handle(self, terminal=None):

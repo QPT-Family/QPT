@@ -48,6 +48,7 @@ def __compatible_input():
         os.remove(_path)
         return raw
 
+    # 替换子进程默认的input()为我们特制的input()
     builtins.__dict__["input"] = _wrapper
 
 

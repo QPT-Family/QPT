@@ -1,4 +1,4 @@
-# QPT - Python程序快捷封装工具（EXE）
+# QPT - Python程序模块化封装工具（Py转EXE）
 [![Downloads](https://static.pepy.tech/personalized-badge/qpt?period=total&units=international_system&left_color=grey&right_color=orange&left_text=Pypi%20User)](https://pepy.tech/project/qpt)
 ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/GT-ZhangAcer/QPT?include_prereleases)
 ![GitHub forks](https://img.shields.io/github/forks/GT-ZhangAcer/QPT)

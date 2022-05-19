@@ -41,7 +41,7 @@ body:
   id: "CPU_Version"
   attributes:
     label: "CPU型号"
-    description: "如您打包的是深度学习/AVX相关程序，请务必填写CPU型号以保证Issue顺利解决"
+    description: "因部分SubModule与CPU指令集有关，如您打包的是深度学习/AVX相关程序，请务必填写CPU型号以保证Issue顺利解决！"
     placeholder: "例如AMD R5 1400"
   validations:
     required: false

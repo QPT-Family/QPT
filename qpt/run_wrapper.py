@@ -14,6 +14,7 @@ def __compatible_input():
     """
     对QPT中使用多进程启动Python程序做input的适配
     因input在subprocess.Popen中并不会显式向用户提供输入
+    Warning: 该方案需要添加行缓冲环境变量
     :return:
     """
     import builtins

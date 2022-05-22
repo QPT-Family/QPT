@@ -7,30 +7,30 @@
 # 
 # -------------Mainly depends on package analysis results--------------
 
-paddlepaddle-gpu==2.1.1
+paddlepaddle_gpu==2.1.1
 
 # ----------------------Ignored dependent packages---------------------
-#bs4==0.0.1
-#paddlehub==2.1.0
-#paddleocr==2.4.0.2
-#paddlepaddle==2.2.0
-#paddlex==2.1.0
-#psutil==5.8.0
-#pyqt5==5.15.4
-#pyqt5-stubs==5.15.2.0
-#pythonnet==2.5.2
-#pywin32==302
-#qpt==1.0b1.dev11
 #wheel==0.36.2
+#qpt==1.0b1.dev11
+#pywin32==302
+#pythonnet==2.5.2
+#pyqt5==5.15.4
+#pyqt5_stubs==5.15.2.0
+#psutil==5.8.0
+#paddlex==2.1.0
+#paddlepaddle==2.2.0
+#paddleocr==2.4.0.2
+#paddlehub==2.1.0
+#bs4==0.0.1
 
 # ----------------------Ignored sub dependent packages---------------------
 
-# -----Dependencies of paddlepaddle-gpu
-#gast==0.3.3
-#decorator==4.4.2
+# -----Dependencies of paddlepaddle_gpu
 #six
 #numpy<=1.19.3,>=1.13
-#astor
-#protobuf>=3.1.0
-#pillow
+#gast==0.3.3
+#decorator==4.4.2
 #requests>=2.20.0
+#protobuf>=3.1.0
+#astor
+#pillow

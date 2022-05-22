@@ -153,7 +153,7 @@ class TProgressBar:
                  max_len: int = 100):
         self.count = 0
         self.msg = msg
-        self.max_len = max_len - 1
+        self.max_len = max_len
         self.block = 20
         self.with_logging = True
         Logging.info("", line_feed=False)
@@ -172,13 +172,17 @@ class TProgressBar:
             rate = self.count / self.max_len
 
             block_str = "|" + "".join(['━'] * int(rate * self.block)).ljust(self.block, " ") + "|"
-            block = f"{block_str}"
             Logging.info("\r" +
                          self.msg +
-                         f"\t{self.count}/{self.max_len} {add_start_info} {block} {rate * 100:.2f}% " +
+                         f"\t{self.count}/{self.max_len} {add_start_info} {block_str} {rate * 100:.2f}% " +
                          add_end_info,
                          line_feed=False)
         Logging.flush()
         if self.count == self.max_len:
-            Logging.info("", line_feed=True)
+            block_str = "|" + "".join(['━'] * self.block).ljust(self.block, " ") + "|"
+            Logging.info("\r" +
+                         self.msg +
+                         f"\t{self.count}/{self.max_len} {add_start_info} {block_str} {100:.2f}% " +
+                         add_end_info,
+                         line_feed=True)
             Logging.flush()

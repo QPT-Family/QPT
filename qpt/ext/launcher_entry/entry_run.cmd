@@ -4,6 +4,7 @@ cd ..
 set QPT_COLOR=False
 set QPT_MODE=Run
 echo on
+set PYTHONUNBUFFERED=1
 set PYTHONIOENCODING=utf-8
 set PYTHONPATH=Python/Lib/site-packages;Python/Lib;Python
 set PATH=Python/Lib/site-package;Python/Lib;Python/Scripts;Python;%PATH%

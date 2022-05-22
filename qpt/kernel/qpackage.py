@@ -5,10 +5,10 @@
 
 import copy
 import os
+from typing import cast
 
 from pip._internal.metadata import get_default_environment, get_environment
 from pip._internal.metadata.pkg_resources import Distribution as _Dist
-from pip._internal.utils.misc import cast
 
 from qpt.memory import QPT_MEMORY
 
@@ -36,7 +36,7 @@ def get_installed_distributions(
         editables_only=editables_only,
         user_only=user_only,
     )
-    return [cast(_Dist, dist).dist for dist in dists]
+    return [cast(_Dist, dist)._dist for dist in dists]
 
 
 class WhlDict:
@@ -109,7 +109,7 @@ def search_packages_dist_info():
 
     packages_dist = WhlDict()
     tops_dist = WhlDict()
-    for package_dist in get_default_environment().iter_distributions():
+    for package_dist in get_default_environment().iter_installed_distributions():
         name = package_dist.raw_name
         version = package_dist.version.public
 

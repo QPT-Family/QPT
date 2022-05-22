@@ -3,7 +3,7 @@ import os
 
 __all__ = ["Logging", "change_none_color", "clean_stout", "TProgressBar", "set_logger_file"]
 
-formatter = logging.Formatter('[%(asctime)s] [%(levelname)s] | %(message)s ←')
+formatter = logging.Formatter('→[%(asctime)s] [%(levelname)s] | %(message)s')
 logger = logging.getLogger("qpt_logger")
 st_handler = logging.StreamHandler()
 st_handler.setFormatter(formatter)
@@ -52,10 +52,10 @@ class BaseLogging:
         """
         Logging.info("-" * 10 + "WARNING SUMMARY")
         for msg in WARNING_SUMMARY:
-            Logging.info(msg)
+            Logging.info(msg, line_feed=False)
         Logging.info("-" * 10 + "ERROR SUMMARY  ")
         for msg in ERROR_SUMMARY:
-            Logging.info(msg)
+            Logging.info(msg, line_feed=False)
         Logging.info("-" * 10 + f"生成状态WARNING:{len(WARNING_SUMMARY)} ERROR:{len(ERROR_SUMMARY)}")
         flag = ERROR_SUMMARY.copy()
         if clear:

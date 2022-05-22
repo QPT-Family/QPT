@@ -5,7 +5,7 @@
 
 import os
 
-M_PATH = r"M:\QPT_UT_OUT_CACHE\test_module_m_gui_python37\Debug"
+M_PATH = r"M:\QPT_UT_OUT_CACHE\test_module_m\Debug"
 os.chdir(M_PATH)
 from qpt.executor import RunExecutableModule
 

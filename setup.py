@@ -24,7 +24,7 @@ setup(
                       "pefile",
                       "pillow",
                       "ttkbootstrap==0.5.1",
-                      "pip>=22"],
+                      "pip>=22.1.1"],
     python_requires='>3.5',
     include_package_data=True,
     entry_points={

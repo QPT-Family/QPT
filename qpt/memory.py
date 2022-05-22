@@ -107,7 +107,24 @@ def check_bit():
 
 def check_os():
     p_os = QPT_MEMORY.platform_os
-    # assert "Windows" in p_os, "当前QPT只支持Windows系统"
+    assert "Windows" in p_os, "当前QPT只支持Windows系统"
+
+
+def check_pip():
+    from pip import __version__
+
+    _ver = __version__.split(".")
+    _ver.reverse()
+
+    _ver_num = 0
+    for _v_id, _v in enumerate(_ver):
+        _num = 10 ** (_v_id + 1) * int(_v)
+        _ver_num += _num
+
+    if _ver_num < 2211:
+        raise EnvironmentError(f"当前Python环境下pip版本为{__version__}，QPT需要您使用版本号高于22.1.1的pip模块！\n"
+                               f"请在当前环境下使用python -m install -U pip，若您不了解如何管理Python环境，"
+                               f"无法实现pip的升级操作，请自行搜索相应解决方案或补充Python开发基础。")
 
 
 IGNORE_ENV_FIELD = ["conda", "Conda", "Python", "python"]
@@ -190,6 +207,8 @@ def check_all():
     check_os()
     # 检查arc
     check_bit()
+    # 检查pip版本
+    check_pip()
 
 
 check_all()

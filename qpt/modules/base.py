@@ -38,7 +38,7 @@ class SubModuleOpt:
         # 算子是否为一次性算子 - 通常用于安装第三方库等只需要进行一次就可以永久使用的情况
         self.disposable = disposable
 
-        # 环境变量
+        # 路径变量
         # 解释器所在路径占位
         self._interpreter_path = "./"
         # Module目录 - 创建Module时的保存目录/执行Module时的Module目录
@@ -84,39 +84,79 @@ class SubModuleOpt:
 
     @property
     def interpreter_path(self):
+        """
+        解释器路径
+        :return:
+        """
         return self._interpreter_path
 
     @property
     def module_path(self):
+        """
+        创建Module时的保存目录/执行Module时的Module目录
+        :return:
+        """
         return self._module_path
 
     @property
     def work_dir(self):
+        """
+        用户指定的工作目录
+        :return:
+        """
         return self._work_dir
 
     @property
     def config_path(self):
+        """
+        配置文件目录
+        :return:
+        """
         return os.path.join(self.module_path, "configs")
 
     @property
     def site_package_path(self):
+        """
+        获取当前Python环境的默认包管理路径
+        :return:
+        """
         sp_path = os.path.abspath(get_python_lib())
         return sp_path
 
     @property
     def module_site_package_path(self):
+        """
+        获取Module所使用的默认包管理路径
+        :return:
+        """
         sp_path = os.path.abspath(os.path.join(self.module_path, "Python/Lib/site-packages"))
         return sp_path
 
     @property
     def packages_path(self):
+        """
+        获取下载的离线whl包路径
+        :return:
+        """
         return os.path.join(self.module_path, QPT_MEMORY.get_down_packages_relative_path)
 
     @property
     def opt_path(self):
+        """
+        获取opt目录的路径
+        :return:
+        """
         return os.path.join(self.module_path, "opt")
 
     def prepare(self, work_dir=None, interpreter_path=None, module_path=None, terminal=None):
+        """
+        Todo: 后续实例化Memory，不再设置prepare
+        :param work_dir:
+        :param interpreter_path:
+        :param module_path:
+        :param terminal:
+        :return:
+        """
         self._work_dir = work_dir
         self._interpreter_path = interpreter_path
         self._module_path = module_path

@@ -193,29 +193,6 @@ class CopyLocalPackageAllFileOpt(SubModuleOpt):
                 shutil.copy(src_path, dst_path)
 
 
-class CheckNotSetupOpt(SubModuleOpt):
-    def __init__(self, path=None):
-        """
-        指定目录，检测目录中是否有Python包安装被遗漏
-        """
-        super().__init__(disposable=True)
-        self.path = path
-
-    def act(self) -> None:
-        if self.path is None:
-            self.path = os.path.join(self.module_path, QPT_MEMORY.get_down_packages_relative_path)
-
-        # 模糊匹配
-        ready_list = " ".join([k.lower() for k in search_packages_dist_info()[0].keys()])
-        whl_list = [whl for whl in os.listdir(self.path)
-                    if whl.split("-")[0].lower() not in ready_list]
-        Logging.info(f"需要补充的安装包数量为：{len(whl_list)}")
-        for whl_name in whl_list:
-            QPT_MEMORY.pip_tool.install_local_package(os.path.join(self.packages_path, whl_name),
-                                                      abs_package=True,
-                                                      no_dependent=True)
-
-
 class CustomPackage(SubModule):
     def __init__(self,
                  package="",
@@ -337,6 +314,29 @@ class QPTGUIDependencyPackage(SubModule):
         self.add_pack_opt(OnlineInstallWhlOpt(opts=ArgManager() + kernel,
                                               no_dependent=False,
                                               to_module_env_path=True))
+
+
+class CheckNotSetupOpt(SubModuleOpt):
+    def __init__(self, path=None):
+        """
+        指定目录，检测目录中是否有Python包安装被遗漏
+        """
+        super().__init__(disposable=True)
+        self.path = path
+
+    def act(self) -> None:
+        if self.path is None:
+            self.path = os.path.join(self.module_path, QPT_MEMORY.get_down_packages_relative_path)
+
+        # 模糊匹配
+        ready_list = " ".join([k.lower() for k in search_packages_dist_info()[0].keys()])
+        whl_list = [whl for whl in os.listdir(self.path)
+                    if whl.split("-")[0].lower() not in ready_list]
+        Logging.info(f"需要补充的安装包数量为：{len(whl_list)}")
+        for whl_name in whl_list:
+            QPT_MEMORY.pip_tool.install_local_package(os.path.join(self.packages_path, whl_name),
+                                                      abs_package=True,
+                                                      no_dependent=True)
 
 
 class CheckNotSetupPackage(SubModule):

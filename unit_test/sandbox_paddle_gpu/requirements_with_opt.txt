@@ -26,11 +26,11 @@ paddlepaddle_gpu==2.1.1
 # ----------------------Ignored sub dependent packages---------------------
 
 # -----Dependencies of paddlepaddle_gpu
-#six
-#numpy<=1.19.3,>=1.13
-#gast==0.3.3
 #decorator==4.4.2
+#pillow
+#six
+#gast==0.3.3
 #requests>=2.20.0
+#numpy<=1.19.3,>=1.13
 #protobuf>=3.1.0
 #astor
-#pillow

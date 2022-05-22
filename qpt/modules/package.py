@@ -102,13 +102,14 @@ class LocalInstallWhlOpt(SubModuleOpt):
         self.opts += "--target " + self.module_site_package_path
 
         if self.static_whl:
-            QPT_MEMORY.pip_tool.install_local_package(os.path.join(self.download_packages_path, os.path.basename(self.package)),
-                                                      abs_package=True,
-                                                      version=self.version,
-                                                      whl_dir=os.path.join(self.module_path,
-                                                                           QPT_MEMORY.get_down_packages_relative_path),
-                                                      no_dependent=self.no_dependent,
-                                                      opts=self.opts)
+            QPT_MEMORY.pip_tool.install_local_package(
+                os.path.join(self.download_packages_path, os.path.basename(self.package)),
+                abs_package=True,
+                version=self.version,
+                whl_dir=os.path.join(self.module_path,
+                                     QPT_MEMORY.get_down_packages_relative_path),
+                no_dependent=self.no_dependent,
+                opts=self.opts)
         else:
             QPT_MEMORY.pip_tool.install_local_package(self.package,
                                                       version=self.version,
@@ -416,10 +417,11 @@ class CheckCompileCompatibilityOpt(CopyLocalPackageAllFileOpt):
                 Logging.warning(f"{name}官方并未提供二进制whl包，为保证在无编译环境下仍可正常运行，即将复制本地编译后文件至运行环境。")
                 self.package.append(name)
         super().act()
-        # ToDo 暂时还不能删，需要早点对Memory做重构
-        # for whl in self.existing_offline_installation_packages:
-        #     if os.path.splitext(whl)[-1] != ".whl":
-        #         os.remove(os.path.join(self.download_packages_path, whl))
+
+        # ToDo 需要早点对Memory做重构
+        for whl in self.existing_offline_installation_packages:
+            if os.path.splitext(whl)[-1] != ".whl":
+                os.remove(os.path.join(self.download_packages_path, whl))
 
 
 class CheckCompileCompatibility(SubModule):

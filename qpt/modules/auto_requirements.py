@@ -58,6 +58,7 @@ class AutoRequirementsPackage(_RequirementsPackage):
                                                       flatten_requirements_fix[requirement].get("version"), \
                                                       flatten_requirements_fix[requirement].get("display"), \
                                                       flatten_requirements_fix[requirement].get("QPT_Flag")
+
             # 对特殊包进行过滤和特殊化
             if requirement in SPECIAL_MODULE:
                 special_module, parameter = SPECIAL_MODULE[requirement]

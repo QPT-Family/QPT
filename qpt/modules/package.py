@@ -5,13 +5,14 @@
 
 import os
 import shutil
+from typing import List
 
 from qpt.kernel.qinterpreter import DISPLAY_LOCAL_INSTALL, DISPLAY_SETUP_INSTALL, DISPLAY_ONLINE_INSTALL, DISPLAY_COPY
 from qpt.kernel.qlog import Logging
 from qpt.kernel.qos import FileSerialize, ArgManager
-from qpt.kernel.qpackage import get_package_all_file, search_packages_dist_info
+from qpt.kernel.qpackage import get_package_all_file, get_package_name_in_file
 from qpt.memory import QPT_MEMORY
-from qpt.modules.base import SubModule, SubModuleOpt, TOP_LEVEL_REDUCE, LOW_LEVEL, GENERAL_LEVEL
+from qpt.modules.base import SubModule, SubModuleOpt, TOP_LEVEL_REDUCE, LOW_LEVEL, GENERAL_LEVEL, LOW_LEVEL_REDUCE
 from qpt.version import version as qpt_version
 
 # 第三方库部署方式
@@ -101,7 +102,7 @@ class LocalInstallWhlOpt(SubModuleOpt):
         self.opts += "--target " + self.module_site_package_path
 
         if self.static_whl:
-            QPT_MEMORY.pip_tool.install_local_package(os.path.join(self.packages_path, os.path.basename(self.package)),
+            QPT_MEMORY.pip_tool.install_local_package(os.path.join(self.download_packages_path, os.path.basename(self.package)),
                                                       abs_package=True,
                                                       version=self.version,
                                                       whl_dir=os.path.join(self.module_path,
@@ -158,39 +159,6 @@ class OnlineInstallWhlOpt(SubModuleOpt):
                                               find_links=self.find_links,
                                               no_dependent=self.no_dependent,
                                               opts=self.opts)
-
-
-class CopyLocalPackageAllFileOpt(SubModuleOpt):
-    def __init__(self, package: str):
-        """
-        对指定Python包的所以相关文件进行复制，可以避免需要编译的包在客户端编译
-        :param package: Python包名
-        """
-        super().__init__(disposable=True)
-        self.package = package
-
-    def act(self) -> None:
-        # Package文件缺失时仅警告一次
-        missing_file_warning_flag = True
-
-        # 获取文件列表
-        records = get_package_all_file(package=self.package)
-        for record in records:
-            # 过滤cache
-            if record.endswith(".pyc"):
-                continue
-
-            src_path = os.path.abspath(os.path.join(QPT_MEMORY.site_packages_path, record))
-            # 检查对应文件是否存在
-            if not os.path.exists(src_path):
-                if missing_file_warning_flag:
-                    Logging.warning(f"[SubModule]{self.name}\t| {self.package}\t可能存在文件缺失")
-                    missing_file_warning_flag = False
-                Logging.debug(f"[SubModule]{self.name}\t| {self.package}\t{src_path}文件缺失")
-                continue
-            else:
-                dst_path = os.path.abspath(os.path.join(self.site_package_path, record))
-                shutil.copy(src_path, dst_path)
 
 
 class CustomPackage(SubModule):
@@ -317,6 +285,10 @@ class QPTGUIDependencyPackage(SubModule):
 
 
 class CheckNotSetupOpt(SubModuleOpt):
+    """
+    ToDo 未测试
+    """
+
     def __init__(self, path=None):
         """
         指定目录，检测目录中是否有Python包安装被遗漏
@@ -326,20 +298,24 @@ class CheckNotSetupOpt(SubModuleOpt):
 
     def act(self) -> None:
         if self.path is None:
-            self.path = os.path.join(self.module_path, QPT_MEMORY.get_down_packages_relative_path)
+            self.path = self.download_packages_path
+            whl_list = self.uninstalled_offline_installation_packages
+        else:
+            whl_list = [whl for whl in os.listdir(self.path)
+                        if os.path.splitext(whl)[-1] in [".gz", ".whl", "zip"]]
 
-        # 模糊匹配
-        ready_list = " ".join([k.lower() for k in search_packages_dist_info()[0].keys()])
-        whl_list = [whl for whl in os.listdir(self.path)
-                    if whl.split("-")[0].lower() not in ready_list]
         Logging.info(f"需要补充的安装包数量为：{len(whl_list)}")
         for whl_name in whl_list:
-            QPT_MEMORY.pip_tool.install_local_package(os.path.join(self.packages_path, whl_name),
+            QPT_MEMORY.pip_tool.install_local_package(os.path.join(self.download_packages_path, whl_name),
                                                       abs_package=True,
                                                       no_dependent=True)
 
 
 class CheckNotSetupPackage(SubModule):
+    """
+    ToDo 未测试
+    """
+
     def __init__(self, name):
         """
         指定目录，检测目录中是否有Python包安装被遗漏
@@ -350,13 +326,47 @@ class CheckNotSetupPackage(SubModule):
             self.add_unpack_opt(CheckNotSetupOpt())
 
 
-class CheckCompileCompatibility(SubModule):
-    def __init__(self):
+class CopyLocalPackageAllFileOpt(SubModuleOpt):
+    def __init__(self, package: str or List[str]):
         """
-        待建设，二进制包检查 -> 当前难点1. 无法提前得知哪些Python包是非二进制发版 2. 纯离线模式要如何做
+        对指定Python包的所以相关文件进行复制，可以避免需要编译的包在客户端编译
+        :param package: Python包名
         """
-        super().__init__()
-        pass
+        super().__init__(disposable=True)
+        self.package = package
+
+    def act(self) -> None:
+        def make(name):
+            # Package文件缺失时仅警告一次
+            missing_file_warning_flag = True
+
+            # 获取文件列表
+            records = get_package_all_file(package=name)
+            for record in records:
+                # 过滤cache
+                if record.endswith(".pyc"):
+                    continue
+
+                src_path = os.path.abspath(os.path.join(QPT_MEMORY.site_packages_path, record))
+                # 检查对应文件是否存在
+                if not os.path.exists(src_path):
+                    if missing_file_warning_flag:
+                        Logging.warning(f"[SubModule]{self.name}\t| {name}\t可能存在文件缺失")
+                        missing_file_warning_flag = False
+                    Logging.debug(f"[SubModule]{self.name}\t| {name}\t{src_path}文件缺失")
+                    continue
+                else:
+                    dst_path = os.path.abspath(os.path.join(self.module_site_package_path, record))
+                    dst_dir = os.path.dirname(dst_path)
+                    if not os.path.exists(dst_dir):
+                        os.makedirs(dst_dir)
+                    shutil.copy(src_path, dst_path)
+
+        if isinstance(self.package, list):
+            for p in self.package:
+                make(p)
+        else:
+            make(self.package)
 
 
 class CopyWhl2PackagesOpt(SubModuleOpt):
@@ -369,7 +379,7 @@ class CopyWhl2PackagesOpt(SubModuleOpt):
         self.whl_path = whl_path
 
     def act(self) -> None:
-        shutil.copy(src=self.whl_path, dst=self.packages_path)
+        shutil.copy(src=self.whl_path, dst=self.download_packages_path)
 
 
 class CopyWhl2Packages(SubModule):
@@ -392,3 +402,32 @@ class CopyWhl2Packages(SubModule):
             if opt is None:
                 opt = ArgManager(["-U --force-reinstall"])
             self.add_unpack_opt(LocalInstallWhlOpt(package=whl_path, static_whl=True, opts=opt))
+
+
+class CheckCompileCompatibilityOpt(CopyLocalPackageAllFileOpt):
+    def __init__(self):
+        super().__init__(package=None)
+
+    def act(self) -> None:
+        self.package = list()
+        for whl in self.existing_offline_installation_packages:
+            if os.path.splitext(whl)[-1] != ".whl":
+                name = get_package_name_in_file(whl)
+                Logging.warning(f"{name}官方并未提供二进制whl包，为保证在无编译环境下仍可正常运行，即将复制本地编译后文件至运行环境。")
+                self.package.append(name)
+        super().act()
+        # ToDo 暂时还不能删，需要早点对Memory做重构
+        # for whl in self.existing_offline_installation_packages:
+        #     if os.path.splitext(whl)[-1] != ".whl":
+        #         os.remove(os.path.join(self.download_packages_path, whl))
+
+
+class CheckCompileCompatibility(SubModule):
+    def __init__(self):
+        """
+        非二进制包检查，本地拷贝对应包后删除对应包
+        ToDo -> 在线模式要如何做？
+        """
+        super().__init__()
+        self.level = LOW_LEVEL_REDUCE
+        self.add_pack_opt(CheckCompileCompatibilityOpt())

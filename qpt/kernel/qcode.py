@@ -7,7 +7,7 @@ import ast
 import os
 
 from qpt.kernel.qlog import TProgressBar
-from qpt.kernel.qpackage import WhlDict, search_packages_dist_info
+from qpt.kernel.qpackage import WhlDict, search_packages_dist_info, search_dep
 from qpt.memory import PYTHON_IGNORE_DIRS, IGNORE_PACKAGES
 
 
@@ -64,7 +64,8 @@ def intelligent_analysis(path, return_all_info=False):
     :param return_all_info: 是否返回所有信息，默认只返回包名与包版本字典，为True后返回包名与依赖名+版本号的字典以及被忽略的Top依赖包
     """
     # ToDo 以后加个参数，兼容非当前环境下的智能分析
-    install_dict, top_dict, dep = search_packages_dist_info()
+    install_dict, top_dict = search_packages_dist_info()
+    dep = search_dep()
     package_import = search_import_in_dir(path)
 
     # 整合包名，避免~的情况

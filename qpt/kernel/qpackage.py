@@ -13,6 +13,17 @@ from pip._internal.metadata.pkg_resources import Distribution as _Dist
 from qpt.memory import QPT_MEMORY
 
 PACKAGE_FLAG = ".dist-info"
+EGG_PACKAGE_FLAG = ".egg-info"
+
+
+def get_package_name_in_file(name: str):
+    """
+    从离线的Python package中抽出package名字
+    :param name:
+    :return:
+    """
+    name = "-".join(name.split(".")[0].split("-")[:-1])
+    return name
 
 
 def get_installed_distributions(
@@ -99,13 +110,25 @@ def search_dep():
     return pkg_dict
 
 
+def search_ready_packages():
+    """
+    获取已经安装的Python包
+    :return: 所有包名与包版本字典
+    """
+    packages_dist = WhlDict()
+    for package_dist in get_default_environment().iter_installed_distributions():
+        name = package_dist.raw_name
+        version = package_dist.version.public
+        packages_dist[name] = version
+
+    return packages_dist
+
+
 def search_packages_dist_info():
     """
     获取当前环境下所有Python包的版本号以及TopName | ToDo 增加自定义路径
     :return:所有包名与包版本字典、所有包import名与包名字典、所有包与其依赖的包版本字典所构成的字典
     """
-    # 获取依赖列表
-    dep_pkg_dict = search_dep()
 
     packages_dist = WhlDict()
     tops_dist = WhlDict()
@@ -129,7 +152,7 @@ def search_packages_dist_info():
 
         packages_dist[name] = version
 
-    return packages_dist, tops_dist, dep_pkg_dict
+    return packages_dist, tops_dist
 
 
 def get_package_all_file(package, site_package_path=None):
@@ -144,12 +167,20 @@ def get_package_all_file(package, site_package_path=None):
     packages_dir_list = os.listdir(site_package_path)
 
     record_path = None
+    egg = False
+    package_dist = None
     for package_dist in packages_dir_list:
-        # 判断是否是目标文件夹
-        if package in package_dist and PACKAGE_FLAG.endswith(PACKAGE_FLAG):
-            record_path = os.path.join(site_package_path, package_dist, "RECORD")
-            if not os.path.exists(record_path):
-                record_path = None
+        # 判断是否是目标文件夹 + 兼容不规范的package名
+        if package.replace("-", "_").lower() in package_dist.replace("-", "_").lower():
+            if package_dist.endswith(PACKAGE_FLAG):
+                record_path = os.path.join(site_package_path, package_dist, "RECORD")
+                if not os.path.exists(record_path):
+                    record_path = None
+                break
+            elif package_dist.endswith(EGG_PACKAGE_FLAG):
+                record_path = os.path.join(site_package_path, package_dist, "installed-files.txt")
+                egg = True
+                break
 
     assert record_path is not None, f"{package} RECORD信息读取失败，" \
                                     f"请在requirement.txt中取消对该依赖的#$QPT_FLAG$ copy特殊操作指令"
@@ -157,8 +188,15 @@ def get_package_all_file(package, site_package_path=None):
     with open(record_path, "r", encoding="utf-8") as records:
         data = records.readlines()
         for record in data:
-            relative_path = record.strip("\n").split(",")[0]
-            resource_list.append(relative_path)
+            if egg:
+                if "..\\" in record:
+                    relative_path = record[3:].strip("\n")
+                else:
+                    relative_path = os.path.join(package_dist, record.strip("\n"))
+                resource_list.append(relative_path)
+            else:
+                relative_path = record.strip("\n").split(",")[0]
+                resource_list.append(relative_path)
     return resource_list
 
 

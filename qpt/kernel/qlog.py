@@ -52,10 +52,10 @@ class BaseLogging:
         """
         Logging.info("-" * 10 + "WARNING SUMMARY")
         for msg in WARNING_SUMMARY:
-            Logging.info(msg, line_feed=False)
+            Logging.info(msg, line_feed=True)
         Logging.info("-" * 10 + "ERROR SUMMARY  ")
         for msg in ERROR_SUMMARY:
-            Logging.info(msg, line_feed=False)
+            Logging.info(msg, line_feed=True)
         Logging.info("-" * 10 + f"生成状态WARNING:{len(WARNING_SUMMARY)} ERROR:{len(ERROR_SUMMARY)}")
         flag = ERROR_SUMMARY.copy()
         if clear:

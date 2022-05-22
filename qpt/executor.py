@@ -22,8 +22,7 @@ from qpt.memory import QPT_MODE, CheckRun
 from qpt.modules.auto_requirements import AutoRequirementsPackage
 from qpt.modules.base import SubModule
 from qpt.modules.package import QPTDependencyPackage, QPTGUIDependencyPackage, \
-    DEFAULT_DEPLOY_MODE, \
-    set_default_deploy_mode
+    DEFAULT_DEPLOY_MODE, set_default_deploy_mode, CheckCompileCompatibility
 from qpt.modules.python_env import BasePythonEnv, AutoPythonEnv
 from qpt.smart_opt import set_default_pip_lib
 from qpt.version import version as qpt_v
@@ -151,6 +150,7 @@ class CreateExecutableModule:
 
         # 放入增强包
         # self.add_sub_module(CheckNotSetupPackage())
+        self.add_sub_module(CheckCompileCompatibility())
         # 放入增强包
         if self.hidden_terminal:
             self.add_sub_module(QPTGUIDependencyPackage())

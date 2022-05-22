@@ -10,6 +10,7 @@ from distutils.sysconfig import get_python_lib
 
 from qpt.kernel.qlog import Logging
 from qpt.memory import QPT_MODE, CheckRun, QPT_MEMORY
+from qpt.kernel.qpackage import search_ready_packages, get_package_name_in_file
 
 # 定义优先级 优先级越高执行顺序越考前，一般设置为GENERAL_LEVEL
 TOP_LEVEL = 5.  # 底层高优先级
@@ -19,25 +20,13 @@ HIGH_LEVEL_REDUCE = 3.5  # 紧随高优先级
 GENERAL_LEVEL = 3.  # 普通优先级 - AutoRequirementsPackage
 GENERAL_LEVEL_REDUCE = 2.5  # 紧随普通优先级 - 特殊的CallBack软件包 PaddlePaddlePackage
 LOW_LEVEL = 2.  # 低优先级 - CheckNotSetupPackage
-LOW_LEVEL_REDUCE = 1.5  # 紧随低优先级 - PaddlePaddleCheckAVX
+LOW_LEVEL_REDUCE = 1.5  # 紧随低优先级 - PaddlePaddleCheckAVX、CheckCompileCompatibility
 BOTTOM_LEVEL = 1.  # 系统级低优先级
 BOTTOM_LEVEL_REDUCE = 0.5  # 底层低优先级
 
 
-class SubModuleOpt:
-    """
-    自定义子模块操作，用于子模块封装时和封装后的操作流程设置，支持shell操作和Python原生语言操作
-    """
-
-    def __init__(self, disposable=False):
-        """
-        :param disposable: 算子是否为一次性算子，默认非一次性 - 通常用于安装第三方库等只需要进行一次就可以永久使用的情况
-        """
-        self.name = self.__class__.__name__
-
-        # 算子是否为一次性算子 - 通常用于安装第三方库等只需要进行一次就可以永久使用的情况
-        self.disposable = disposable
-
+class SubBase:
+    def __init__(self):
         # 路径变量
         # 解释器所在路径占位
         self._interpreter_path = "./"
@@ -48,39 +37,6 @@ class SubModuleOpt:
         self._terminal = None
         # 工作目录占位 - 创建Module时的工作目录（待打包的目录）/执行Module时的resources目录
         self._work_dir = "./"
-
-    def act(self) -> None:
-        """
-        使用Python语句和终端来执行操作
-        Example:
-            class MyOpt(SubModuleOpt):
-                def run(self):
-                    super().run()
-                    # 例如新建C:/abc目录
-                    import os
-                    os.mkdir(r"C:/abc")
-
-                    # 例如在终端中查看当前目录（Windows为dir命令）
-                    self.terminal("dir")
-
-                    # 例如在用户使用时为其Module所在的目录中新建abc目录
-                    import os
-                    os.mkdir(os.path.join(self.module_path, "abc"))
-
-            sub_module = XXXModule()
-            sub_module.add_pack_opt(MyOpt()) or sub_module.add_unpack_opt(MyOpt())
-        """
-        pass
-
-    def run(self, op_path):
-        inactive_file = op_path + ".inactive"
-        if (self.disposable and os.path.exists(inactive_file)) and CheckRun.check_run_file(self.config_path):
-            Logging.debug(f"找到该OP状态文件{self.name}.inactive，故跳过该OP")
-        else:
-            self.act()
-        if self.disposable and os.path.exists(os.path.dirname(op_path)):
-            with open(inactive_file, "w", encoding="utf-8") as f:
-                f.write(f"于{str(datetime.datetime.now())}创建了该状态文件")
 
     @property
     def interpreter_path(self):
@@ -133,7 +89,7 @@ class SubModuleOpt:
         return sp_path
 
     @property
-    def packages_path(self):
+    def download_packages_path(self):
         """
         获取下载的离线whl包路径
         :return:
@@ -147,6 +103,88 @@ class SubModuleOpt:
         :return:
         """
         return os.path.join(self.module_path, "opt")
+
+    @property
+    def ready_packages(self):
+        """
+        已经安装成功的packages
+        :return:
+        """
+        packages = search_ready_packages()
+        return packages
+
+    @property
+    def existing_offline_installation_packages(self):
+        """
+        存在的离线package
+        :return:
+        """
+        whl_list = [whl for whl in os.listdir(self.download_packages_path)
+                    if os.path.splitext(whl)[-1] in [".gz", ".whl", "zip"]]
+        return whl_list
+
+    @property
+    def uninstalled_offline_installation_packages(self):
+        """
+        未安装的离线package
+        :return:
+        """
+        uninstall_whl = list()
+        ready_list = "|".join([k.lower() for k in search_ready_packages().keys()])
+        for whl in self.existing_offline_installation_packages:
+            name = get_package_name_in_file(whl)
+            if name not in ready_list:
+                uninstall_whl.append(whl)
+        return uninstall_whl
+
+
+class SubModuleOpt(SubBase):
+    """
+    自定义子模块操作，用于子模块封装时和封装后的操作流程设置，支持shell操作和Python原生语言操作
+    """
+
+    def __init__(self, disposable=False):
+        super().__init__()
+        """
+        :param disposable: 算子是否为一次性算子，默认非一次性 - 通常用于安装第三方库等只需要进行一次就可以永久使用的情况
+        """
+        self.name = self.__class__.__name__
+
+        # 算子是否为一次性算子 - 通常用于安装第三方库等只需要进行一次就可以永久使用的情况
+        self.disposable = disposable
+
+    def act(self) -> None:
+        """
+        使用Python语句和终端来执行操作
+        Example:
+            class MyOpt(SubModuleOpt):
+                def run(self):
+                    super().run()
+                    # 例如新建C:/abc目录
+                    import os
+                    os.mkdir(r"C:/abc")
+
+                    # 例如在终端中查看当前目录（Windows为dir命令）
+                    self.terminal("dir")
+
+                    # 例如在用户使用时为其Module所在的目录中新建abc目录
+                    import os
+                    os.mkdir(os.path.join(self.module_path, "abc"))
+
+            sub_module = XXXModule()
+            sub_module.add_pack_opt(MyOpt()) or sub_module.add_unpack_opt(MyOpt())
+        """
+        pass
+
+    def run(self, op_path):
+        inactive_file = op_path + ".inactive"
+        if (self.disposable and os.path.exists(inactive_file)) and CheckRun.check_run_file(self.config_path):
+            Logging.debug(f"找到该OP状态文件{self.name}.inactive，故跳过该OP")
+        else:
+            self.act()
+        if self.disposable and os.path.exists(os.path.dirname(op_path)):
+            with open(inactive_file, "w", encoding="utf-8") as f:
+                f.write(f"于{str(datetime.datetime.now())}创建了该状态文件")
 
     def prepare(self, work_dir=None, interpreter_path=None, module_path=None, terminal=None):
         """
@@ -166,8 +204,9 @@ class SubModuleOpt:
         self._terminal(shell)
 
 
-class SubModule:
+class SubModule(SubBase):
     def __init__(self, name=None, level: int = GENERAL_LEVEL):
+        super().__init__()
         if name is None:
             name = self.__class__.__name__
         self.name = name
@@ -179,12 +218,6 @@ class SubModule:
         self.ready_unpack_opt_count = 0
         self.details = {"Pack": [], "Unpack": []}
         self._ext_module = list()
-
-        # 占位out_dir，将会保存序列化文件到该目录，pack时需要被set
-        self._module_path = "./"
-        self._interpreter_path = "./"
-        self._terminal = "./"
-        self._work_dir = "./"
 
     def add_ext_module(self, module):
         """

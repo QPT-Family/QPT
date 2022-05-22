@@ -5,7 +5,7 @@
 import os
 from collections import OrderedDict
 
-from qpt.kernel.qcode import intelligent_analysis, search_packages_dist_info
+from qpt.kernel.qcode import intelligent_analysis, search_packages_dist_info, search_dep
 from qpt.kernel.qlog import clean_stout, Logging
 from qpt.kernel.qos import dynamic_load_package, get_qpt_tmp_path, ArgManager
 from qpt.kernel.qterminal import PTerminal, TerminalCallback, LoggingTerminalCallback
@@ -187,6 +187,7 @@ class PipTools:
                          find_links: str = None,
                          python_version: str = None,
                          opts: ArgManager = None):
+        package = package.replace("-", "_")
         if opts is None:
             opts = ArgManager()
 
@@ -328,7 +329,8 @@ class PipTools:
         :return: requirements: {package: abs_version} # {QPT: 1.0b1.dev1}
         """
         all_req = OrderedDict()
-        packages_dist, _, dep_pkg_dict = search_packages_dist_info()
+        dep_pkg_dict = search_dep()
+        packages_dist, _ = search_packages_dist_info()
 
         def get_next_dep(dep_name: str, version=None):
             if dep_name not in all_req:

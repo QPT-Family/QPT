@@ -177,7 +177,7 @@ class TProgressBar:
                          f"\t{self.count}/{self.max_len} {add_start_info} {block_str} {rate * 100:.2f}% " +
                          add_end_info,
                          line_feed=False)
-        Logging.flush()
+            Logging.flush()
         if self.count == self.max_len:
             block_str = "|" + "".join(['━'] * self.block).ljust(self.block, " ") + "|"
             Logging.info("\r" +

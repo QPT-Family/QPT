@@ -84,7 +84,7 @@ class LogTest(unittest.TestCase):
                                         save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),
                                         # requirements_file="sandbox_paddle_gpu/requirements_with_opt.txt",
                                         with_debug=True,
-                                        hidden_terminal=True)
+                                        hidden_terminal=False)
         module.make()
 
     def test_module_qt(self):

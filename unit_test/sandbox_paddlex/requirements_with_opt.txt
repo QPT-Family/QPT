@@ -1,0 +1,44 @@
+# Here is the list of packages automatically derived by QPT
+# you can ignore the dependent packages in the main package and only care about the main package
+# For example, you need to install paddlepaddle and pillow, because paddlepaddle relies on pillow, so you only need to install paddlepaddle.
+# ---------------------------------------------------------------------
+# QPT Home:        https://github.com/GT-ZhangAcer/QPT
+# ---------------------------------------------------------------------
+# 
+# -------------Mainly depends on package analysis results--------------
+
+paddlex==2.1.0
+paddlepaddle==2.2.0
+
+# ----------------------Ignored dependent packages---------------------
+#wheel==0.36.2
+#qpt==1.0b1.dev11
+#pywin32==302
+#pythonnet==2.5.2
+#pyqt5==5.15.4
+#pyqt5_stubs==5.15.2.0
+#psutil==5.8.0
+#paddlepaddle==2.2.0
+#paddlepaddle_gpu==2.1.1
+#paddleocr==2.4.0.2
+#paddlehub==2.1.0
+#bs4==0.0.1
+
+# ----------------------Ignored sub dependent packages---------------------
+
+# -----Dependencies of paddlex
+#tqdm
+#openpyxl
+#scipy
+#flask_cors
+#opencv_python
+#shapely>=1.7.0
+#chardet
+#colorama
+#lap
+#visualdl>=2.2.2
+#pyyaml
+#scikit_learn==0.23.2
+#motmetrics
+#pycocotools
+#paddleslim==2.2.1

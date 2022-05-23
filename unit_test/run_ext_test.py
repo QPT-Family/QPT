@@ -79,20 +79,20 @@ class LogTest(unittest.TestCase):
         module.make()
 
     def test_m_paddlex(self):
-        # GUI流程验证
+        # 只验证是否可以正确安装
         from qpt.modules.package import CustomPackage, DISPLAY_SETUP_INSTALL
         numpy_package = CustomPackage(package="numpy", version=None, deploy_mode=DISPLAY_SETUP_INSTALL)
         lap_package = CustomPackage(package="lap", version=None, deploy_mode=DISPLAY_SETUP_INSTALL)
         module = CreateExecutableModule(work_dir="./sandbox_paddlex",
                                         launcher_py_path="./sandbox_paddlex/run.py",
                                         save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),
-                                        # requirements_file="sandbox_paddlex/req.txt",
+                                        requirements_file="sandbox_paddlex/requirements_with_opt.txt",
                                         sub_modules=[numpy_package, lap_package],
                                         with_debug=True)
         module.make()
 
     def test_m_paddleocr(self):
-        # GUI流程验证
+        # 验证到预测部分
         module = CreateExecutableModule(work_dir="./sandbox_paddleocr",
                                         launcher_py_path="./sandbox_paddleocr/run.py",
                                         save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),

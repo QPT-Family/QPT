@@ -17,6 +17,7 @@ from qpt.version import version as qpt_version
 
 # 第三方库部署方式
 FLAG_FILE_SERIALIZE = "[FLAG-FileSerialize]"
+FLAG_FILE_TXT_REQUIREMENT = "[FLAG_File_txt_Requirement]"
 DEFAULT_DEPLOY_MODE = DISPLAY_LOCAL_INSTALL
 
 DEFAULT_PACKAGE_FOR_PYTHON_VERSION = None  # None表示不设置
@@ -80,7 +81,7 @@ class LocalInstallWhlOpt(SubModuleOpt):
     def __init__(self,
                  package: str = "",
                  version: str = None,
-                 static_whl: bool = False,  # 控制是否从镜像源安装
+                 static_whl: bool = False,  # 控制是否从指定安装
                  no_dependent=False,
                  opts: ArgManager = None):
         """
@@ -99,6 +100,10 @@ class LocalInstallWhlOpt(SubModuleOpt):
         if FLAG_FILE_SERIALIZE in self.package[:32]:
             self.opts += "-r " + FileSerialize.serialize2file(self.package[len(FLAG_FILE_SERIALIZE):])
             self.package = ""
+        if FLAG_FILE_TXT_REQUIREMENT in self.package[:32]:
+            self.opts += "-r " + os.path.join(self.opt_path, "requirements_dev.txt")
+            self.package = ""
+
         self.opts += "--target " + self.module_site_package_path
 
         if self.static_whl:
@@ -150,6 +155,10 @@ class OnlineInstallWhlOpt(SubModuleOpt):
         if FLAG_FILE_SERIALIZE in self.package[:32]:
             self.opts += "-r " + FileSerialize.serialize2file(self.package.strip(FLAG_FILE_SERIALIZE))
             self.package = ""
+        if FLAG_FILE_TXT_REQUIREMENT in self.package[:32]:
+            self.opts += "-r " + os.path.join(self.opt_path, "requirements_dev.txt")
+            self.package = ""
+
         if self.to_module_env:
             self.opts += "--target " + self.module_site_package_path
             if self.to_python_env_version:
@@ -217,6 +226,15 @@ class CustomPackage(SubModule):
             raise IndexError(f"{deploy_mode}不能够被识别或未注册")
 
 
+class _FreezeRequirementsOpt(SubModuleOpt):
+    def __init__(self, requirements_file_path):
+        super(_FreezeRequirementsOpt, self).__init__(disposable=True)
+        self.requirements_file_path = requirements_file_path
+
+    def act(self) -> None:
+        shutil.copy(src=self.requirements_file_path, dst=self.opt_path)
+
+
 class _RequirementsPackage(SubModule):
     def __init__(self,
                  requirements_file_path,
@@ -227,10 +245,14 @@ class _RequirementsPackage(SubModule):
             deploy_mode = DEFAULT_DEPLOY_MODE
 
         fs_data = ""
-        # 部分情况需要序列化requirement.txt文件
+
         if deploy_mode != DISPLAY_SETUP_INSTALL:
-            fs = FileSerialize(requirements_file_path)
-            fs_data = FLAG_FILE_SERIALIZE + fs.get_serialize_data()
+            # 部分情况需要序列化requirement.txt文件
+            # fs = FileSerialize(requirements_file_path)
+            # fs_data = FLAG_FILE_SERIALIZE + fs.get_serialize_data()
+            self.add_pack_opt(_FreezeRequirementsOpt(requirements_file_path))
+            fs_data = FLAG_FILE_TXT_REQUIREMENT
+
         requirements_file_path = "-r " + requirements_file_path
         if deploy_mode == DISPLAY_LOCAL_INSTALL:
             self.add_pack_opt(DownloadWhlOpt(opts=ArgManager() + requirements_file_path,
@@ -410,16 +432,29 @@ class CheckCompileCompatibilityOpt(CopyLocalPackageAllFileOpt):
         super().__init__(package=None)
 
     def act(self) -> None:
+        # Overwrite CopyLocalPackageAllFileOpt 的self.package
         self.package = list()
+        del_file = list()
+
+        # 读取AutoRequirement文件，目的判断是否需要被Check，没有在文件内的不Check
+        with open(os.path.join(self.opt_path, "requirements_dev.txt"), "r", encoding="utf-8") as f:
+            requirements = f.read()
         for whl in self.existing_offline_installation_packages:
             if os.path.splitext(whl)[-1] != ".whl":
-                name = get_package_name_in_file(whl)
-                Logging.warning(f"{name}官方并未提供二进制whl包，为保证在无编译环境下仍可正常运行，即将复制本地编译后文件至运行环境。")
-                self.package.append(name)
+                name = get_package_name_in_file(whl).replace("-", "_").lower()
+                if name in requirements:
+                    requirements = requirements.replace(name, f"# Ignore {name}")
+                    Logging.warning(f"{name}官方并未提供二进制whl包，为保证在无编译环境下仍可正常运行，即将复制本地编译后文件至运行环境。")
+                    self.package.append(name)
+                    del_file.append(whl)
+                else:
+                    print(1)
         super().act()
 
-        # ToDo 需要早点对Memory做重构
-        for whl in self.existing_offline_installation_packages:
+        with open(os.path.join(self.opt_path, "requirements_dev.txt"), "w", encoding="utf-8") as f:
+            f.write(requirements)
+
+        for whl in del_file:
             if os.path.splitext(whl)[-1] != ".whl":
                 os.remove(os.path.join(self.download_packages_path, whl))
 

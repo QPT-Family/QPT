@@ -139,11 +139,12 @@ class PaddlePaddlePackage(CustomPackage):
         self.add_ext_module(PaddlePaddleCheckAVX(version=version, use_cuda=include_cuda))
 
 
-class PaddleOCRPackage(CustomPackage):
+class AddPaddlePaddlePackage(CustomPackage):
     def __init__(self,
+                 name: str = None,
                  version: str = None,
                  deploy_mode=DEFAULT_DEPLOY_MODE):
-        super().__init__("paddleocr",
+        super().__init__(name,
                          version=version,
                          deploy_mode=deploy_mode,
                          no_dependent=True,

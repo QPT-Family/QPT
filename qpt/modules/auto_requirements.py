@@ -10,7 +10,7 @@ from qpt.kernel.qlog import Logging
 from qpt.kernel.qos import get_qpt_tmp_path, download
 from qpt.memory import QPT_MEMORY
 from qpt.modules.package import _RequirementsPackage, DEFAULT_DEPLOY_MODE, CustomPackage, CopyWhl2Packages
-from qpt.modules.paddle_family import PaddlePaddlePackage, PaddleOCRPackage
+from qpt.modules.paddle_family import PaddlePaddlePackage, AddPaddlePaddlePackage
 
 
 class AutoRequirementsPackage(_RequirementsPackage):
@@ -101,7 +101,7 @@ class AutoRequirementsPackage(_RequirementsPackage):
                                      f"请在requirement.txt中修改对{requirement}依赖的#$QPT_FLAG$ copy特殊操作指令")
                 # ToDo 考虑特殊指令的依赖 例如-f 等
 
-        # 保存依赖至
+        # 保存剩余的依赖 - 这些将会用原始方式安装
         requirements_path = os.path.join(get_qpt_tmp_path(), "requirements_dev.txt")
         QPT_MEMORY.pip_tool.save_requirements_file(flatten_requirements_fix, requirements_path)
 
@@ -120,5 +120,10 @@ SPECIAL_MODULE = {"paddlepaddle": (PaddlePaddlePackage, {"version": None,
                   "paddlepaddle-gpu": (PaddlePaddlePackage, {"version": None,
                                                              "include_cuda": True,
                                                              "deploy_mode": DEFAULT_DEPLOY_MODE}),
-                  "paddleocr": (PaddleOCRPackage, {"version": None,
-                                                   "deploy_mode": DEFAULT_DEPLOY_MODE})}
+                  "paddleocr": (AddPaddlePaddlePackage, {"version": None,
+                                                         "name": "paddleocr",
+                                                         "deploy_mode": DEFAULT_DEPLOY_MODE}),
+                  "paddlex": (AddPaddlePaddlePackage, {"version": None,
+                                                       "name": "paddlex",
+                                                       "deploy_mode": DEFAULT_DEPLOY_MODE})
+                  }

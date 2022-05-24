@@ -444,11 +444,12 @@ class CheckCompileCompatibilityOpt(CopyLocalPackageAllFileOpt):
                 name = get_package_name_in_file(whl).replace("-", "_").lower()
                 if name in requirements:
                     requirements = requirements.replace(name, f"# Ignore {name}")
-                    Logging.warning(f"{name}官方并未提供二进制whl包，为保证在无编译环境下仍可正常运行，即将复制本地编译后文件至运行环境。")
                     self.package.append(name)
                     del_file.append(whl)
-                else:
-                    print(1)
+
+        Logging.warning(f"\n以下Python依赖，其官方并未提供二进制whl包，为保证在无编译环境下仍可正常运行，"
+                        f"即将复制本地编译后文件至运行环境。\n"
+                        f"{', '.join(self.package)}")
         super().act()
 
         with open(os.path.join(self.opt_path, "requirements_dev.txt"), "w", encoding="utf-8") as f:

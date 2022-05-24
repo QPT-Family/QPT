@@ -447,9 +447,10 @@ class CheckCompileCompatibilityOpt(CopyLocalPackageAllFileOpt):
                     self.package.append(name)
                     del_file.append(whl)
 
-        Logging.warning(f"\n以下Python依赖，其官方并未提供二进制whl包，为保证在无编译环境下仍可正常运行，"
-                        f"即将复制本地编译后文件至运行环境。\n"
-                        f"{', '.join(self.package)}")
+        if self.package:
+            Logging.warning(f"\n以下Python依赖，其官方并未提供二进制whl包，为保证在无编译环境下仍可正常运行，"
+                            f"即将复制本地编译后文件至运行环境。\n"
+                            f"{', '.join(self.package)}")
         super().act()
 
         with open(os.path.join(self.opt_path, "requirements_dev.txt"), "w", encoding="utf-8") as f:

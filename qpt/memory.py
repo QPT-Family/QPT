@@ -10,14 +10,14 @@ from distutils.sysconfig import get_python_lib
 from qpt.kernel.qlog import Logging
 
 
-def init_wrapper(var=True):
+def init_wrapper(var=False):
     """
     缓存器，若为首次运行则会初始化，后续无特殊情况
-    :param var: 是否未包含参数
+    :param var: 是否包含参数
     """
 
     def i_wrapper(func):
-        if var:
+        if not var:
             @property
             def render(self):
                 if func.__name__ in self.memory:
@@ -83,7 +83,7 @@ class QPTMemory:
         import win32api
         return win32api
 
-    @init_wrapper(var=False)
+    @init_wrapper(var=True)
     def get_env_vars(self, work_dir="."):
         return get_env_vars(work_dir)
 

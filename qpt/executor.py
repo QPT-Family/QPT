@@ -467,7 +467,11 @@ class RunExecutableModule:
         # change dir
         # os.chdir(self.work_dir)
 
-    def run(self):
+    def run(self, param: str = ""):
+        """
+        :param param: 运行参数 Example: "-h 123"
+        :return:
+        """
         # 设置工作目录
         self.solve_work_dir()
 
@@ -508,8 +512,13 @@ class RunExecutableModule:
         # 执行主程序
         run_shell = f'cd "{self.work_dir}";' + './../Python/python.exe "' + \
                     os.path.abspath(os.path.join(self.work_dir, self.main_py_path)) + '"'
-        # start -NoNewWindow 看看要不要从输入符号入手
+        if param:
+            # 去掉首末空格
+            param = param[1:-1].strip(" ")
+
+            run_shell += " " + param
         self.auto_terminal.shell(run_shell, callback=RunTerminalCallback())
+
         # main_lib_path = self.configs["launcher_py_path"].replace(".py", "")
         # main_lib_path = main_lib_path. \
         #     replace(".py", ""). \

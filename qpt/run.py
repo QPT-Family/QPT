@@ -25,4 +25,3 @@ os.environ.update(QPT_MEMORY.get_env_vars(ROOT_PATH))
 from qpt.executor import RunExecutableModule
 
 module = RunExecutableModule("./")
-module.run()

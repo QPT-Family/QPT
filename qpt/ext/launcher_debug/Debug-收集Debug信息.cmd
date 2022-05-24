@@ -4,6 +4,7 @@ cd /d %~dp0
 set QPT_COLOR=False
 set QPT_MODE=Debug
 set PYTHONIOENCODING=utf-8
+set PYTHONUNBUFFERED=1
 set PYTHONPATH=Python/Lib/site-packages;Python/Lib;Python
 set PATH=Python/Lib/site-package;Python/Lib;Python;Python/Scripts;%PATH%
 set PROMPT=(QPT_VENV) %PROMPT%
@@ -37,8 +38,11 @@ set > %QPT_CONFIGS%env_vars_info.txt
 echo "Step5: Try running the QPT-Program"
 set QPT_COLOR=False
 set QPT_MODE=Debug
-cls
-"./Python/python.exe" -c "import sys;sys.path.append('./Python');sys.path.append('./Python/Lib/site-packages');sys.path.append('./Python/Scripts');import qpt.run as run" > %QPT_CONFIGS%Run_info.txt
+set QPT_RUN_CODE_S1="import sys;sys.path.append('./Python');sys.path.append('./Python/Lib');sys.path.append('./Python/Lib/site-packages');sys.path.append('./Python/Scripts');from qpt.run import module;module.run('"
+set QPT_RUN_CODE_M1=%1
+set QPT_RUN_CODE_E1="')"
+set QPT_RUN_CODE_1=%QPT_RUN_CODE_S1%%QPT_RUN_CODE_M1%%QPT_RUN_CODE_E1%
+"./Python/python.exe" -c %QPT_RUN_CODE_1%
 
 echo "Step6: Collecting Python package installation list"
 "./Python/python.exe" "-m" "pip" "list" > %QPT_CONFIGS%pip_list_final.txt

@@ -26,7 +26,6 @@ class ProgressbarFrame:
                  default_text: str = "正在准备",
                  title: str = "初始化程序 - QPT",
                  icon=None):
-        from ttkbootstrap import Style
         import tkinter.font
         from tkinter import ttk
         from tkinter.messagebox import showerror
@@ -35,15 +34,19 @@ class ProgressbarFrame:
         self.count = 0
         # 窗体构建
         self.root = tkinter.Tk()
-        self.root.geometry("666x25")
-        self.root.style = Style("lumen")
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        x = (screen_width // 2) - (666 // 2)
+        y = (screen_height // 2) - 100
+
+        self.root.geometry(f"666x25+{x}+{y}")
         self.root.title(title)
         self.root.wm_resizable(False, False)
         self.root.wm_attributes('-topmost', 1)
         self.root.iconbitmap(icon)
         default_font = tkinter.font.nametofont("TkDefaultFont")
         # ToDo 此处需考虑字体在不同操作系统兼容性
-        default_font.configure(family="等线", size=10)
+        default_font.configure(family="微软雅黑", size=10)
         self.root.option_add("*Font", "TkDefaultFont")
 
         self.progressbar_var = tkinter.IntVar(self.root, value=0)
@@ -58,15 +61,14 @@ class ProgressbarFrame:
         label.pack(side="left", padx=5)
 
         progressbar = ttk.Progressbar(self.root,
-                                      variable=self.progressbar_var,
-                                      style="Striped.Horizontal.TProgressbar")
-        progressbar.pack(side="left", fill="x", expand="yes", padx=5, pady=2)
+                                      variable=self.progressbar_var)
+        progressbar.pack(side="left", fill="x", expand="yes", padx=8, pady=2)
 
         value = ttk.Label(self.root,
                           textvariable=self.value_var,
                           style="TLabel",
                           width=12)
-        value.pack(side="left", fill="x", padx=1)
+        value.pack(side="left", fill="x", padx=2)
 
         self.thread = None
 
@@ -114,9 +116,9 @@ if __name__ == '__main__':
     def foo(self):
         for i in range(10):
             print(2)
-            time.sleep(0.2)
+            time.sleep(0.5)
             self.step()
 
 
     get_func_bind_progressbar(foo, 10)
-    input("输入")
+    # input("输入")

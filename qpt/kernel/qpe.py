@@ -4,8 +4,8 @@
 # Please indicate the source for reprinting.
 
 import os
-import qpt
 
+import qpt
 from qpt.kernel.qos import get_qpt_tmp_path
 
 

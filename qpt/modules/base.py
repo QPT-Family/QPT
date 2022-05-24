@@ -9,8 +9,8 @@ import pickle
 from distutils.sysconfig import get_python_lib
 
 from qpt.kernel.qlog import Logging
-from qpt.memory import QPT_MODE, CheckRun, QPT_MEMORY
 from qpt.kernel.qpackage import search_ready_packages, get_package_name_in_file
+from qpt.memory import QPT_MODE, CheckRun, QPT_MEMORY
 
 # 定义优先级 优先级越高执行顺序越考前，一般设置为GENERAL_LEVEL
 TOP_LEVEL = 5.  # 底层高优先级

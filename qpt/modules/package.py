@@ -443,7 +443,8 @@ class CheckCompileCompatibilityOpt(CopyLocalPackageAllFileOpt):
             if os.path.splitext(whl)[-1] != ".whl":
                 name = get_package_name_in_file(whl).replace("-", "_").lower()
                 if name in requirements:
-                    requirements = requirements.replace(name, f"# Ignore {name}")
+                    # 需要注意，生成临时的Requirement文件时，首行不可为依赖
+                    requirements = requirements.replace("\n" + name, f"\n# Ignore {name}")
                     self.package.append(name)
                     del_file.append(whl)
 

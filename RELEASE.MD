@@ -1,5 +1,7 @@
 # Release 更新日志
 
+## 后续更新总体迁移至[https://github.com/QPT-Family/QPT/releases](https://github.com/QPT-Family/QPT/releases)
+
 ## V1.0b1 - 2021.7.26
 ### 常规迭代
 1. 增加TK组件支持。当前版本中使用了完整Python包，LZMA标准64-64压缩后体积相较嵌入式版本增加10M左右，但提供了TK等非高频Python内置库的支持，同样pip也是满血状态。

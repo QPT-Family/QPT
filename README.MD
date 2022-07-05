@@ -108,8 +108,7 @@ QPT是一款可以“模拟”开发环境的多功能封装工具，最短只�
 - [x] [5. 打包兼容性更强的Python解释器](examples/advanced/打包兼容性更强的Python解释器.md)
 - [x] [6. 使用 SubModule 添加自定义 whl](examples/advanced/使用SubModule添加自定义whl.md)
 - [x] [7. 打包PaddleOCR、PaddleX等业务程序](https://aistudio.baidu.com/aistudio/projectdetail/3571518)
-- [ ] 8.PaddleDetection临时打包案例 https://github.com/QPT-Family/QPT/issues/55
-- [x] 9.[[疫情信息统计进阶篇]PPOCR和QPT的落地实战](https://github.com/ITerydh/OCRandQPTandIS)
+- [x] [8. PaddleOCR和QPT的落地实战 via:@ITerydh](https://github.com/ITerydh/OCRandQPTandIS)
 
 完整进阶使用文档详见[examples/advanced](examples/advanced)
 

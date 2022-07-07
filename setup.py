@@ -23,6 +23,7 @@ setup(
                       "click",
                       "pefile",
                       "pillow",
+                      "toml",
                       "pip>=22.1.1"],
     python_requires='>3.5',
     include_package_data=True,

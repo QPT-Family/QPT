@@ -30,14 +30,23 @@ class AutoRequirementsPackage(_RequirementsPackage):
             Logging.info(f"当前路径{os.path.abspath(path)}中不存在Requirements文件，"
                          f"请优先检查路径是否提供正确，必要时使用绝对路径")
 
-        if os.path.isfile(path):
-            Logging.info(f"正在读取{os.path.abspath(path)}下的依赖情况...")
-            requirements = QPT_MEMORY.pip_tool.analyze_requirements_file(path)
+        pdm_config_file = os.path.join(path, "pyproject.toml")
+        if os.path.isfile(pdm_config_file):
+            # 如果是pyproject.toml文件，则直接获取requirements
+            Logging.info(
+                f"[Auto]检测到{os.path.abspath(path)}为 pdm 项目，正在读取依赖情况...")
+            requirements = QPT_MEMORY.pip_tool.analyze_pdm_requirements_file(
+                pdm_config_file)
         else:
-            Logging.info(f"[Auto]正在分析{os.path.abspath(path)}下的依赖情况...")
-            requirements = QPT_MEMORY.pip_tool.analyze_dependence(path,
-                                                                  return_path=False,
-                                                                  action_mode=QPT_MEMORY.action_flag)
+            if os.path.isfile(path):
+                Logging.info(f"正在读取{os.path.abspath(path)}下的依赖情况...")
+                requirements = QPT_MEMORY.pip_tool.analyze_requirements_file(
+                    path)
+            else:
+                Logging.info(f"[Auto]正在分析{os.path.abspath(path)}下的依赖情况...")
+                requirements = QPT_MEMORY.pip_tool.analyze_dependence(path,
+                                                                      return_path=False,
+                                                                      action_mode=QPT_MEMORY.action_flag)
 
         # ToDo 使用WhlDict代替dict + 在自动安装的时候，先考虑本地是否已经安装
         # 获取所有Python依赖情况

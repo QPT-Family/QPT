@@ -1,0 +1,21 @@
+[project]
+name = ""
+version = ""
+description = ""
+authors = [
+    {name = "sovlookup", email = "gonorth@qq.com"},
+]
+dependencies = [
+    "toml>=0.10.2",
+]
+requires-python = ">=3.8"
+license = {text = "MIT"}
+
+[tool.pdm]
+
+[tool.pdm.scripts]
+start = "python main.py"
+
+[build-system]
+requires = ["pdm-pep517>=0.12.0"]
+build-backend = "pdm.pep517.api"

@@ -15,6 +15,8 @@ QPT是一款可以“模拟”开发环境的多功能封装工具，最短只�
 
 <sup>如果对您有帮助，欢迎来点个⭐Star吧</sup>
 
+> 最近加班有点多，有空就更...吧
+
 ### 版本说明
 #### EAP - The Early Access Program  [更新日志](https://github.com/QPT-Family/QPT/releases) | [开发进度](https://github.com/orgs/QPT-Family/projects/3/views/3?layout=board)    
 

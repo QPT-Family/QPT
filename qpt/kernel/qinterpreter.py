@@ -3,7 +3,6 @@
 # Copyright belongs to the author.
 # Please indicate the source for reprinting.
 import os
-import toml
 from collections import OrderedDict
 
 from qpt.kernel.qcode import intelligent_analysis, search_packages_dist_info, search_dep
@@ -309,21 +308,20 @@ class PipTools:
 
     @staticmethod
     def analyze_pdm_requirements_file(file_path):
+        import toml
         requirements = dict()
         try:
             pdm_config = toml.load(file_path)
             pdm_config_project = pdm_config.get("project")
 
             if pdm_config_project is None:
-                raise Exception(f"{file_path}文件解析失败，project字段缺失\n"
-                                f"报错信息如下：{e}")
+                raise Exception(f"{file_path}文件解析失败，project字段缺失")
 
             pdm_config_dependencies = pdm_config_project.get(
                 "dependencies")
 
             if pdm_config_dependencies is None:
-                raise Exception(f"{file_path}文件解析失败，dependencies字段缺失\n"
-                                f"报错信息如下：{e}")
+                raise Exception(f"{file_path}文件解析失败，dependencies字段缺失")
 
             for line in pdm_config_dependencies:
                 package, version, display = analysis_requirement_line(line)

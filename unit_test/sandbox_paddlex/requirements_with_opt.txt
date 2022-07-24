@@ -7,8 +7,9 @@
 # 
 # -------------Mainly depends on package analysis results--------------
 
-paddlex==2.1.0
-paddlepaddle==2.2.0
+paddlex
+paddlepaddle
+filelock
 
 # ----------------------Ignored dependent packages---------------------
 #wheel==0.36.2

@@ -11,6 +11,7 @@ from pip._internal.metadata import get_default_environment, get_environment
 from pip._internal.metadata.pkg_resources import Distribution as _Dist
 
 from qpt.memory import QPT_MEMORY
+from qpt.kernel.qlog import Logging
 
 PACKAGE_FLAG = ".dist-info"
 EGG_PACKAGE_FLAG = ".egg-info"
@@ -136,19 +137,24 @@ def search_packages_dist_info():
         name = package_dist.raw_name
         version = package_dist.version.public
 
-        top_file_path = os.path.join(package_dist.info_location, "top_level.txt")
-        if os.path.exists(top_file_path):
-            with open(top_file_path, "r", encoding="utf-8") as top_file:
-                tops = top_file.readlines()
+        if not package_dist.info_location:
+            Logging.warning(f"{name}包信息存在缺陷，可能无法正常搜索到相关依赖")
+        else:
+            top_file_path = os.path.join(package_dist.info_location, "top_level.txt")
+            if os.path.exists(top_file_path):
+                with open(top_file_path, "r", encoding="utf-8") as top_file:
+                    tops = top_file.readlines()
 
-            for top in tops:
-                # 避免路径导入
-                if "\\" in top:
-                    top = top.split("\\")[-1]
-                # 兼容Linux
-                if "/" in top:
-                    top = top.split("/")[-1]
-                tops_dist[top.strip("\n")] = name
+                for top in tops:
+                    # 避免路径导入
+                    if "\\" in top:
+                        top = top.split("\\")[-1]
+                    # 兼容Linux
+                    if "/" in top:
+                        top = top.split("/")[-1]
+                    tops_dist[top.strip("\n")] = name
+            else:
+                Logging.warning(f"{name}包top_level.txt缺失，可能无法正常搜索到相关依赖")
 
         packages_dist[name] = version
 

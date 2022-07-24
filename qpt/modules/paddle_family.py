@@ -21,6 +21,9 @@ class SetPaddleFamilyEnvValueOpt(SubModuleOpt):
         os.environ["HUB_HOME"] = os.path.join(self.module_path, "opt/HUB_HOME")
         os.environ["PPNLP_HOME"] = os.path.join(self.module_path, "opt/PPNLP_HOME")
         os.environ["SEG_HOME"] = os.path.join(self.module_path, "opt/SEG_HOME")
+        # 下面这俩会判断文件夹是否存在
+        # os.environ["PPAUDIO_HOME"] = os.path.join(self.module_path, "opt/PPAUDIO_HOME")
+        # PPSPEECH_HOME
 
 
 class CheckAVXOpt(SubModuleOpt):
@@ -43,7 +46,7 @@ class CheckAVXOpt(SubModuleOpt):
             if self.version:
                 new_v = self.version[:self.version.rindex(".")]
                 QPT_MEMORY.pip_tool.pip_shell(
-                    f"install paddlepaddle=={new_v} -f https://www.paddlepaddle.org.cn/whl/windows/mkl/noavx/stable.html"
+                    f"install paddlepaddle{new_v} -f https://www.paddlepaddle.org.cn/whl/windows/mkl/noavx/stable.html"
                     " --no-index --no-deps --force-reinstall")
             else:
                 QPT_MEMORY.pip_tool.pip_shell(

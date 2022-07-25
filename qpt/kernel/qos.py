@@ -29,7 +29,7 @@ def check_warning_char(text):
 
 
 # ToDo 需要写入文档
-if os.path.exists(os.environ["QPT_TEMPDIR"]):
+if os.environ.get("QPT_TEMPDIR"):
     TMP_BASE_PATH = os.environ["QPT_TEMPDIR"]
 else:
     TMP_BASE_PATH = os.path.join(tempfile.gettempdir(), f"QPT_Cache_V/{version}")

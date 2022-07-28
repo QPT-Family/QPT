@@ -122,11 +122,12 @@ class AutoRequirementsPackage(_RequirementsPackage):
 
 
 # 自动推理依赖时需要特殊处理的Module配置列表 格式{包名: (Module, Module参数字典)}
+# 所有包的-需要替换为_，因为requirement默认替换
 # version、deploy_mode 为必填字段
 SPECIAL_MODULE = {"paddlepaddle": (PaddlePaddlePackage, {"version": None,
                                                          "include_cuda": False,
                                                          "deploy_mode": DEFAULT_DEPLOY_MODE}),
-                  "paddlepaddle-gpu": (PaddlePaddlePackage, {"version": None,
+                  "paddlepaddle_gpu": (PaddlePaddlePackage, {"version": None,
                                                              "include_cuda": True,
                                                              "deploy_mode": DEFAULT_DEPLOY_MODE}),
                   "paddleocr": (AddPaddlePaddlePackage, {"version": None,

@@ -7,7 +7,7 @@
 # 
 # -------------Mainly depends on package analysis results--------------
 
-qpt==1.0b1.dev11
+qpt
 paddleocr==2.4.0.2
 
 # ----------------------Ignored dependent packages---------------------

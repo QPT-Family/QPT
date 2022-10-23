@@ -11,7 +11,7 @@
 
 [国产Gitee](https://gitee.com/GT-zhangacer/QPT) | [GitHub主页](https://github.com/GT-ZhangAcer/QPT) | [快速使用](https://github.com/QPT-Family/QPT#%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8) | [进阶教程](https://github.com/QPT-Family/QPT#%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8qpt) | [社区&捐赠支持](https://github.com/QPT-Family/QPT#%E7%A4%BE%E5%8C%BA%E6%94%AF%E6%8C%81) | [开发进度 GitHub Project](https://github.com/orgs/QPT-Family/projects/3/views/3?layout=board) | [踩坑笔记](https://github.com/QPT-Family/QPT/tree/开发分支/informal_essay)
 
-QPT是一款可以“模拟”开发环境的多功能封装工具，最短只需一行命令即可将普通的Python脚本打包成EXE可执行程序，并选择性添加CUDA和NoAVX的支持，尽可能兼容更多的用户环境。 
+QPT是一款可以“模拟”开发环境的多功能封装工具，最短只需一行命令即可将普通的Python脚本打包成EXE可执行程序，并选择性添加CUDA和NoAVX的支持，尽可能兼容更多的用户环境。 （如需加密，请使用Cpython或Pyarmor进行源码加密| 未来添加自动化加密模块）
 
 <sup>如果对您有帮助，欢迎来点个⭐Star吧</sup>
 
@@ -141,7 +141,8 @@ QPT是一款可以“模拟”开发环境的多功能封装工具，最短只�
 | --- | --- | --- |
 | <a href="https://cloud.stariver.org"><img width="100" src="https://user-images.githubusercontent.com/46156734/156889607-ad230ff1-47bf-416a-b7b7-7f4067dcf99a.png"> </a> | 5,000 .00 RMB | 金牌赞助席位 |
 | 社区ID 23\*\*\*\*770 | 200 .00 RMB | 银牌赞助席位 |
-| [Viggo(wxbool)](https://github.com/wxbool) | 100 .00 RMB | 银牌赞助席位 |
+| [Viggo(wxbool)](https://github.com/wxbool) | 100 .00 RMB | 银牌
+| 上海大学 曾老师 | 200 .00 RMB | 银牌赞助席位 |赞助席位 |
 | 社区ID \*头 | 66 .00 RMB | 支持赞助席位 |
 | 社区ID iterhui | 50 .00 RMB | 支持赞助席位 |
 | 社区ID LFeightyFour | 23 .33 RMB | 支持赞助席位 |

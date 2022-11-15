@@ -13,4 +13,5 @@ set QPT_RUN_CODE_M1=%1
 set QPT_RUN_CODE_E1="')"
 set QPT_RUN_CODE_1=%QPT_RUN_CODE_S1%%QPT_RUN_CODE_M1%%QPT_RUN_CODE_E1%
 cls
+echo 当前程序已执行结束，任意键后将进行关闭本程序。
 "./Python/python.exe" -c %QPT_RUN_CODE_1%

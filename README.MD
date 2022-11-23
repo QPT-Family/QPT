@@ -151,6 +151,7 @@ QPT是一款可以“模拟”开发环境的多功能封装工具，最短只�
 | 社区ID \*\*辉 | 20 .00 RMB | 支持赞助席位 |
 | 社区ID jerrychoices | 20 .00 RMB | 支持赞助席位 |
 | 社区ID 14\*\*\*\*650 | 10 .00 RMB | 支持赞助席位 |
+| 社区ID yangy996 | 10 .00 RMB | 支持赞助席位 |
 | 社区ID 未知 | 1 .00 RMB | 兴趣赞助席位 |
 
 完整捐赠名单&规则详见[捐赠致谢.MD](https://github.com/QPT-Family/.github/blob/%E5%BC%80%E5%8F%91%E5%88%86%E6%94%AF/%E6%8D%90%E8%B5%A0%E8%87%B4%E8%B0%A2.MD)

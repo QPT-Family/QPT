@@ -11,8 +11,9 @@
 
 [国产Gitee](https://gitee.com/GT-zhangacer/QPT) | [GitHub主页](https://github.com/GT-ZhangAcer/QPT) | [快速使用](https://github.com/QPT-Family/QPT#%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8) | [进阶教程](https://github.com/QPT-Family/QPT#%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8qpt) | [社区&捐赠支持](https://github.com/QPT-Family/QPT#%E7%A4%BE%E5%8C%BA%E6%94%AF%E6%8C%81) | [开发进度 GitHub Project](https://github.com/orgs/QPT-Family/projects/3/views/3?layout=board) | [踩坑笔记](https://github.com/QPT-Family/QPT/tree/开发分支/informal_essay)
 
-# 项目无限期停更  
-> 因工作原因、个人健康状态，再加上硬盘坏了导致拓展Python环境的源码完全丢失（未开源是因为体积太大），项目恢复更新成本过高，故无法进行更新。
+# 项目无限期停更 -> 于2023年11月前恢复更新   
+> ~~因工作原因、个人健康状态，再加上硬盘坏了导致拓展Python环境的源码完全丢失（未开源是因为体积太大），项目恢复更新成本过高，故无法进行更新。~~  
+> 换工作了，有时间了，可更！
 
 QPT是一款可以“模拟”开发环境的多功能封装工具，最短只需一行命令即可将普通的Python脚本打包成EXE可执行程序，并选择性添加CUDA和NoAVX的支持，尽可能兼容更多的用户环境。 （如需加密，请使用Cpython或Pyarmor进行源码加密| 未来添加自动化加密模块）
 

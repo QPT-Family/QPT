@@ -8,7 +8,7 @@
 [![QQGroup](https://img.shields.io/badge/QQ群-1128826410-9cf?logo=tencent-qq&logoColor=000&logoWidth=15)](https://jq.qq.com/?_wv=1027&k=49HB5ymm)  
 [![LGTM](https://img.shields.io/lgtm/grade/python/g/QPT-Family/QPT.svg)](https://lgtm.com/projects/g/QPT-Family/QPT)
 
-<img src="">
+<img src="https://github.com/QPT-Family/QPT/blob/%E5%BC%80%E5%8F%91%E5%88%86%E6%94%AF/ext/rc/2023.png" width="=512" align="center">
 
 [国产Gitee](https://gitee.com/GT-zhangacer/QPT) | [GitHub主页](https://github.com/GT-ZhangAcer/QPT) | [快速使用](https://github.com/QPT-Family/QPT#%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8) | [进阶教程](https://github.com/QPT-Family/QPT#%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8qpt) | [社区&捐赠支持](https://github.com/QPT-Family/QPT#%E7%A4%BE%E5%8C%BA%E6%94%AF%E6%8C%81) | [开发进度 GitHub Project](https://github.com/orgs/QPT-Family/projects/3/views/3?layout=board) | [踩坑笔记](https://github.com/QPT-Family/QPT/tree/开发分支/informal_essay)
 

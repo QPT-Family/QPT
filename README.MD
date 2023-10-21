@@ -8,10 +8,11 @@
 [![QQGroup](https://img.shields.io/badge/QQ群-1128826410-9cf?logo=tencent-qq&logoColor=000&logoWidth=15)](https://jq.qq.com/?_wv=1027&k=49HB5ymm)  
 [![LGTM](https://img.shields.io/lgtm/grade/python/g/QPT-Family/QPT.svg)](https://lgtm.com/projects/g/QPT-Family/QPT)
 
+<img src="">
 
 [国产Gitee](https://gitee.com/GT-zhangacer/QPT) | [GitHub主页](https://github.com/GT-ZhangAcer/QPT) | [快速使用](https://github.com/QPT-Family/QPT#%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8) | [进阶教程](https://github.com/QPT-Family/QPT#%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8qpt) | [社区&捐赠支持](https://github.com/QPT-Family/QPT#%E7%A4%BE%E5%8C%BA%E6%94%AF%E6%8C%81) | [开发进度 GitHub Project](https://github.com/orgs/QPT-Family/projects/3/views/3?layout=board) | [踩坑笔记](https://github.com/QPT-Family/QPT/tree/开发分支/informal_essay)
 
-# 项目无限期停更 -> 于2023年11月前恢复更新   
+# 项目不定期更新
 > ~~因工作原因、个人健康状态，再加上硬盘坏了导致拓展Python环境的源码完全丢失（未开源是因为体积太大），项目恢复更新成本过高，故无法进行更新。~~  
 > 换工作了，有时间了，可更！
 
@@ -24,7 +25,7 @@ QPT是一款可以“模拟”开发环境的多功能封装工具，最短只�
 
 `当前版本为V1.0b4尝鲜版本，仅具备基本功能，而且可能会有未测试出的Bug，建议在指导下投入生产环境。`  
 
-`当前仅深度适配Windows10、Windows11系统环境，如您的系统环境为盗版Win7且未更新最新系统补丁，那么将不能保证QPT可以在Win7上正常运行。` 
+`当前仅深度适配Windows10、Windows11系统环境，如您的系统环境为盗版Win7且未更新最新系统补丁，那么将 很 难 保证QPT可以在Win7上正常运行。` 
 
 `如在Win7中不能运行，可考虑在cmd中输入sfc/scannow修复系统进行解决，Win7+系统在输入前需添加DISM/Online/Cleanup-Image/RestoreHealth `
 

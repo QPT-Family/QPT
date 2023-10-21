@@ -5,8 +5,8 @@
 ![GitHub Repo stars](https://img.shields.io/github/stars/GT-ZhangAcer/QPT)
 ![GitHub](https://img.shields.io/github/license/GT-ZhangAcer/QPT)
 ![](https://img.shields.io/badge/%E6%B7%B1%E5%BA%A6%E9%80%82%E9%85%8D-Win10_1607+-9cf)
-[![QQGroup](https://img.shields.io/badge/QQ群-1128826410-9cf?logo=tencent-qq&logoColor=000&logoWidth=15)](https://jq.qq.com/?_wv=1027&k=49HB5ymm) 
-[![发起人](https://img.shields.io/badge/GTZhangAcer+-9cf) 
+[![QQGroup](https://img.shields.io/badge/QQ群-1128826410-9cf?logo=tencent-qq&logoColor=000&logoWidth=15)](https://jq.qq.com/?_wv=1027&k=49HB5ymm)
+![](https://img.shields.io/badge/%E5%8F%91%E8%B5%B7%E4%BA%BA-GT_1607+-9cf)
 
 <p align="center">
  <img src="https://cdn.jsdelivr.net/gh/QPT-Family/QPT/ext/rc/2023.png" width="256" />

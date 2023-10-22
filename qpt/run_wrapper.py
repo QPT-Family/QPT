@@ -54,6 +54,7 @@ def __compatible_input():
 
 
 def wrapper():
+    # 替换默认输入流
     __compatible_input()
 
 

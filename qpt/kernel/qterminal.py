@@ -211,11 +211,7 @@ class PTerminal(Terminal):
                                                   shell=False,
                                                   env=self._get_env_vars(),
                                                   cwd=self.cwd)
-        # ToDo 加个自动判断
-        if self.__class__.__name__ == PTerminal:
-            Logging.info("\n如在本信息之后停留时间较长，请升级Windows Powershell至版本5即可解决该问题，下载地址：\n"
-                         "官方地址：https://www.microsoft.com/en-us/download/details.aspx?id=54616\n"
-                         "团子云镜像：https://s.dango.cloud/s/GVbhB 下载码：zAkjpradJA2eHiC")
+
         prepare = "chcp 65001"
         self._shell_func()(prepare)
         if self.__class__.__name__ == PTerminal:

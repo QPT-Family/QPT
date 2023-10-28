@@ -57,7 +57,7 @@ def add_ua():
     """
     获取UA权限
     """
-
+    # ToDo 为什么不在cmd里直接加？你说对不对，以后加进去吧
     import ctypes
     # 导入失败的话，可能是KB2533623没有安装，在极其旧版本的Win7中存在这个情况
     ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)

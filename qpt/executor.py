@@ -321,6 +321,8 @@ class CreateExecutableModule:
                 Logging.flush()
                 input()
 
+        # ToDo 要对__pycache__和.chm文件进行清理
+
         # 收尾工作
         Logging.info(f"\n制作完毕，保存位置为：{os.path.abspath(self.module_path)}，该目录下将会有以下文件夹\n"
                      f"| ----------------------------------------------------------------------------- |\n"

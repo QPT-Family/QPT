@@ -16,7 +16,7 @@ from qpt.modules.python_env import *
 # set_default_pip_source("https://mirror.baidu.com/pypi/simple")
 
 # 测试时需要手动修改，挺费硬盘的其实
-OUT_DIR_ROOT = r"M:\QPT_UT_OUT_CACHE"
+OUT_DIR_ROOT = r"J:\QPT_UT_OUT_CACHE"
 
 os.makedirs(OUT_DIR_ROOT, exist_ok=True)
 

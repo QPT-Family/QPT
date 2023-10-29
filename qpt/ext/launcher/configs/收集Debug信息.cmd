@@ -1,4 +1,5 @@
 echo off
+chcp 65001
 cd /d %~dp0
 cd ..
 set QPT_COLOR=False

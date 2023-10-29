@@ -87,7 +87,7 @@ class ProgressbarFrame:
                 return func
 
             self.thread = threading.Thread(target=func, args=(self,))
-            self.thread.setDaemon(True)
+            self.thread.daemon = True
             self.thread.start()
 
         self.root.after(ms=32, func=render)

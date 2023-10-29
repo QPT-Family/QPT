@@ -12,7 +12,7 @@ from qpt.executor import CreateExecutableModule
 # 测试Action 模式
 # os.environ["QPT_Action"] = "True"
 
-OUT_DIR_ROOT = r"M:\QPT_UT_OUT_CACHE"
+OUT_DIR_ROOT = r"J:\QPT_UT_OUT_CACHE"
 
 os.makedirs(OUT_DIR_ROOT, exist_ok=True)
 

@@ -25,12 +25,12 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="QPTSFX1.rc">
+    <ResourceCompile Include="QPTSFX.rc">
       <Filter>资源文件</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\qpt\ext\compile\img\tmp_icon.ico">
+    <Image Include="J:\BaiduSyncdisk\Logo\QPT128.ico">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>

@@ -30,6 +30,7 @@ class LogTest(unittest.TestCase):
                                         save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),
                                         requirements_file="sandbox_m/requirements_with_opt.txt",
                                         interpreter_module=Python37(),
+                                        icon="./sandbox_paddleocr/favicon.ico",
                                         with_debug=True,
                                         hidden_terminal=True)
         module.make()

@@ -11,7 +11,8 @@
 <p align="center">
  <img src="https://cdn.jsdelivr.net/gh/QPT-Family/QPT/ext/rc/2023.png" width="128" />
 
-[国产Gitee](https://gitee.com/GT-zhangacer/QPT) | [GitHub主页](https://github.com/GT-ZhangAcer/QPT) | [快速使用](https://github.com/QPT-Family/QPT#%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8) | [进阶教程](https://github.com/QPT-Family/QPT#%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8qpt) | [社区&捐赠支持](https://github.com/QPT-Family/QPT#%E7%A4%BE%E5%8C%BA%E6%94%AF%E6%8C%81) | [开发进度 GitHub Project](https://github.com/orgs/QPT-Family/projects/3/views/3?layout=board) | [踩坑笔记](https://github.com/QPT-Family/QPT/tree/开发分支/informal_essay)
+[Gitee主页](https://gitee.com/GT-zhangacer/QPT) | [GitHub主页](https://github.com/GT-ZhangAcer/QPT) | [快速使用](https://github.com/QPT-Family/QPT#%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8) | [进阶教程](https://github.com/QPT-Family/QPT#%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8qpt) |  [开发进度 GitHub Project](https://github.com/orgs/QPT-Family/projects/3/views/3?layout=board) | [踩坑笔记](https://github.com/QPT-Family/QPT/tree/开发分支/informal_essay)  
+[社区&捐赠支持](https://github.com/QPT-Family/QPT#%E7%A4%BE%E5%8C%BA%E6%94%AF%E6%8C%81) | [QPT SDK仓库](https://github.com/QPT-Family/QPT-SDK)
 <p align="center">
 
 

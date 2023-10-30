@@ -120,8 +120,10 @@ class PipTools:
         if source is None:
             source = DEFAULT_PIP_SOURCE
         if pip_path:
-            pip_main = dynamic_load_package(
-                packages_name="pip", lib_packages_path=pip_path).main
+            # pip_main = dynamic_load_package(
+            #     packages_name="pip", lib_packages_path=pip_path).main
+            pass
+            # ToDo 需要用Terminal调用，否则会出现pywin32等包的问题
         else:
             from pip._internal.cli.main import main as pip_main
         self.pip_main = pip_main

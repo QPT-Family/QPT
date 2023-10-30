@@ -3,7 +3,7 @@ import sys
 import zipfile
 
 from qpt.kernel.qlog import Logging
-from qpt.kernel.qos import download, get_qpt_tmp_path, copytree
+from qpt.kernel.qos import copytree
 from qpt.memory import QPT_MEMORY
 from qpt.modules.base import SubModule, SubModuleOpt, TOP_LEVEL
 
@@ -20,117 +20,58 @@ PYTHON_ENV_MODE_PACKAGE_VOLUME_FIRST = "[暂不支持]封装后保留压缩的Py
 PYTHON_ENV_MODE_ONLINE_INSTALLATION = "[暂不支持]不封装Python环境，用户使用时在线进行下载并部署"
 DEFINE_PYTHON_ENV_MODE = PYTHON_ENV_MODE_SPEED_FIRST
 
-# 增加Key时，需要维护
-# https://github.com/QPT-Family/QPT/blob/%E5%BC%80%E5%8F%91%E5%88%86%E6%94%AF/examples/advanced/%E6%89%93%E5%8C%85%E5%85%BC%E5%AE%B9%E6%80%A7%E6%9B%B4%E5%BC%BA%E7%9A%84Python%E8%A7%A3%E9%87%8A%E5%99%A8.md
-# 以及下方BasePythonEnv的信息提示和class
-RESOURCES_URLS = {"Python3.7Env-Win": "https://bj.bcebos.com/v1/ai-studio-online/470b6a91063f425db72ddece0931bcc56"
-                                      "6950d67f3914339b40beea878461f3b?responseContentDisposition=attachment%3B%20"
-                                      "filename%3DPython37.zip",
-                  "Python3.8Env-Win": "https://bj.bcebos.com/v1/ai-studio-online/d0383fa2194d4853883f89b3ab54e841f"
-                                      "8cdcc3c88824e2398ba22f9b8fd5094?responseContentDisposition=attachment%3B%20"
-                                      "filename%3DPython38.zip",
-                  "Python3.9Env-Win": "https://bj.bcebos.com/v1/ai-studio-online/ea6af2820f594d209d6dc421b9392327d"
-                                      "270368a6fb2428ebf8bd90cd74d7e26?responseContentDisposition=attachment%3B%20"
-                                      "filename%3DPython39.zip",
-                  "Python3.10Env-Win": "https://bj.bcebos.com/v1/ai-studio-online/bad0502d69344493a12a10fac443bad"
-                                       "ca01a97001c294009937964a6ebb59893?responseContentDisposition=attachment%3B%20"
-                                       "filename%3DPython310.zip",
-                  "DEFAULT-Win": "https://bj.bcebos.com/v1/ai-studio-online/d0383fa2194d4853883f89b3ab54e841f"
-                                 "8cdcc3c88824e2398ba22f9b8fd5094?responseContentDisposition=attachment%3B%20"
-                                 "filename%3DPython38.zip"}
-
+SUPPORT_PYTHON_VERSION = ["3.8", "3.9", "3.10", "3.11"]
 DEFAULT_PYTHON_IMAGE_VERSION = "3.8"
 
 
 class PackPythonEnvOpt(SubModuleOpt):
-    def __init__(self, url: str = None, mode=PYTHON_ENV_MODE_SPEED_FIRST):
+    def __init__(self, version: str = None, mode=PYTHON_ENV_MODE_SPEED_FIRST):
         super().__init__()
-        self.url = url
+        self.version = ".".join(version.split('.')[:2])
         self.mode = mode
 
     def act(self) -> None:
-        if self.mode == PYTHON_ENV_MODE_SPEED_FIRST:
-            dir_name = get_qpt_tmp_path(os.path.join("Python", "".join(list(filter(str.isdigit, self.url)))[-10:]))
-            cache_path = get_qpt_tmp_path(
-                os.path.join("Python", "".join(list(filter(str.isdigit, self.url)))[-10:]
-                             , "unzip"))
-            Logging.info(f"正在加载Python解释器原文件至{dir_name}")
-            d_result, _ = download(self.url, "Python.zip", dir_name)
-            if d_result:
-                zip_path = os.path.join(dir_name, "Python.zip")
-                # 解压至输出文件夹
-                with zipfile.ZipFile(zip_path) as zip_obj:
-                    zip_obj.extractall(cache_path, pwd="gt_qpt".encode("utf-8"))
-            copytree(cache_path, os.path.join(self.module_path, "Python"))
+        for _ in range(2):
+            import QPT_SDK
+            v = f"python{self.version.replace('.', '')}"
+            if v not in QPT_SDK.__all__:
+                QPT_MEMORY.pip_tool.pip_package_shell(package="QEnvPython", version=self.version)
+            copytree(os.path.abspath(os.path.join(QPT_SDK.__file__, v)), os.path.join(self.module_path, "Python"))
 
-        # ToDo 后续支持
-        elif self.mode == PYTHON_ENV_MODE_PACKAGE_VOLUME_FIRST:
-            Logging.info(f"正在加载Python解释器原文件")
-            download(self.url, "Python.zip", self.module_path)
-        elif self.mode == PYTHON_ENV_MODE_ONLINE_INSTALLATION:
-            pass
+            # ToDo 未来对Tinkter和VC2019进行分离，先暂时放一起
+            v = f"tkinter{self.version.replace('.', '')}"
+            if v not in QPT_SDK.__all__:
+                QPT_MEMORY.pip_tool.pip_package_shell(package="QEnvPython", version=self.version)
+            copytree(os.path.abspath(os.path.join(QPT_SDK.__file__, v)), os.path.join(self.module_path, "Python"))
 
-
-class UnPackPythonEnvOpt(SubModuleOpt):
-    def __init__(self, url: str = None, mode=PYTHON_ENV_MODE_SPEED_FIRST):
-        super().__init__()
-        self.url = url
-        self.mode = mode
-
-    def act(self) -> None:
-        if self.mode == PYTHON_ENV_MODE_SPEED_FIRST:
-            pass
-        elif self.mode == PYTHON_ENV_MODE_PACKAGE_VOLUME_FIRST:
-            zip_path = os.path.join(self.module_path, "Python.zip")
-            # 解压至输出文件夹
-            with zipfile.ZipFile(zip_path) as zip_obj:
-                zip_obj.extractall(os.path.join(self.module_path, "Python"), pwd="gt_qpt".encode("utf-8"))
-        elif self.mode == PYTHON_ENV_MODE_ONLINE_INSTALLATION:
-            dir_name = get_qpt_tmp_path(os.path.join("Python", "".join(list(filter(str.isdigit, self.url)))[-10:]))
-            Logging.debug(f"正在下载Python解释器原文件至{dir_name}")
-            download(self.url, "Python.zip", dir_name)
-            zip_path = os.path.join(dir_name, "Python.zip")
-            # 解压至输出文件夹
-            with zipfile.ZipFile(zip_path) as zip_obj:
-                zip_obj.extractall(os.path.join(self.module_path, "Python"), pwd="gt_qpt".encode("utf-8"))
-
-        # 添加Python以及Python/lib/python/site_packages_path下的包到环境变量/工作目录
-        python_path = self.interpreter_path
-        site_packages_path = os.path.join(self.interpreter_path, QPT_MEMORY.site_packages_path)
-        script_path = os.path.join(self.interpreter_path, "Scripts")
-        sys.path.append(python_path)
-        sys.path.append(site_packages_path)
-        sys.path.append(script_path)
+            v = "vcredist"
+            if v not in QPT_SDK.__all__:
+                QPT_MEMORY.pip_tool.pip_package_shell(package="QEnvPython", version=self.version)
+            copytree(os.path.abspath(os.path.join(QPT_SDK.__file__, v)), os.path.join(self.module_path, "Python"))
 
 
 class BasePythonEnv(SubModule):
-    def __init__(self, name, version=None, mode=DEFINE_PYTHON_ENV_MODE, url=None):
-        if version:
-            resources_name = f"Python{version}Env-Win"
-            if resources_name in RESOURCES_URLS:
-                Logging.info(f"已在QPT中找到{resources_name}镜像")
-            else:
-                Logging.warning(f"----------------------------------------------------------------------\n"
-                                f"未在QPT中找到{resources_name}镜像，QPT目前提供的Python镜像版本有限，\n"
-                                f"请尽可能使用Python3.7~Python3.10等主流Python版本进行打包，兼容性如下。\n"
-                                f"----------------------------------------------------------------------\n"
-                                f"Python版本|XP Win7 Win8.1 Win10+\n"
-                                f"Python37 | X   1     1      1  \n"
-                                f"Python38 | X   1     -      1  \n"
-                                f"Python39 | X   X     -      1  \n"
-                                f"..."
-                                f"完整兼容性说明详见：https://github.com/QPT-Family/QPT/blob/开发分支/examples/advanced/打包兼容性更强的Python解释器.md"
-                                f"----------------------------------------------------------------------\n"
-                                f"已强制设置目标版本号为{DEFAULT_PYTHON_IMAGE_VERSION}，请检查存在以下兼容性问题：\n"
-                                f"1. 需考虑待打包的代码是否兼容该Python版本\n"
-                                f"2. 该Python版本是否可以在目标用户操作系统上执行\n"
-                                f"----------------------------------------------------------------------\n")
-                resources_name = "DEFAULT-Win"
-            url = RESOURCES_URLS[resources_name]
-        assert url and version, "请至少设置url和version中任一字段"
+    def __init__(self, name, version, mode=DEFINE_PYTHON_ENV_MODE):
+        if version not in SUPPORT_PYTHON_VERSION:
+            Logging.warning(f"----------------------------------------------------------------------\n"
+                            f"未在QPT中找到Python{version}镜像，QPT目前提供的Python镜像版本有限，\n"
+                            f"请尽可能使用Python3.7~Python3.10等主流Python版本进行打包，兼容性如下。\n"
+                            f"----------------------------------------------------------------------\n"
+                            f"Python版本|XP Win7 Win8.1 Win10+\n"
+                            f"Python37 | X   1     1      1  \n"
+                            f"Python38 | X   1     -      1  \n"
+                            f"Python39 | X   X     -      1  \n"
+                            f"Python310| X   X     x      1  \n"
+                            f"Python311| X   X     x      1  \n"
+                            f"..."
+                            f"完整说明详见：https://github.com/QPT-Family/QPT/blob/开发分支/examples/advanced/打包兼容性更强的Python解释器.md"
+                            f"----------------------------------------------------------------------\n"
+                            f"已强制设置目标版本号为{DEFAULT_PYTHON_IMAGE_VERSION}，请检查存在以下兼容性问题：\n"
+                            f"1. 需考虑待打包的代码是否兼容该Python版本\n"
+                            f"2. 该Python版本是否可以在目标用户操作系统上执行\n"
+                            f"----------------------------------------------------------------------\n")
         super().__init__(name, level=TOP_LEVEL)
-        self.add_pack_opt(PackPythonEnvOpt(url=url, mode=mode))
-        self.add_unpack_opt(UnPackPythonEnvOpt(url=url, mode=mode))
+        self.add_pack_opt(PackPythonEnvOpt(version=version, mode=mode))
         self.python_version = "非标准的PythonSubModule，需指定版本号"
 
 

@@ -38,6 +38,7 @@
 - [ ] 增加可选编译安装
 - [ ] 给用户UA选择权
 - [ ] 重构Module管理器，增加互斥Module - 初步考虑按主键+name去判定是否互斥
+- [ ] 增加pytorch的pip支持https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch/win-64/
 ## Other
 - [ ] 增加跨应用CLI的文档
 - [ ] Pyd支持

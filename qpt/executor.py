@@ -199,7 +199,7 @@ class CreateExecutableModule:
         else:
             self.terminal = PTerminal()
             modules = self.sub_modules
-            terminal = self.terminal.shell_func()
+            terminal = self.terminal.shell
         for sub in modules:
             # ToDO设置序列化路径
             sub._module_path = self.module_path
@@ -434,7 +434,7 @@ class RunExecutableModule:
 
         def render(arg=None):
             Logging.info("初次使用将会适应本地环境，可能需要几分钟时间，请耐心等待...")
-            terminal = self.auto_terminal.shell_func()
+            terminal = self.auto_terminal.shell
             tp = TProgressBar("初始化进度", max_len=len(modules) + 2)
             for sub_module_id, sub_name in enumerate(modules):
                 tp.step(add_end_info=f"{sub_name}部署中...")

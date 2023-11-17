@@ -1,19 +1,8 @@
 import os
-import sys
-import zipfile
 
 from qpt.kernel.qlog import Logging
-from qpt.kernel.qos import copytree
-from qpt.memory import QPT_MEMORY
+from qpt.kernel.qos import copytree, check_and_install_sdk_in_this_env
 from qpt.modules.base import SubModule, SubModuleOpt, TOP_LEVEL
-
-"""
-Python镜像打包指南
-1. 下载嵌入式版本Python
-2. 删除__pycache__
-3. ADD 运行库
-4. 使用LZMA-64-64 zip的格式上传至文件床，必要时设置密码
-"""
 
 PYTHON_ENV_MODE_SPEED_FIRST = "预先解压好Python环境，占用部分硬盘资源但能减少用户使用时速度损失"
 PYTHON_ENV_MODE_PACKAGE_VOLUME_FIRST = "[暂不支持]封装后保留压缩的Python环境以减少硬盘资源占用"
@@ -31,23 +20,18 @@ class PackPythonEnvOpt(SubModuleOpt):
         self.mode = mode
 
     def act(self) -> None:
-        for _ in range(2):
-            import QPT_SDK
-            v = f"python{self.version.replace('.', '')}"
-            if v not in QPT_SDK.__all__:
-                QPT_MEMORY.pip_tool.pip_package_shell(package="QEnvPython", version=self.version)
-            copytree(os.path.abspath(os.path.join(QPT_SDK.__file__, v)), os.path.join(self.module_path, "Python"))
+        v = f"python{self.version.replace('.', '')}"
+        path = check_and_install_sdk_in_this_env("QEnvPython")
+        copytree(os.path.join(path, v), os.path.join(self.module_path, "Python"))
 
-            # ToDo 未来对Tinkter和VC2019进行分离，先暂时放一起
-            v = f"tkinter{self.version.replace('.', '')}"
-            if v not in QPT_SDK.__all__:
-                QPT_MEMORY.pip_tool.pip_package_shell(package="QEnvPython", version=self.version)
-            copytree(os.path.abspath(os.path.join(QPT_SDK.__file__, v)), os.path.join(self.module_path, "Python"))
+        # ToDo 未来对Tinkter和VC2019进行分离，先暂时放一起
+        v = f"tkinter{self.version.replace('.', '')}"
+        path = check_and_install_sdk_in_this_env("QEnvPython")
+        copytree(os.path.join(path, v), os.path.join(self.module_path, "Python"))
 
-            v = "vcredist"
-            if v not in QPT_SDK.__all__:
-                QPT_MEMORY.pip_tool.pip_package_shell(package="QEnvPython", version=self.version)
-            copytree(os.path.abspath(os.path.join(QPT_SDK.__file__, v)), os.path.join(self.module_path, "Python"))
+        v = "vcredist"
+        path = check_and_install_sdk_in_this_env("QVCRedist")
+        copytree(os.path.join(path, v), os.path.join(self.module_path, "Python"))
 
 
 class BasePythonEnv(SubModule):
@@ -83,7 +67,7 @@ class AutoPythonEnv(BasePythonEnv):
         # 截断版本号，只保留两位
         version = "".join([v if version_index == 1 else v + "."
                            for version_index, v in enumerate(version.split(".")[:2])])
-        super().__init__(name=None, url=None, mode=mode, version=version)
+        super().__init__(name=None, mode=mode, version=version)
 
 
 class Python37(BasePythonEnv):

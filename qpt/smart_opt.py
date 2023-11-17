@@ -7,8 +7,15 @@
 import os
 
 from qpt import Logging
+from qpt.kernel.qos import check_and_install_sdk_in_this_env, update_all_sdk_in_this_env
 from qpt.kernel.qinterpreter import PIPTerminal, PipTools
 from qpt.memory import QPT_MEMORY
+
+__all__ = ["check_and_install_sdk_in_this_env",
+           "update_all_sdk_in_this_env",
+           "set_default_pip_source",
+           "set_default_pip_lib",
+           "set_pip_configs"]
 
 
 def set_default_pip_source(source: str):
@@ -19,7 +26,7 @@ def set_default_pip_source(source: str):
 def set_default_pip_lib(interpreter_path: str):
     if not os.path.splitext(interpreter_path)[1]:
         interpreter_path = os.path.join(interpreter_path, "python.exe")
-    QPT_MEMORY.pip_tool.pip_main = PIPTerminal(interpreter_path).shell_func()
+    QPT_MEMORY.pip_tool.pip_main = PIPTerminal(interpreter_path).shell
     Logging.debug(f"已设置PIP跨版本编译模式，目标解释器路径为：{interpreter_path}")
 
 
@@ -30,4 +37,4 @@ def set_pip_configs(lib_package_path=None,
     :param lib_package_path: pip所在位置
     :param source: 镜像源地址
     """
-    QPT_MEMORY.set_mem("pip_tool", PipTools(pip_path=lib_package_path, source=source))
+    QPT_MEMORY.set_mem("pip_tool", PipTools(env_path=lib_package_path, source=source))

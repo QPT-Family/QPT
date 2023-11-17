@@ -180,18 +180,10 @@ class Terminal:
         """
         raise NotImplementedError(f"{self.__class__.__name__}中未定义shell方法")
 
-    def shell_func(self, callback: TerminalCallback = None):
-        """
-        获取shell函数
-        :param callback:
-        :return: shell函数
-        """
-        raise NotImplementedError(f"{self.__class__.__name__}中未定义shell_func方法")
-
 
 class PTerminal(Terminal):
     def __init__(self, shell_mode=True, cwd="./"):
-        # ToDo 增加分离Flag，使得
+        # ToDo 增加分离Flag，使得每次环境隔离
         # https://docs.python.org/zh-cn/3/library/subprocess.html?highlight=subprocess%20popen#subprocess.CREATE_NEW_CONSOLE
         self.shell_mode = shell_mode
         self.first_flag = True
@@ -214,8 +206,7 @@ class PTerminal(Terminal):
 
         prepare = "chcp 65001"
         self._shell_func()(prepare)
-        if self.__class__.__name__ == PTerminal:
-            Logging.info("\r\r\r检测结束，当前Powershell满足使用需求。")
+
         # if QPT_MODE == "Debug":
         #     self._shell_func()("dir env:")
 
@@ -226,13 +217,16 @@ class PTerminal(Terminal):
     def close_terminal(self):
         self.main_terminal.terminate()
 
-    def _shell_func(self, callback: TerminalCallback = LoggingTerminalCallback()):
+    def _shell_func(self, callback: TerminalCallback = None):
+        if callback is None:
+            callback = LoggingTerminalCallback()
+
         # ToDo 实现Callback
         def closure(closure_shell):
             Logging.debug(f"SHELL: {closure_shell}")
             if closure_shell[1:3] == ":\\":
-                closure_shell += f"cd {closure_shell[:2]} ;"
-            closure_shell = f'{closure_shell} ; echo "---QPT OUTPUT STATUS CODE---" $? \n'
+                closure_shell = f"cd {closure_shell[:2]}\\ ; " + closure_shell
+            closure_shell += f' ; echo "---QPT OUTPUT STATUS CODE---" $? \n'
             try:
                 final_shell = closure_shell.encode("utf-8")
             except Exception as e:
@@ -274,11 +268,10 @@ class PTerminal(Terminal):
 
         return closure
 
-    def shell_func(self, callback: TerminalCallback = None):
-        return self._shell_func(callback)
-
-    def shell(self, shell, callback: TerminalCallback = LoggingTerminalCallback()):
-        self.shell_func(callback)(shell)
+    def shell(self, shell, callback: TerminalCallback = None):
+        if callback is None:
+            callback = LoggingTerminalCallback()
+        self._shell_func(callback)(shell)
 
 
 if __name__ == '__main__':

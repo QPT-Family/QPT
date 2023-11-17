@@ -7,7 +7,7 @@ from collections import OrderedDict
 
 from qpt.kernel.qcode import intelligent_analysis, search_packages_dist_info, search_dep
 from qpt.kernel.qlog import clean_stout, Logging
-from qpt.kernel.qos import dynamic_load_package, get_qpt_tmp_path, ArgManager
+from qpt.kernel.qos import get_qpt_tmp_path, ArgManager
 from qpt.kernel.qterminal import PTerminal, TerminalCallback, LoggingTerminalCallback
 
 TSINGHUA_PIP_SOURCE = "https://pypi.tuna.tsinghua.edu.cn/simple"
@@ -58,38 +58,13 @@ display_flag = DisplayFlag()
 class PIPTerminal(PTerminal):
     # ToDo 此处需要简化
     def __init__(self, python_path):
+        self.head = str(ArgManager(args=[os.path.abspath(python_path), "-m pip"]))
         super(PIPTerminal, self).__init__()
-        self.head = os.path.abspath(python_path) + " -m pip"
 
-    def shell_func(self, callback: TerminalCallback = LoggingTerminalCallback()):
-        def closure(closure_shell):
-            if isinstance(closure_shell, list):
-                tmp = [" " + bit_shell for bit_shell in closure_shell]
-                closure_shell = "".join(tmp)
-            closure_shell = self.head + closure_shell
-            if closure_shell[1:3] == ":\\":
-                closure_shell = f"cd {closure_shell[:2]} ;" + closure_shell
-            Logging.debug(f"SHELL: {closure_shell}")
-            closure_shell = f'{closure_shell}; echo "---QPT OUTPUT STATUS CODE---" ;$? \n'
-            # 发送指令
-            try:
-                final_shell = closure_shell.encode("utf-8")
-            except Exception as e:
-                Logging.error("执行该指令时遇到解码问题，目前将采用兼容模式进行，原始报错如下：\n" + str(e))
-                final_shell = closure_shell.encode("utf-8", errors="ignore")
-            self.main_terminal.stdin.write(final_shell)
-            try:
-                self.main_terminal.stdin.flush()
-            except Exception as e:
-                Logging.error(str(e))
-
-            # 捕获PIP的异常
-            callback.error_fitter = ["ERROR:"]
-            callback.normal_fitter = ["requires click, which is not installed.\nqpt",
-                                      "ERROR: pip's dependency resolver "]
-            callback.handle(self.main_terminal)
-
-        return closure
+    def shell(self, shell, callback: TerminalCallback = None):
+        callback = LoggingTerminalCallback()
+        callback.error_fitter = ["ERROR:"]
+        self._shell_func(callback=callback)(self.head + " " + str(ArgManager(shell)))
 
 
 def analysis_requirement_line(name: str):
@@ -116,13 +91,16 @@ class PipTools:
 
     def __init__(self,
                  source: str = None,
-                 pip_path=None):
+                 env_path=None):
+        """
+
+        :param source: 镜像源
+        :param env_path: 环境地址，若不提供，则默认调用本环境下的pip
+        """
         if source is None:
             source = DEFAULT_PIP_SOURCE
-        if pip_path:
-            # pip_main = dynamic_load_package(
-            #     packages_name="pip", lib_packages_path=pip_path).main
-            pass
+        if env_path:
+            pip_main = PIPTerminal(python_path=env_path).shell
             # ToDo 需要用Terminal调用，否则会出现pywin32等包的问题
         else:
             from pip._internal.cli.main import main as pip_main

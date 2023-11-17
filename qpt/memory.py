@@ -4,6 +4,7 @@
 # Please indicate the source for reprinting.
 
 import os
+import sys
 import platform
 from distutils.sysconfig import get_python_lib
 
@@ -74,6 +75,12 @@ class QPTMemory:
         return pip_tools
 
     @init_wrapper()
+    def pip_tool_in_this_env(self):
+        from qpt.kernel.qinterpreter import PipTools
+        pip_tools = PipTools(env_path=sys.executable)
+        return pip_tools
+
+    @init_wrapper()
     def get_win32con(self):
         import win32con
         return win32con
@@ -82,6 +89,13 @@ class QPTMemory:
     def get_win32api(self):
         import win32api
         return win32api
+
+    @init_wrapper()
+    def get_qpt_sdk_list(self):
+        import QPT_SDK
+        path_list = os.listdir(os.path.dirname(QPT_SDK.__file__))
+        sdk_list = [path.lower() for path in path_list if os.path.isdir(path)]
+        return sdk_list
 
     @init_wrapper(var=True)
     def get_env_vars(self, work_dir="."):

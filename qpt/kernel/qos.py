@@ -12,6 +12,29 @@ from qpt.memory import QPT_MEMORY
 from qpt.version import version
 
 
+def check_and_install_sdk_in_this_env(name: str):
+    """
+    在当前环境下检查某个个SDK是否被安装，若安装则返回SDK目录，未安装则进行安装
+    :param:  name
+    :return: SDK path
+    """
+    sdk_list = QPT_MEMORY.get_qpt_sdk_list
+    if name.lower() not in sdk_list:
+        QPT_MEMORY.pip_tool_in_this_env.pip_package_shell(package=name)
+    import QPT_SDK
+    return os.path.abspath(os.path.join(os.path.dirname(QPT_SDK.__file__), name))
+
+
+def update_all_sdk_in_this_env():
+    """
+    更新全部SDK
+    :param:  name
+    :return: SDK path
+    """
+    sdk_list = QPT_MEMORY.get_qpt_sdk_list()
+    QPT_MEMORY.pip_tool_in_this_env.pip_package_shell(package=ArgManager(sdk_list), opts=ArgManager(["-U"]))
+
+
 def check_warning_char(text):
     """
     判断是否包含中文等可能无法被正确识别的符号，避免来自部分内鬼C++底层的Python包无缘无故报错

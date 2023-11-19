@@ -58,7 +58,7 @@ class LogTest(unittest.TestCase):
         module.make()
 
     def test_module_m_opt(self):
-        # 临时流程验证
+        # 图标修改验证
         module = CreateExecutableModule(work_dir="./sandbox_m",
                                         launcher_py_path="./sandbox_m/run.py",
                                         save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),

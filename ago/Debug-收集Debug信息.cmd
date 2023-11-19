@@ -1,13 +1,12 @@
 echo off
 chcp 65001
 cd /d %~dp0
-cd ..
 set QPT_COLOR=False
 set QPT_MODE=Debug
-set PYTHONUNBUFFERED=1
 set PYTHONIOENCODING=utf-8
-set PYTHONPATH=./Python/resources;./Python/Lib/site-packages;./Python
-set PATH=%PATH%;./Python/resources;./Python/Lib/site-packages;./Python;./Python/Lib;./Python/Scripts
+set PYTHONUNBUFFERED=1
+set PYTHONPATH=Python/Lib/site-packages;Python/Lib;Python
+set PATH=Python/Lib/site-package;Python/Lib;Python;Python/Scripts;%PATH%
 set PROMPT=(QPT_VENV) %PROMPT%
 for /f "tokens=2 delims=:." %%a in ('"%SystemRoot%\System32\chcp.com"') do (
     set _OLD_CODEPAGE=%%a
@@ -39,8 +38,7 @@ set > %QPT_CONFIGS%env_vars_info.txt
 echo "Step5: Try running the QPT-Program"
 set QPT_COLOR=False
 set QPT_MODE=Debug
-cls
-"./Python/python.exe" -c "import sys;sys.path.append('./Python');sys.path.append('./Python/Lib/site-packages');sys.path.append('./Python/Scripts');import qpt.run as run" > %QPT_CONFIGS%Run_info.txt
+"./Python/python.exe"
 
 echo "Step6: Collecting Python package installation list"
 "./Python/python.exe" "-m" "pip" "list" > %QPT_CONFIGS%pip_list_final.txt

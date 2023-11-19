@@ -1,21 +1,22 @@
 ﻿#include <windows.h>
-#include<iostream>
+#include <iostream>
 using namespace std;
 
 // 切记，不能是64位，不然PE不好修改了
 // 无窗口模式
-// #pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"" )
+#pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"" )
 
 int main(int argc, char** argv) {
-	printf("Start OK");
-	std::string shell = "cmd /c configs\\entry.cmd";
+	// 配置UTF-8
+	SetConsoleCP(CP_UTF8);
+	SetConsoleOutputCP(CP_UTF8);
+
+	string shell = "cmd /c configs\\entry.cmd";
 	if (argc > 1) {
-		std::string subShell = "";
-		subShell += ' ^"';
+		std::string subShell = " ";
 		for (int i = 1; i < argc; i++) {
-			subShell += " " + string(argv[i]);
+			subShell += "QPT_ARGS_FLAG\"" + string(argv[i])+"\"";
 		}
-		subShell += '^"';
 		shell += subShell;
 	}
 

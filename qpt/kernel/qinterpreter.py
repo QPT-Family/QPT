@@ -56,7 +56,6 @@ display_flag = DisplayFlag()
 
 
 class PIPTerminal(PTerminal):
-    # ToDo 此处需要简化
     def __init__(self, python_path):
         self.head = str(ArgManager(args=[os.path.abspath(python_path), "-m pip"]))
         super(PIPTerminal, self).__init__()
@@ -64,6 +63,9 @@ class PIPTerminal(PTerminal):
     def shell(self, shell, callback: TerminalCallback = None):
         callback = LoggingTerminalCallback()
         callback.error_fitter = ["ERROR:"]
+        callback.normal_fitter = [
+            "ERROR: pip's dependency resolver does not currently take into account all the packages that are installed"]
+
         self._shell_func(callback=callback)(self.head + " " + str(ArgManager(shell)))
 
 
@@ -108,7 +110,7 @@ class PipTools:
         self.source = source
 
         # 安静模式
-        self.quiet = True if os.getenv("QPT_MODE") == "Run" else False
+        self.quiet = True if os.getenv("QPT_MODE") == "Running" else False
         if self.quiet:
             Logging.debug("PipTools进入安静模式")
 

@@ -5,10 +5,12 @@
 
 import os
 
-M_PATH = r"M:\QPT_UT_OUT_CACHE\test_module_m\Debug"
-os.chdir(M_PATH)
-from qpt.executor import RunExecutableModule
-
 if __name__ == '__main__':
-    module = RunExecutableModule(M_PATH)
-    module.run()
+    M_PATH = r"J:\QPT_UT_OUT_CACHE\test_module_m\Debug"
+    os.chdir(M_PATH)
+    from qpt.run_wrapper import wrapper
+
+    wrapper()
+    from qpt.executor import RunExecutableModule
+
+    RunExecutableModule().run()

@@ -56,7 +56,7 @@ if os.environ.get("QPT_TEMPDIR"):
     TMP_BASE_PATH = os.environ["QPT_TEMPDIR"]
 else:
     TMP_BASE_PATH = os.path.join(tempfile.gettempdir(), f"QPT_Cache_V/{version}")
-# Check User name is chinese
+# Check user name is chinese
 if check_warning_char(TMP_BASE_PATH) or " " in TMP_BASE_PATH:
     TMP_BASE_PATH = "C:/q_tmp"
     Logging.warning(f"当前系统的用户名中包含中文/空格等可能会对程序造成异常的字符，现已默认QPT临时目录为{TMP_BASE_PATH}")

@@ -145,6 +145,7 @@ IGNORE_ENV_FIELD = ["conda", "Conda", "Python", "python"]
 
 
 def get_env_vars(work_dir="."):
+    # ToDo 确定是否还要走这步
     """
     获取当前待设置的环境变量字典
     :param work_dir:
@@ -182,7 +183,7 @@ def get_env_vars(work_dir="."):
     os_env = os.environ.copy()
     os_env.update(env_vars)
 
-    if QPT_MODE and QPT_MODE.lower() == "debug":
+    if QPT_MODE and QPT_MODE.lower() == "debugging":
         Logging.debug(msg="Python所识别到的环境变量如下：\n" +
                           "".join([_ek + ":" + _e_v + " \n" for _ek, _ev in env_vars.items()
                                    for _e_v in _ev.split(";")]))
@@ -195,7 +196,7 @@ PYTHON_IGNORE_DIRS = [".idea", ".git", ".github", "venv"]
 # 被忽略的Python包
 IGNORE_PACKAGES = ["virtualenv", "pip", "setuptools", "cpython"]
 
-# QPT运行状态 Run/Debug
+# QPT运行状态 Run/Debug 在运行后更改为Running/Debug
 QPT_MODE = os.getenv("QPT_MODE")
 
 # QPT检测到的运行状态 Run/本地Run - 目的给予开发者警告，避免软件包膨胀

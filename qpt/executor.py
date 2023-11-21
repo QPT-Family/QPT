@@ -112,8 +112,7 @@ class CreateExecutableModule:
         self.resources_path = os.path.join(self.module_path, "resources")
         self.config_path = os.path.join(self.module_path, "configs")
         self.config_file_path = os.path.join(self.config_path, "configs.txt")
-        self.lib_package_path = os.path.join(self.interpreter_path,
-                                             QPT_MEMORY.site_packages_path)
+        self.lib_package_path = os.path.join(self.interpreter_path, "Lib/site-packages")
 
         # 设置全局下载的Python包默认解释器版本号 - 更换兼容性方案
         # set_default_package_for_python_version(interpreter_module.python_version)
@@ -125,7 +124,8 @@ class CreateExecutableModule:
             if "pyvenv.cfg" in files:
                 venv_dir = root
                 self.ignore_dirs.append(root)
-                Logging.warning(f"检测到pyvenv.cfg，推测出{os.path.abspath(root)}为Python虚拟环境主目录，在打包时会忽略该目录")
+                Logging.warning(
+                    f"检测到pyvenv.cfg，推测出{os.path.abspath(root)}为Python虚拟环境主目录，在打包时会忽略该目录")
                 continue
             if ".github" in dirs:
                 self.ignore_dirs.append(os.path.join(root, ".github"))
@@ -232,31 +232,22 @@ class CreateExecutableModule:
         assert os.path.exists(self.work_dir), f"{os.path.abspath(self.work_dir)}不存在，请检查该路径是否正确"
         Logging.info("正在复制相关文件，可能会耗时较长")
         copytree(self.work_dir, self.resources_path, ignore_dirs=self.ignore_dirs)
-        # 对主程序加入wrapper代码 | ToDo 此处会有pyd的不兼容性 后期支持pyd后有望避免
-        for main_py in self.launcher_py_path:
-            with open(os.path.join(self.resources_path, main_py), "r+", encoding="utf-8") as _f:
-                _data = _f.read()
-                _f.seek(0, 0)
-                _f.write("from qpt.run_wrapper import wrapper\nwrapper()\n" + _data)
-
+        # 加入wrapper代码
+        wrapper_code = """# Create by QPT https://github.com/GT-ZhangAcer/QPT
+import os
+if "ing" not in os.environ.get("QPT_MODE"):
+    from qpt.run_wrapper import wrapper
+    wrapper()
+    from qpt.executor import RunExecutableModule
+    RunExecutableModule().run()
+"""
+        with open(os.path.join(self.lib_package_path, "sitecustomize.py"), "w", encoding="utf-8") as _f:
+            _f.write(wrapper_code)
         # QPT的dev模式
         if self.with_debug:
             Logging.debug("当前已开启QPT-dev模式，将会复制当前版本的QPT文件至相应目录")
             qpt_dir_path = os.path.split(qpt.__file__)[0]
             copytree(src=qpt_dir_path, dst=os.path.join(self.interpreter_path, "Lib/site-packages/qpt"))
-
-        # # 避免出现if __name__ == '__main__':
-        # with open(os.path.join(self.resources_path, self.launcher_py_path), "r", encoding="utf-8") as lf:
-        #     lf_codes = lf.readlines()
-        # for lf_code_id, lf_code in enumerate(lf_codes):
-        #     if "if" in lf_code and "__name__" in lf_code and "__main__" in lf_code:
-        #         # 懒得写正则了嘿嘿嘿
-        #         Logging.warning(f"{self.launcher_py_path}中包含if __name__ == '__main__'语句，"
-        #                         f"由于用户使用时QPT成为了主程序，故此处代码块会被Python忽略。"
-        #                         f"为保证可以正常执行，当前已自动修复该问题")
-        #         with open(os.path.join(self.resources_path, self.launcher_py_path), "w", encoding="utf-8") as new_lf:
-        #             lf_codes[lf_code_id] = lf_code[:lf_code.index("if ")] + "if 'qpt':\n"
-        #             new_lf.writelines(lf_codes)
 
         # 创建配置文件
         os.makedirs(self.config_path, exist_ok=True)
@@ -265,6 +256,7 @@ class CreateExecutableModule:
 
         # 启动器相关
         launcher_entry_path = os.path.join(os.path.split(qpt.__file__)[0], "ext/launcher_entry")
+
         # 复制Debug所需文件
         Logging.info("正在复制相关文件，可能会耗时较长")
         debug_ext_dir = os.path.join(os.path.split(qpt.__file__)[0], "ext/launcher_debug")
@@ -272,12 +264,22 @@ class CreateExecutableModule:
         copytree(self.module_path, dst=self.debug_path)
         shutil.copy(src=os.path.join(launcher_entry_path, "entry_debug.cmd"),
                     dst=os.path.join(self.debug_path, "configs/entry.cmd"))
+        # 注册主程序文件路径
+        with open(os.path.join(self.debug_path, "configs/entry.cmd"), "r", encoding="utf-8") as f:
+            data = f.read().replace("QPT_PY_MAIN_FILE=NONE", "QPT_PY_MAIN_FILE=" + self.launcher_py_path[0])
+        with open(os.path.join(self.debug_path, "configs/entry.cmd"), "w", encoding="utf-8") as f:
+            f.write(data)
+
         # 生成Debug标识符
         unlock_file_path = os.path.join(self.debug_path, "configs/unlock.cache")
         with open(unlock_file_path, "w", encoding="utf-8") as unlock_file:
             unlock_file.write(str(datetime.datetime.now()))
         # 重命名兼容模式文件
         compatibility_mode_file = os.path.join(self.debug_path, "compatibility_mode.cmd")
+        with open(os.path.join(self.debug_path, "compatibility_mode.cmd"), "r", encoding="utf-8") as f:
+            data = f.read().replace("QPT_PY_MAIN_FILE=NONE", "QPT_PY_MAIN_FILE=" + self.launcher_py_path[0])
+        with open(os.path.join(self.debug_path, "compatibility_mode.cmd"), "w", encoding="utf-8") as f:
+            f.write(data)
         if os.path.exists(compatibility_mode_file):
             os.rename(compatibility_mode_file,
                       os.path.join(self.debug_path, "使用兼容模式运行.cmd"))
@@ -288,11 +290,18 @@ class CreateExecutableModule:
         if self.hidden_terminal:
             shutil.copy(src=os.path.join(launcher_entry_path, "entry_run_hidden.cmd"),
                         dst=os.path.join(self.module_path, "configs/entry.cmd"))
+
         else:
             launcher_ignore_file = ["Main.exe"]
-            shutil.copy(src=os.path.join(debug_ext_dir, "Debug.exe"), dst=os.path.join(self.module_path, "启动程序.exe"))
+            shutil.copy(src=os.path.join(debug_ext_dir, "Debug.exe"),
+                        dst=os.path.join(self.module_path, "启动程序.exe"))
             shutil.copy(src=os.path.join(launcher_entry_path, "entry_run.cmd"),
                         dst=os.path.join(self.module_path, "configs/entry.cmd"))
+        # 注册主程序文件路径
+        with open(os.path.join(self.module_path, "configs/entry.cmd"), "r", encoding="utf-8") as f:
+            data = f.read().replace("QPT_PY_MAIN_FILE=NONE", "QPT_PY_MAIN_FILE=" + self.launcher_py_path[0])
+        with open(os.path.join(self.module_path, "configs/entry.cmd"), "w", encoding="utf-8") as f:
+            f.write(data)
 
         copytree(launcher_ext_dir, dst=self.module_path, ignore_files=launcher_ignore_file)
         # 重命名兼容模式文件
@@ -352,33 +361,30 @@ class CreateExecutableModule:
 
 
 class RunExecutableModule:
-    def __init__(self,
-                 module_path: str,
-                 run_id: int = 0):
-        """
-        执行器入口
-        :param module_path: 封装后Module路径，例如Debug/Release文件夹的路径
-        :param run_id: 待执行的主程序id，默认为0代表第一个程序
-        """
-        # 初始化Module信息
+    def __init__(self, module_path: str = None):
+        if os.getenv("QPT_MODE") == "Run" or "Debug":
+            os.environ["QPT_MODE"] = "Running" if QPT_MODE == "Run" else "Debugging"
+        if module_path is None:
+            module_path = os.path.abspath("./")
         self.base_dir = os.path.abspath(module_path)
-        self.config_path = os.path.join(self.base_dir, "configs")
-        self.config_file_path = os.path.join(self.base_dir, "configs", "configs.txt")
-        self.work_dir = os.path.join(self.base_dir, "resources")
-        self.interpreter_path = os.path.join(self.base_dir, "Python")
+        self.config_path = os.path.abspath(os.path.join(self.base_dir, "configs"))
+        self.config_file_path = os.path.abspath(os.path.join(self.base_dir, "configs", "configs.txt"))
+        self.work_dir = os.path.abspath(os.path.join(self.base_dir, "resources"))
+        self.interpreter_path = os.path.abspath(os.path.join(self.base_dir, "Python"))
 
         # 初始化Log
         log_name = str(datetime.datetime.now()).replace(" ", "_").replace(":", "-") + ".txt"
         if not os.path.exists(os.path.join(self.config_path, "logs")):
             log_name = "First-" + log_name
             os.mkdir(os.path.join(self.config_path, "logs"))
-        if QPT_MODE == "Debug":
+        if QPT_MODE == "Debugging":
             log_name = "#Debug#" + log_name
         set_logger_file(os.path.join(self.config_path, "logs", "QPT-" + log_name))
         sys.stdout = StdOutLoggerWrapper(os.path.join(self.config_path, "logs", "APP-" + log_name))
 
         # 软件信息
-        Logging.info(f"QPT Runtime版本号为{qpt_v}，若无法使用该程序，可向程序发布者或GitHub: QPT-Family/QPT提交issue寻求帮助")
+        Logging.info(
+            f"QPT Runtime版本号为{qpt_v}，若无法使用该程序，可向程序发布者或GitHub: QPT-Family/QPT提交issue寻求帮助")
 
         # 强制本地PIP
         set_default_pip_lib(self.interpreter_path)
@@ -417,8 +423,6 @@ class RunExecutableModule:
         except Exception as e:
             Logging.error("请检查杀毒软件、防火墙等限制策略，当前程序无法正常访问Config.gt文件，完整报错如下：\n" + str(e))
 
-        # 获取py文件位置
-        self.main_py_path = self.configs["launcher_py_path"][run_id]
         # 获取GUI选项
         self.hidden_terminal = self.configs["hidden_terminal"]
 
@@ -453,30 +457,7 @@ class RunExecutableModule:
         else:
             render()
 
-    def solve_work_dir(self):
-        # Set Sys ENV
-        sys.path.append(self.work_dir)
-        sys.path.append(os.path.abspath("./Python/Lib/site-packages"))
-        sys.path.append(os.path.abspath("./Python/Lib/ext"))
-        sys.path.append(os.path.abspath("./Python/Lib"))
-        sys.path.append(os.path.abspath("./Python"))
-        sys.path.append(os.path.abspath("./Python/Scripts"))
-
-        # Set PATH ENV
-        env_vars = QPT_MEMORY.get_env_vars(self.base_dir)
-        os.environ.update(env_vars)
-
-        # change dir
-        # os.chdir(self.work_dir)
-
-    def run(self, param: str = ""):
-        """
-        :param param: 运行参数 Example: "-h 123"
-        :return:
-        """
-        # 设置工作目录
-        self.solve_work_dir()
-
+    def run(self):
         # 获取启动信息 - 避免在Release下进行Debug
         env_warning_flag = False
         local_uid = base64.b64decode(self.configs["local_uid"]).decode("utf-8")
@@ -511,21 +492,5 @@ class RunExecutableModule:
         else:
             CheckRun.make_run_file(self.config_path)
 
-        # 执行主程序
-        run_shell = f'cd "{self.work_dir}";' + './../Python/python.exe "' + \
-                    os.path.abspath(os.path.join(self.work_dir, self.main_py_path)) + '"'
-        if param:
-            # 去掉首末空格
-            param = param[1:-1].strip(" ")
-
-            run_shell += " " + param
-        self.auto_terminal.shell(run_shell, callback=RunTerminalCallback())
-
-        # main_lib_path = self.configs["launcher_py_path"].replace(".py", "")
-        # main_lib_path = main_lib_path. \
-        #     replace(".py", ""). \
-        #     replace(r"\\", "."). \
-        #     replace("\\", "."). \
-        #     replace("/", ".")
-        # lib = importlib.import_module(main_lib_path)
-        # input("QPT执行完毕，请按任意键退出")
+        os.chdir(self.work_dir)
+        Logging.info("环境部署完毕！")

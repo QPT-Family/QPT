@@ -8,12 +8,8 @@ set PYTHONIOENCODING=utf-8
 set PROMPT=(QPT_VENV) %PROMPT%
 
 set QPT_PY_MAIN_FILE=NONE
-if "%QPT_PY_MAIN_FILE%"=="" (
 set QPT_ARGS=%1
-set QPT_ARGS=%QPT_ARGS:QPT_ARGS_FLAG= %
-"./Python/python.exe" %QPT_PY_MAIN_FILE%%QPT_ARGS%
-) else (
-"./Python/python.exe" %QPT_PY_MAIN_FILE%)
+"./Python/python.exe" %QPT_PY_MAIN_FILE%%QPT_ARGS:QPT_ARGS_FLAG= %
 
 cls
 pause

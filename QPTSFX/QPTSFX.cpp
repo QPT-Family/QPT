@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
 		shell += subShell;
 	}
 	else {
-		shell += " QPT_ARGS_FLAG"; // DOS命令是我琢磨不透的东西，这个地方还是有个符号占位吧
+		shell += " QPT_ARGS_FLAG"; // DOS命令是我琢磨不透的东西，这个地方还是有个符号占位吧 - 下个版本用%*
 	};
 
 	WinExec(shell.c_str(), SW_HIDE);

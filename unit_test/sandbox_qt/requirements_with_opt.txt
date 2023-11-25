@@ -4,94 +4,26 @@
 # ---------------------------------------------------------------------
 # QPT Home:        https://github.com/GT-ZhangAcer/QPT
 # ---------------------------------------------------------------------
-pyqt5
-# appdirs
-# astor
-# Babel
-# bce-python-sdk
-# beautifulsoup4
-# bs4
-# certifi
-# cfgv
-# chardet
-# click
-# colorama
-# colorlog
-# cycler
-# decorator
-# dill
-# distlib
-# easydict
-# filelock
-# flake8
-# Flask
-# Flask-Babel
-# future
-# gast
-# gitdb
-# GitPython
-# h5py
-# identify
-# idna
-# imageio
-# itsdangerous
-# jieba
-# Jinja2
-# joblib
-# kiwisolver
-# MarkupSafe
-# matplotlib
-# mccabe
-# multiprocess
-# networkx
-# nodeenv
-# numpy
-# opencv-python
-# packaging
-# paddle2onnx
-# paddlehub
-# paddlenlp
-# paddlepaddle
-# pandas
-# pefile
-# Pillow
-# pre-commit
-# protobuf
-# psutil
-# pycodestyle
-# pycparser
-# pycryptodome
-# pyflakes
-# pyparsing
-# PyQt5
-# PyQt5-Qt5
-# PyQt5-sip
-# PyQt5-stubs
-# python-dateutil
-# pythonnet
-# pytz
-# PyWavelets
-# pywin32
-# PyYAML
-# pyzmq
-# QPT
-# rarfile
-# requests
-# scikit-image
-# scikit-learn
-# scipy
-# seqeval
-# Shapely
-# shellcheck-py
-# six
-# smmap
-# soupsieve
-# threadpoolctl
-# tifffile
-# toml
-# tqdm
-# urllib3
-# virtualenv
-# visualdl
-# Werkzeug
-# wget
+# 
+# -------------Mainly depends on package analysis results--------------
+
+pyqt5==5.15.10
+
+# ----------------------Ignored dependent packages---------------------
+#pillow==10.1.0
+#qenvpython==3.8.10.3
+#qpt_sdk==1.0
+#qvcredist==1.0.1
+#click==8.1.7
+#install==1.3.5
+#pefile==2023.2.7
+#pywin32==306
+#toml==0.10.2
+#wget==3.2
+#wheel==0.41.2
+
+# ----------------------Ignored sub dependent packages---------------------
+
+# -----Dependencies of pyqt5
+#pyqt5_sip<13,>=12.13
+#pyqt5_qt5>=5.15.2

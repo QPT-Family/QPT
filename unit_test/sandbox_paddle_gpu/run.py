@@ -21,6 +21,6 @@ for i in range(5):
         loss.backward()
         opt.step()
         opt.clear_grad()
-    print("Epoch:", i, "loss:", loss.numpy())
+    print("Epoch:", i, "loss:", loss)
 
 print("PaddlePaddle测试成功！")

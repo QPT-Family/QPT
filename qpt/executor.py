@@ -5,6 +5,7 @@
 
 import base64
 import datetime
+import logging
 import os
 import shutil
 import sys
@@ -16,7 +17,7 @@ from qpt.gui.tk_progressbar import get_func_bind_progressbar
 from qpt.kernel.qlog import Logging, TProgressBar, set_logger_file
 from qpt.kernel.qos import clean_qpt_cache, copytree, check_warning_char, StdOutLoggerWrapper, warning_msg_box
 from qpt.kernel.qpe import make_icon
-from qpt.kernel.qterminal import PTerminal, RunTerminalCallback
+from qpt.kernel.qterminal import PTerminal
 from qpt.memory import QPT_MEMORY
 from qpt.memory import QPT_MODE, CheckRun
 from qpt.modules.auto_requirements import AutoRequirementsPackage
@@ -57,6 +58,7 @@ class CreateExecutableModule:
         :param with_debug: QPT验证模式 - 请勿使用
         """
 
+        Logging.warning(msg="QPT 1.0b5版本中有较大更新，且仅对Win10 1809以上版本进行验证，低于该版本的操作系统可能存在无法运行问题。")
         self.with_debug = with_debug
         self.work_dir = work_dir
 

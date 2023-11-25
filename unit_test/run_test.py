@@ -30,7 +30,7 @@ class LogTest(unittest.TestCase):
                                         launcher_py_path="./sandbox_m/run.py",
                                         save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),
                                         requirements_file="sandbox_m/requirements_with_opt.txt",
-                                        interpreter_module=Python38(),
+                                        interpreter_version=38,
                                         with_debug=True,
                                         hidden_terminal=True)
         module.make()
@@ -41,7 +41,7 @@ class LogTest(unittest.TestCase):
                                         launcher_py_path="./sandbox_m/run.py",
                                         save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),
                                         requirements_file="sandbox_m/requirements_with_opt.txt",
-                                        interpreter_module=Python39(),
+                                        interpreter_version=39,
                                         with_debug=True,
                                         hidden_terminal=True)
         module.make()
@@ -52,7 +52,29 @@ class LogTest(unittest.TestCase):
                                         launcher_py_path="./sandbox_m/run.py",
                                         save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),
                                         requirements_file="sandbox_m/requirements_with_opt.txt",
-                                        interpreter_module=Python310(),
+                                        interpreter_version=310,
+                                        with_debug=True,
+                                        hidden_terminal=True)
+        module.make()
+
+    def test_module_m_gui_python311(self):
+        # 验证Python兼容性
+        module = CreateExecutableModule(work_dir="./sandbox_m",
+                                        launcher_py_path="./sandbox_m/run.py",
+                                        save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),
+                                        requirements_file="sandbox_m/requirements_with_opt.txt",
+                                        interpreter_version=311,
+                                        with_debug=True,
+                                        hidden_terminal=True)
+        module.make()
+
+    def test_module_m_gui_python312(self):
+        # 验证Python兼容性
+        module = CreateExecutableModule(work_dir="./sandbox_m",
+                                        launcher_py_path="./sandbox_m/run.py",
+                                        save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),
+                                        requirements_file="sandbox_m/requirements_with_opt.txt",
+                                        interpreter_version=312,
                                         with_debug=True,
                                         hidden_terminal=True)
         module.make()

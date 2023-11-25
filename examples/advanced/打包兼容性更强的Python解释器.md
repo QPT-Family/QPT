@@ -7,15 +7,15 @@
 举例当前已知的Python版本在Windows版本上的兼容情况如下：
 
 | Python版本 | WinXP | Win7 | Win8 | Win8.1 | Win10 | Win11 |
-| ----- | ----- | ----- | ----- | ----- | ----- | ----- |
-| 3.4 | √ | √ | √ | √ | √ | - |
-| 3.5 | X | √ | √ | √ | √ | - |
-| 3.6 | X | √ | √ | √ | √ | - |
-| 3.7 | X | √ | √ | √ | √ | √ |
-| 3.8 | X | √ | X | - | √ | √ |
-| 3.9 | X | X | X | - | √ | √ |
-| 3.10 | X | X | X | - | √ | √ |
-| 3.11 | X | X | X | - | √ | √ |
+|----------|-------|------|------|--------|-------|-------|
+| 3.4      | √     | √    | √    | √      | √     | -     |
+| 3.5      | X     | √    | √    | √      | √     | -     |
+| 3.6      | X     | √    | √    | √      | √     | -     |
+| 3.7      | X     | √    | √    | √      | √     | √     |
+| 3.8      | X     | √    | X    | -      | √     | √     |
+| 3.9      | X     | X    | X    | -      | √     | √     |
+| 3.10     | X     | X    | X    | -      | √     | √     |
+| 3.11     | X     | X    | X    | -      | √     | √     |
 
 ## QPT推荐的版本
 
@@ -39,15 +39,12 @@
 ```python
 from qpt.executor import CreateExecutableModule as CEM
 
-# 此处导入Python37镜像
-from qpt.modules.python_env import Python37
-
 if __name__ == '__main__':
     module = CEM(work_dir="./sample_program",
                  launcher_py_path="./sample_program/run.py",
                  save_path="./out",
-                 # 下方指定Python镜像
-                 interpreter_module=Python37())
+                 # 下方指定Python版本
+                 interpreter_version=38)
     module.make()
 ```
 

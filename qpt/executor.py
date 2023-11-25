@@ -41,7 +41,7 @@ class CreateExecutableModule:
                  icon=None,
                  deploy_mode=DEFAULT_DEPLOY_MODE,
                  sub_modules: List[SubModule] = None,
-                 interpreter_module: BasePythonEnv = None,
+                 interpreter_version: int = None,
                  hidden_terminal: bool = False,
                  with_debug: bool = False):
         """
@@ -53,12 +53,13 @@ class CreateExecutableModule:
         :param icon: 主程序图标
         :param deploy_mode: 部署方式，默认为“本地下载后安装”，填写为“setup_install”将减少初始化时间，但会增加体积
         :param sub_modules: 子模块列表
-        :param interpreter_module: 解释器Module
+        :param interpreter_version: 解释器Module，例如39、310、311，无子版本号
         :param hidden_terminal: 是否隐藏界面
         :param with_debug: QPT验证模式 - 请勿使用
         """
 
-        Logging.warning(msg="QPT 1.0b5版本中有较大更新，且仅对Win10 1809以上版本进行验证，低于该版本的操作系统可能存在无法运行问题。")
+        Logging.warning(
+            msg="QPT 1.0b5版本中有较大更新，且仅对Win10 1809以上版本进行验证，低于该版本的操作系统可能存在无法运行问题。")
         self.with_debug = with_debug
         self.work_dir = work_dir
 
@@ -157,10 +158,12 @@ class CreateExecutableModule:
 
         # Module相关
         # 初始化解释器Module
-        if interpreter_module is None:
-            interpreter_module = AutoPythonEnv()
+        interpreter_version = AutoPythonEnv() if interpreter_version is None else BasePythonEnv(
+            name="interpreter",
+            version=interpreter_version)
+
         # 获取SubModule列表 - 此处均无ExtModule
-        self.lazy_modules = [interpreter_module, QPTDependencyPackage()]
+        self.lazy_modules = [interpreter_version, QPTDependencyPackage()]
 
         self.sub_modules = sub_modules if sub_modules is not None else list()
 

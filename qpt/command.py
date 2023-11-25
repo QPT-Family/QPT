@@ -45,12 +45,18 @@ change_none_color()
               default=None,
               type=str,
               help="[自定义图标文件]传入自定义图标文件路径，为EXE设置属于你的图标样式，支持将exe文件设置为ico/JPG/PNG等格式的自定义图标。")
+@click.option("-pv",
+              "--python_version",
+              default=None,
+              type=int,
+              help="[跨版本编译]填写38、39、310数字格式的版本号即可生成指定的环境。")
 def cli(folder,
         py,
         save,
         require,
         hidden,
-        icon):
+        icon,
+        pv):
     Logging.info("-----------------------------QPT--------------------------------")
     Logging.info("当前执行模式为命令式执行，仅提供QPT基础功能，高阶操作可在GitHub参考最新文档")
     Logging.info("            https://github.com/GT-ZhangAcer/QPT")
@@ -74,7 +80,8 @@ def cli(folder,
                                     save_path=save,
                                     requirements_file=require,
                                     hidden_terminal=hidden,
-                                    icon=icon)
+                                    icon=icon,
+                                    interpreter_version=pv)
     module.make()
 
 

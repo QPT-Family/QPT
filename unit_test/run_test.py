@@ -82,7 +82,7 @@ class LogTest(unittest.TestCase):
         module = CreateExecutableModule(work_dir="./sandbox_qt",
                                         launcher_py_path="./sandbox_qt/run.py",
                                         save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),
-                                        requirements_file="sandbox_qt/requirements_with_opt.txt",
+                                        # requirements_file="sandbox_qt/requirements_with_opt.txt",
                                         with_debug=True,
                                         hidden_terminal=True)
         module.make()

@@ -27,10 +27,13 @@ class SetPaddleFamilyEnvValueOpt(SubModuleOpt):
 
 
 class CheckAVXOpt(SubModuleOpt):
+    """
+    已弃用 - PaddlePaddle已停止对NoAVX支持
+    """
+
     def __init__(self, version, use_cuda=False):
         super(CheckAVXOpt, self).__init__(disposable=True)
         self.version = version
-        # ToDo 做CUDA的适配 + 去掉>=
         self.use_cuda = use_cuda
 
     @staticmethod
@@ -94,16 +97,6 @@ def search_paddle_cuda_version(package_dist=None):
             exit(2)
 
 
-class PaddlePaddleCheckAVX(SubModule):
-    """
-    解决AVX的适配，并且给予更低优先级
-    """
-
-    def __init__(self, version, use_cuda=False):
-        super(PaddlePaddleCheckAVX, self).__init__(level=LOW_LEVEL_REDUCE)
-        self.add_unpack_opt(CheckAVXOpt(version=version, use_cuda=use_cuda))
-
-
 class PaddlePaddlePackage(CustomPackage):
     def __init__(self,
                  version: str = None,
@@ -139,7 +132,6 @@ class PaddlePaddlePackage(CustomPackage):
             self.add_ext_module(CopyCUDAPackage(cuda_version=cuda_version))
         # ToDO 当前方案需要放置在init后
         self.add_unpack_opt(SetPaddleFamilyEnvValueOpt())
-        self.add_ext_module(PaddlePaddleCheckAVX(version=version, use_cuda=include_cuda))
 
 
 class AddPaddlePaddlePackage(CustomPackage):

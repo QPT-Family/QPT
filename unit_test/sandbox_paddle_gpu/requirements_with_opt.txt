@@ -7,7 +7,7 @@
 # 
 # -------------Mainly depends on package analysis results--------------
 
-paddlepaddle_gpu==2.1.1
+paddlepaddle_gpu
 
 # ----------------------Ignored dependent packages---------------------
 #wheel==0.36.2

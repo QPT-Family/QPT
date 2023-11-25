@@ -43,6 +43,20 @@ class CreateExecutableModule:
                  interpreter_module: BasePythonEnv = None,
                  hidden_terminal: bool = False,
                  with_debug: bool = False):
+        """
+        :param work_dir: 待打包的项目路径，打包后会放置在resources目录下
+        :param launcher_py_path: 主程序路径
+        :param save_path: 打包后文件所在位置
+        :param ignore_dirs: 不进行打包的文件列表
+        :param requirements_file: 可供pip读取的环境依赖列表
+        :param icon: 主程序图标
+        :param deploy_mode: 部署方式，默认为“本地下载后安装”，填写为“setup_install”将减少初始化时间，但会增加体积
+        :param sub_modules: 子模块列表
+        :param interpreter_module: 解释器Module
+        :param hidden_terminal: 是否隐藏界面
+        :param with_debug: QPT验证模式 - 请勿使用
+        """
+
         self.with_debug = with_debug
         self.work_dir = work_dir
 

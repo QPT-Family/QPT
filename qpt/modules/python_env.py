@@ -20,6 +20,7 @@ class PackPythonEnvOpt(SubModuleOpt):
         self.mode = mode
 
     def act(self) -> None:
+        # ToDo 增加版本控制
         v = f"python{self.version.replace('.', '')}"
         path = check_and_install_sdk_in_this_env("QEnvPython")
         copytree(os.path.join(path, v), os.path.join(self.module_path, "Python"))
@@ -70,11 +71,6 @@ class AutoPythonEnv(BasePythonEnv):
         super().__init__(name=None, mode=mode, version=version)
 
 
-class Python37(BasePythonEnv):
-    def __init__(self, mode=DEFINE_PYTHON_ENV_MODE):
-        super().__init__(name=None, version="3.7", mode=mode)
-
-
 class Python38(BasePythonEnv):
     def __init__(self, mode=DEFINE_PYTHON_ENV_MODE):
         super().__init__(name=None, version="3.8", mode=mode)
@@ -87,4 +83,9 @@ class Python39(BasePythonEnv):
 
 class Python310(BasePythonEnv):
     def __init__(self, mode=DEFINE_PYTHON_ENV_MODE):
-        super().__init__(name=None, version="3.9", mode=mode)
+        super().__init__(name=None, version="3.10", mode=mode)
+
+
+class Python311(BasePythonEnv):
+    def __init__(self, mode=DEFINE_PYTHON_ENV_MODE):
+        super().__init__(name=None, version="3.11", mode=mode)

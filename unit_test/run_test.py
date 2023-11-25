@@ -24,18 +24,6 @@ os.makedirs(OUT_DIR_ROOT, exist_ok=True)
 
 class LogTest(unittest.TestCase):
 
-    def test_module_m_gui_python37(self):
-        # 验证Python兼容性
-        module = CreateExecutableModule(work_dir="./sandbox_m",
-                                        launcher_py_path="./sandbox_m/run.py",
-                                        save_path=os.path.join(OUT_DIR_ROOT, sys._getframe().f_code.co_name),
-                                        requirements_file="sandbox_m/requirements_with_opt.txt",
-                                        interpreter_module=Python37(),
-                                        icon="./sandbox_paddleocr/favicon.ico",
-                                        with_debug=True,
-                                        hidden_terminal=True)
-        module.make()
-
     def test_module_m_gui_python38(self):
         # 验证Python兼容性
         module = CreateExecutableModule(work_dir="./sandbox_m",

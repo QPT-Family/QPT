@@ -2,18 +2,19 @@
 #include <iostream>
 using namespace std;
 
-// 切记，不能是64位，不然PE不好修改了
+// 切记，不能是64位，不然PE不好修改了 - 项目->属性->C/C++->代码生成->运行库->多线程MT
 // 无窗口模式
-//#pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"" )
+#pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"" )
 
 int main(int argc, char** argv) {
+
 	struct stat buffer;
 	const char *configsFile = ".\\configs\\entry.cmd";
 	if (stat(configsFile, &buffer) != 0) {
 		MessageBox(NULL, TEXT("QPT：configs文件夹存在文件缺失，已终止！"), TEXT("执行失败 - QPT封装工具"), MB_OK | MB_ICONSTOP);
 		return 1;
 	};
-	// 配置UTF-8
+	//配置UTF-8
 	SetConsoleCP(CP_UTF8);
 	SetConsoleOutputCP(CP_UTF8);
 	

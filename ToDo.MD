@@ -1,3 +1,9 @@
+## b1.dev7 ToDo
+- [ ] 支持Conda版本的CUDA
+- [ ] 简单加密
+- [ ] OneFile
+- [ ] 重构Module管理器
+- 
 ## b1.dev5 ToDO
 - [x] 用户表示会有QPT找不到模块的情况，初步判断可能是环境变量的问题
 - [x] 重写依赖搜索 - Requirements里加QPT 过滤掉的包除去依赖后加入上去
@@ -10,7 +16,7 @@
 - [x] 增加跨应用调用支持
 - [x] 增加自定义图标
 - [x] Python部分解压到临时目录
-## b1.dev6ToDo
+## b1.dev6To
 - [x] 使用TK进度条，完全取消PyQT5依赖
 - [x] 内部更换CMD为PowerShell（外部下个版本更新）
 - [x] configs文件保存为二进制，360实在太笨了，文件里加base64就算是病毒也是服了，误报率不算KPI这是？
@@ -21,9 +27,7 @@
 - 
 ## b2.dev3
 - [x] 增强pwsh兼容性
-- [ ] 支持Conda版本的CUDA
 - [ ] 增加CUDA选择
-- [ ] 简单加密
 - [ ] 文件夹重复问题还是没解决 - 以后统一迁移吧顺便支持个中文路径
 - [x] BS多次安装以及为什么wget还需要安装
 - [x] 增加PaddleOCR部署的文档/依赖列表的适配
@@ -34,10 +38,6 @@
 - [x] sys_info更改为sys_swap并增加warmup和mem
 - [ ] Debug状态文件删除，借助环境变量统一在sys_info注册
 - [ ] 增加进程锁
-- [ ] 加个网络链接测试，增加链接池
-- [ ] 增加可选编译安装
-- [ ] 给用户UA选择权
-- [ ] 重构Module管理器，增加互斥Module - 初步考虑按主键+name去判定是否互斥
 - [ ] 增加pytorch的pip支持https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch/win-64/
 ## Other
 - [ ] 增加跨应用CLI的文档
@@ -52,14 +52,8 @@
 - [ ] QPT图形化封装界面
 - [ ] 自定义封装算子 - 提供自定义封装OP支持
 - [ ] Module集市
-- [ ] 分区加密
+- [ ] 增加多镜像源
 
-- [ ] 用户测PIP增加测速，避开国内源无法在国外使用
-
-## 二次验证优先级
-- [ ] 增加MKL深度适配（或许直接加环境变量？） https://blog.csdn.net/qq_35133971/article/details/100101397
-- [ ] 增加32位操作系统支持
-- [ ] 看一下egg格式的包搜索问题
 
 git config --global --unset url.https://hub.fastgit.org/.insteadof
 git config --global url."https://hub.fastgit.org/".insteadOf "https://github.com/"

@@ -435,9 +435,7 @@ class RunExecutableModule:
                                  f"当然，您也可将Windows系统的默认编码模式更改为UTF-8，这可以更好兼容中文，但操作难度较高。\n"
                                  f"---------------------------------------\n"
                                  f"请修改相关文件名后重新运行，谢谢！",
-                            force=True)
-            Logging.info("程序已停止")
-            exit(1)
+                            force=False)
 
         try:
             with open(self.config_file_path, "r", encoding="utf-8") as config_file:
@@ -515,5 +513,5 @@ class RunExecutableModule:
         else:
             CheckRun.make_run_file(self.config_path)
 
-        # os.chdir(self.work_dir)
+        os.chdir(self.work_dir)
         Logging.info("环境部署完毕！")

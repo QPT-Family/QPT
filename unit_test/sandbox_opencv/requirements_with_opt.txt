@@ -5,3 +5,4 @@
 # QPT Home:        https://github.com/GT-ZhangAcer/QPT
 # ---------------------------------------------------------------------
 opencv-python
+numpy

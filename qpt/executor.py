@@ -285,7 +285,7 @@ if "ing" not in os.environ.get("QPT_MODE"):
                     dst=os.path.join(self.debug_path, "configs/entry.cmd"))
         # 注册主程序文件路径
         with open(os.path.join(self.debug_path, "configs/entry.cmd"), "r", encoding="utf-8") as f:
-            data = f.read().replace("QPT_PY_MAIN_FILE=NONE", "QPT_PY_MAIN_FILE=" + self.launcher_py_path[0])
+            data = f.read().replace("QPT_PY_MAIN_FILE=NONE", "QPT_PY_MAIN_FILE=resources/" + self.launcher_py_path[0])
         with open(os.path.join(self.debug_path, "configs/entry.cmd"), "w", encoding="utf-8") as f:
             f.write(data)
 
@@ -296,7 +296,7 @@ if "ing" not in os.environ.get("QPT_MODE"):
         # 重命名兼容模式文件
         compatibility_mode_file = os.path.join(self.debug_path, "compatibility_mode.cmd")
         with open(os.path.join(self.debug_path, "compatibility_mode.cmd"), "r", encoding="utf-8") as f:
-            data = f.read().replace("QPT_PY_MAIN_FILE=NONE", "QPT_PY_MAIN_FILE=" + self.launcher_py_path[0])
+            data = f.read().replace("QPT_PY_MAIN_FILE=NONE", "QPT_PY_MAIN_FILE=resources/" + self.launcher_py_path[0])
         with open(os.path.join(self.debug_path, "compatibility_mode.cmd"), "w", encoding="utf-8") as f:
             f.write(data)
         if os.path.exists(compatibility_mode_file):
@@ -318,13 +318,17 @@ if "ing" not in os.environ.get("QPT_MODE"):
                         dst=os.path.join(self.module_path, "configs/entry.cmd"))
         # 注册主程序文件路径
         with open(os.path.join(self.module_path, "configs/entry.cmd"), "r", encoding="utf-8") as f:
-            data = f.read().replace("QPT_PY_MAIN_FILE=NONE", "QPT_PY_MAIN_FILE=" + self.launcher_py_path[0])
+            data = f.read().replace("QPT_PY_MAIN_FILE=NONE", "QPT_PY_MAIN_FILE=resources/" + self.launcher_py_path[0])
         with open(os.path.join(self.module_path, "configs/entry.cmd"), "w", encoding="utf-8") as f:
             f.write(data)
 
         copytree(launcher_ext_dir, dst=self.module_path, ignore_files=launcher_ignore_file)
         # 重命名兼容模式文件
         compatibility_mode_file = os.path.join(self.module_path, "compatibility_mode.cmd")
+        with open(compatibility_mode_file, "r", encoding="utf-8") as f:
+            data = f.read().replace("QPT_PY_MAIN_FILE=NONE", "QPT_PY_MAIN_FILE=resources/" + self.launcher_py_path[0])
+        with open(compatibility_mode_file, "w", encoding="utf-8") as f:
+            f.write(data)
         if os.path.exists(compatibility_mode_file):
             os.rename(compatibility_mode_file,
                       os.path.join(self.module_path, "使用兼容模式运行.cmd"))
@@ -511,5 +515,5 @@ class RunExecutableModule:
         else:
             CheckRun.make_run_file(self.config_path)
 
-        os.chdir(self.work_dir)
+        # os.chdir(self.work_dir)
         Logging.info("环境部署完毕！")

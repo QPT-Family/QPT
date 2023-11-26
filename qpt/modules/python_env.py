@@ -22,16 +22,16 @@ class PackPythonEnvOpt(SubModuleOpt):
         # ToDo 增加版本控制
         m = f"python{self.version}"
         path = check_and_install_sdk_in_this_env(f"QEnvPython{self.version}")
-        copytree(os.path.join(path, m), os.path.join(self.module_path, "Python"))
+        copytree(os.path.join(os.path.join(path, "QEnvPython"), m), os.path.join(self.module_path, "Python"))
 
         # ToDo 未来对Tinkter和VC2019进行分离，先暂时放一起
         m = f"tkinter{self.version}"
         path = check_and_install_sdk_in_this_env(f"QEnvPython{self.version}")
-        copytree(os.path.join(path, m), os.path.join(self.module_path, "Python"))
+        copytree(os.path.join(os.path.join(path, "QEnvPython"), m), os.path.join(self.module_path, "Python"))
 
         m = "vcredist"
         path = check_and_install_sdk_in_this_env("QVCRedist")
-        copytree(os.path.join(path, m), os.path.join(self.module_path, "Python"))
+        copytree(os.path.join(os.path.join(path, "QVCRedist"), m), os.path.join(self.module_path, "Python"))
 
 
 class BasePythonEnv(SubModule):

@@ -24,7 +24,8 @@ setup(
                       "pefile",
                       "pillow",
                       "toml",
-                      "pip>=22.1.1"],
+                      "pip>=23.1,"
+                      "QPT-SDK"],
     python_requires='>=3.8',
     include_package_data=True,
     entry_points={

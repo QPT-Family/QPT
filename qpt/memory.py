@@ -92,8 +92,8 @@ class QPTMemory:
 
     @init_wrapper()
     def get_qpt_sdk_list(self):
-        import QPT_SDK
-        path_list = os.listdir(os.path.dirname(QPT_SDK.__file__))
+        from QPT_SDK.loc import QPT_SDK_PATH
+        path_list = os.listdir(QPT_SDK_PATH)
         sdk_list = [path.lower() for path in path_list if os.path.isdir(path)]
         return sdk_list
 

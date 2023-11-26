@@ -14,8 +14,9 @@ TSINGHUA_PIP_SOURCE = "https://pypi.tuna.tsinghua.edu.cn/simple"
 BAIDU_PIP_SOURCE = "https://mirror.baidu.com/pypi/simple"
 DOUBAN_PIP_SOURCE = "https://pypi.douban.com/simple"
 BFSU_PIP_SOURCE = "https://mirrors.bfsu.edu.cn/pypi/web/simple"
+ALIYUN_PIP_SOURCE = "https://mirrors.aliyun.com/pypi/simple"
 PYPI_PIP_SOURCE = "https://pypi.python.org/simple"
-DEFAULT_PIP_SOURCE = BFSU_PIP_SOURCE
+DEFAULT_PIP_SOURCE = ALIYUN_PIP_SOURCE
 # DEFAULT_PIP_SOURCE = DOUBAN_PIP_SOURCE
 
 SIGNALS = ["=", "~", "<", ">"]

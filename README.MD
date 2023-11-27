@@ -146,6 +146,7 @@ QPT是一款致力于让**开源项目**更好通往互联网世界的Python项�
 | 上海大学 曾老师 | 200 .00 RMB | 银牌赞助席位 |赞助席位 |
 | [Viggo(wxbool)](https://github.com/wxbool) | 100 .00 RMB | 银牌赞助席位
 | [YaoFANGUK](https://github.com/YaoFANGUK) | 100 .00 RMB | 银牌赞助席位
+| 厦门大学 愚者 | 100 .00 RMB | 银牌赞助席位
 | 社区ID \*头 | 66 .00 RMB | 支持赞助席位 |
 | 社区ID iterhui | 50 .00 RMB | 支持赞助席位 |
 | 社区ID LFeightyFour | 23 .33 RMB | 支持赞助席位 |

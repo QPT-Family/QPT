@@ -31,7 +31,7 @@ QPT是一款致力于让**开源项目**更好通往互联网世界的Python项�
 ### 版本说明
 #### EAP - The Early Access Program  [更新日志](https://github.com/QPT-Family/QPT/releases) | [开发进度](https://github.com/orgs/QPT-Family/projects/3/views/3?layout=board)    
 
-当前版本为V1.0b5，该版本已放弃对Python3.7及更低版本支持，同时我们仍仅支持Windows10 1806+的适配（不支持MAC和Linux纯粹是维护不过来，不支持低版本Windows是因为真的太难）
+当前版本为V1.0b7，该版本已放弃对Python3.7及更低版本支持，同时我们仍仅支持Windows10 1806+的适配（不支持MAC和Linux纯粹是维护不过来，而不支持低版本Windows是因为真的太难）
 
 `如在Win7中不能运行，可考虑在cmd中输入sfc/scannow修复系统进行解决，Win7+系统在输入前需添加DISM/Online/Cleanup-Image/RestoreHealth 或许还能有抢救的机会`
 

@@ -12,7 +12,7 @@
  <img src="https://cdn.jsdelivr.net/gh/QPT-Family/QPT/ext/rc/2023.png" width="128" />
 
 [Gitee主页](https://gitee.com/GT-zhangacer/QPT) | [GitHub主页](https://github.com/GT-ZhangAcer/QPT) | [快速使用](https://github.com/QPT-Family/QPT#%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8) | [进阶教程](https://github.com/QPT-Family/QPT#%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8qpt) |  [开发进度 GitHub Project](https://github.com/orgs/QPT-Family/projects/3/views/3?layout=board) | [踩坑笔记](https://github.com/QPT-Family/QPT/tree/开发分支/informal_essay)  
-[社区&捐赠支持](https://github.com/QPT-Family/QPT#%E7%A4%BE%E5%8C%BA%E6%94%AF%E6%8C%81) | [QPT SDK仓库](https://github.com/QPT-Family/QPT-SDK)
+[社区&赞助支持](https://github.com/QPT-Family/QPT#%E7%A4%BE%E5%8C%BA%E6%94%AF%E6%8C%81) | [QPT SDK仓库](https://github.com/QPT-Family/QPT-SDK)
 <p align="center">
 
 
@@ -136,8 +136,8 @@ QPT是一款致力于让**开源项目**更好通往互联网世界的Python项�
 ### 社区支持
 
 #### 来一杯咖啡☕
-一杯咖啡提神醒脑，代码更新会更快更好！捐赠部分资金将用于社区维护，如您参与项目日常开发，也将会获得相关社区激励。    
-（不介意的话可以在捐赠时加个备注，例如QPT项目+昵称，后续将更新至[捐赠致谢](https://github.com/QPT-Family/.github/blob/%E5%BC%80%E5%8F%91%E5%88%86%E6%94%AF/%E6%8D%90%E8%B5%A0%E8%87%B4%E8%B0%A2.MD)中）  
+一杯咖啡提神醒脑，代码更新会更快更好！
+（不介意的话可以在请咖啡时加个备注，例如QPT项目+昵称，后续将更新至[支持与致谢](https://github.com/QPT-Family/.github/blob/%E5%BC%80%E5%8F%91%E5%88%86%E6%94%AF/%E6%94%AF%E6%8C%81%E8%87%B4%E8%B0%A2.MD)中）  
 
 | 捐赠者 | 累计捐赠金额 | 赞助席位 |
 | --- | --- | --- |
@@ -158,7 +158,7 @@ QPT是一款致力于让**开源项目**更好通往互联网世界的Python项�
 | 社区ID yangy996 | 10 .00 RMB | 支持赞助席位 |
 | 社区ID 未知 | 1 .00 RMB | 兴趣赞助席位 |
 
-完整捐赠名单&规则详见[捐赠致谢.MD](https://github.com/QPT-Family/.github/blob/%E5%BC%80%E5%8F%91%E5%88%86%E6%94%AF/%E6%8D%90%E8%B5%A0%E8%87%B4%E8%B0%A2.MD)
+完整支持名单&规则详见[支持致谢.MD](https://github.com/QPT-Family/.github/blob/%E5%BC%80%E5%8F%91%E5%88%86%E6%94%AF/%E6%94%AF%E6%8C%81%E8%87%B4%E8%B0%A2.MD)
 
 <div align=center><img width="490" alt="图片" src="https://cdn.jsdelivr.net/gh/GT-ZhangAcer/GT-ZhangAcer/d.jpg"></div>  
 

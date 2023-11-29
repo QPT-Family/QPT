@@ -56,7 +56,7 @@ def cli(folder,
         require,
         hidden,
         icon,
-        pv):
+        python_version):
     Logging.info("-----------------------------QPT--------------------------------")
     Logging.info("当前执行模式为命令式执行，仅提供QPT基础功能，高阶操作可在GitHub参考最新文档")
     Logging.info("            https://github.com/GT-ZhangAcer/QPT")
@@ -81,7 +81,7 @@ def cli(folder,
                                     requirements_file=require,
                                     hidden_terminal=hidden,
                                     icon=icon,
-                                    interpreter_version=pv)
+                                    interpreter_version=python_version)
     module.make()
 
 

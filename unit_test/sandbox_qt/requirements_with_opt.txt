@@ -11,9 +11,12 @@ pyqt5==5.15.10
 
 # ----------------------Ignored dependent packages---------------------
 #pillow==10.1.0
-#qenvpython==3.8.10.3
-#qpt_sdk==1.0
-#qvcredist==1.0.1
+#qenvpython311==3.11.6
+#qenvpython312==3.12.0
+#qenvpython38==3.8.10.1
+#qenvpython39==3.9.13
+#qpt_sdk==1.0.1
+#qvcredist==1.0.3
 #click==8.1.7
 #install==1.3.5
 #pefile==2023.2.7

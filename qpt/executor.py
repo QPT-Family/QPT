@@ -258,7 +258,7 @@ if "ing" not in os.environ.get("QPT_MODE"):
     from qpt.run_wrapper import wrapper
     wrapper()
     from qpt.executor import RunExecutableModule
-    RunExecutableModule().run()
+    RunExecutableModule("..").run()
 """
         with open(os.path.join(self.lib_package_path, "sitecustomize.py"), "w", encoding="utf-8") as _f:
             _f.write(wrapper_code)
@@ -285,7 +285,7 @@ if "ing" not in os.environ.get("QPT_MODE"):
                     dst=os.path.join(self.debug_path, "configs/entry.cmd"))
         # 注册主程序文件路径
         with open(os.path.join(self.debug_path, "configs/entry.cmd"), "r", encoding="utf-8") as f:
-            data = f.read().replace("QPT_PY_MAIN_FILE=NONE", "QPT_PY_MAIN_FILE=resources/" + self.launcher_py_path[0])
+            data = f.read().replace("QPT_PY_MAIN_FILE=NONE", "QPT_PY_MAIN_FILE=" + self.launcher_py_path[0])
         with open(os.path.join(self.debug_path, "configs/entry.cmd"), "w", encoding="utf-8") as f:
             f.write(data)
 
@@ -296,7 +296,7 @@ if "ing" not in os.environ.get("QPT_MODE"):
         # 重命名兼容模式文件
         compatibility_mode_file = os.path.join(self.debug_path, "compatibility_mode.cmd")
         with open(os.path.join(self.debug_path, "compatibility_mode.cmd"), "r", encoding="utf-8") as f:
-            data = f.read().replace("QPT_PY_MAIN_FILE=NONE", "QPT_PY_MAIN_FILE=resources/" + self.launcher_py_path[0])
+            data = f.read().replace("QPT_PY_MAIN_FILE=NONE", "QPT_PY_MAIN_FILE=" + self.launcher_py_path[0])
         with open(os.path.join(self.debug_path, "compatibility_mode.cmd"), "w", encoding="utf-8") as f:
             f.write(data)
         if os.path.exists(compatibility_mode_file):
@@ -318,7 +318,7 @@ if "ing" not in os.environ.get("QPT_MODE"):
                         dst=os.path.join(self.module_path, "configs/entry.cmd"))
         # 注册主程序文件路径
         with open(os.path.join(self.module_path, "configs/entry.cmd"), "r", encoding="utf-8") as f:
-            data = f.read().replace("QPT_PY_MAIN_FILE=NONE", "QPT_PY_MAIN_FILE=resources/" + self.launcher_py_path[0])
+            data = f.read().replace("QPT_PY_MAIN_FILE=NONE", "QPT_PY_MAIN_FILE=" + self.launcher_py_path[0])
         with open(os.path.join(self.module_path, "configs/entry.cmd"), "w", encoding="utf-8") as f:
             f.write(data)
 
@@ -326,7 +326,7 @@ if "ing" not in os.environ.get("QPT_MODE"):
         # 重命名兼容模式文件
         compatibility_mode_file = os.path.join(self.module_path, "compatibility_mode.cmd")
         with open(compatibility_mode_file, "r", encoding="utf-8") as f:
-            data = f.read().replace("QPT_PY_MAIN_FILE=NONE", "QPT_PY_MAIN_FILE=resources/" + self.launcher_py_path[0])
+            data = f.read().replace("QPT_PY_MAIN_FILE=NONE", "QPT_PY_MAIN_FILE=" + self.launcher_py_path[0])
         with open(compatibility_mode_file, "w", encoding="utf-8") as f:
             f.write(data)
         if os.path.exists(compatibility_mode_file):
@@ -385,6 +385,7 @@ if "ing" not in os.environ.get("QPT_MODE"):
 
 class RunExecutableModule:
     def __init__(self, module_path: str = None):
+        # 正常情况下module_path应为上一级目录，因为会先cd到resources再执行python，所以运行时的工作目录为module_path\resources
         if os.getenv("QPT_MODE") == "Run" or "Debug":
             os.environ["QPT_MODE"] = "Running" if QPT_MODE == "Run" else "Debugging"
         if module_path is None:
@@ -513,5 +514,5 @@ class RunExecutableModule:
         else:
             CheckRun.make_run_file(self.config_path)
 
-        os.chdir(self.work_dir)
+        # os.chdir(self.work_dir)
         Logging.info("环境部署完毕！")

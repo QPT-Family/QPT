@@ -119,9 +119,12 @@ class SubBase:
         存在的离线package
         :return:
         """
-        whl_list = [whl for whl in os.listdir(self.download_packages_path)
-                    if os.path.splitext(whl)[-1] in [".gz", ".whl", "zip"]]
-        return whl_list
+        if not os.path.exists(self.download_packages_path):
+            return list()
+        else:
+            whl_list = [whl for whl in os.listdir(self.download_packages_path)
+                        if os.path.splitext(whl)[-1] in [".gz", ".whl", "zip"]]
+            return whl_list
 
     @property
     def uninstalled_offline_installation_packages(self):

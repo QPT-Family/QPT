@@ -140,7 +140,7 @@ QPT是一款致力于让**开源项目**更好通往互联网世界的Python项�
 
 | 捐赠者 | 累计捐赠金额 | 赞助席位 |
 | --- | --- | --- |
-| <a href="https://cloud.stariver.org"><img width="100" src="https://user-images.githubusercontent.com/46156734/156889607-ad230ff1-47bf-416a-b7b7-7f4067dcf99a.png"> </a> | 5,000 .00 RMB | 金牌赞助席位 |
+| <a href="https://cloud.stariver.org"><img width="100" src="https://user-images.githubusercontent.com/46156734/156889607-ad230ff1-47bf-416a-b7b7-7f4067dcf99a.png"> </a> | 5,000 .00 RMB | 金牌赞助席位（互赞） |
 | 社区ID 23\*\*\*\*770 | 200 .00 RMB | 银牌赞助席位 |
 | 上海大学 曾老师 | 200 .00 RMB | 银牌赞助席位 |赞助席位 |
 | [Viggo(wxbool)](https://github.com/wxbool) | 100 .00 RMB | 银牌赞助席位 |
@@ -148,18 +148,18 @@ QPT是一款致力于让**开源项目**更好通往互联网世界的Python项�
 | 厦门大学 愚者 | 100 .00 RMB | 银牌赞助席位 |
 | 社区ID \*头 | 66 .00 RMB | 支持赞助席位 |
 | 社区ID iterhui | 50 .00 RMB | 支持赞助席位 |
+| 社区ID *瓜 | 30 .00 RMB | 支持赞助席位 |
 | 社区ID LFeightyFour | 23 .33 RMB | 支持赞助席位 |
 | 社区ID \*猪 | 20 .00 RMB | 支持赞助席位 |
 | 社区ID super松 | 20 .00 RMB | 支持赞助席位 |
 | 社区ID \*\*辉 | 20 .00 RMB | 支持赞助席位 |
 | 社区ID jerrychoices | 20 .00 RMB | 支持赞助席位 |
 | 社区ID 14\*\*\*\*650 | 10 .00 RMB | 支持赞助席位 |
-| 社区ID yangy996 | 10 .00 RMB | 支持赞助席位 |
+| 社区ID yangy996 | 10 .00 RMB | 支持赞助席位 |  
+| 社区ID 广东午夜游民 | 10 .00 RMB | 支持赞助席位 |  
 | 社区ID 未知 | 1 .00 RMB | 兴趣赞助席位 |
 
 完整支持名单&规则详见[支持致谢.MD](https://github.com/QPT-Family/.github/blob/%E5%BC%80%E5%8F%91%E5%88%86%E6%94%AF/%E6%94%AF%E6%8C%81%E8%87%B4%E8%B0%A2.MD)
-
-<div align=center><img width="490" alt="图片" src="https://cdn.jsdelivr.net/gh/GT-ZhangAcer/GT-ZhangAcer/d.jpg"></div>  
 
 #### Jetbrains 全家桶支持
 本项目开发所使用的IDE由[Jetbrains](https://jb.gg/OpenSource)支持。
